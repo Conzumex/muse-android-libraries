@@ -8,7 +8,7 @@ import androidx.annotation.AnimatorRes;
 import android.view.View;
 
 import com.conzumex.countrypicker.FastScroller;
-import com.hbb20.R;
+import com.conzumex.countrypicker.R;
 
 
 /**

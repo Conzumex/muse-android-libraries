@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.conzumex.countrypicker.viewprovider.DefaultScrollerViewProvider;
 import com.conzumex.countrypicker.viewprovider.ScrollerViewProvider;
-import com.hbb20.R;
 
 /**
  * Created by mklimczak on 28/07/15.
