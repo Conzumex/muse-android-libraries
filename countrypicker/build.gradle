@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.library'
+    id 'maven-publish'
 }
 
 android {
@@ -34,4 +35,18 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
     implementation 'io.michaelrocks:libphonenumber-android:8.12.28'
+}
+
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = 'com.github.conzumex.muse-android-libraries'
+            artifactId = 'countrypicker'
+            version = '1.0.1'
+
+            afterEvaluate {
+                from components.release
+            }
+        }
+    }
 }
