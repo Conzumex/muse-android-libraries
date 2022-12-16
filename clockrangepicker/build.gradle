@@ -46,7 +46,7 @@ publishing {
         release(MavenPublication) {
             groupId = 'com.github.conzumex.muse-android-libraries'
             artifactId = 'clockrangepicker'
-            version = '1.0.1'
+            version = '1.2'
 
             afterEvaluate {
                 from components.release
