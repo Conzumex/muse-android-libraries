@@ -49,6 +49,7 @@ class TimeRangePicker @JvmOverloads constructor(
     private val _sliderCapRect: RectF = RectF()
 
     private var _sliderWidth: Int = dpToPx(8f).toInt()
+    private var _sliderRangeWidth: Int = dpToPx(8f).toInt()
     private var _sliderColor by Delegates.notNull<Int>()
     private var _sliderRangeColor by Delegates.notNull<Int>()
     private var _sliderRangeGradientStart: Int? = null
@@ -199,6 +200,10 @@ class TimeRangePicker @JvmOverloads constructor(
                 R.styleable.TimeRangePicker_trp_sliderWidth,
                 _sliderWidth.toFloat()
             ).toInt()
+            _sliderRangeWidth = attr.getDimension(
+                R.styleable.TimeRangePicker_trp_sliderRangeWidth,
+                _sliderWidth.toFloat()
+            ).toInt()
             _sliderColor = attr.getColor(R.styleable.TimeRangePicker_trp_sliderColor, _sliderColor)
             _sliderRangeColor =
                 attr.getColor(R.styleable.TimeRangePicker_trp_sliderRangeColor, _sliderRangeColor)
@@ -291,7 +296,7 @@ class TimeRangePicker @JvmOverloads constructor(
         }
         _sliderRangePaint.apply {
             style = Paint.Style.STROKE
-            strokeWidth = _sliderWidth.toFloat()
+            strokeWidth = _sliderRangeWidth.toFloat()
             color = _sliderRangeColor
         }
 

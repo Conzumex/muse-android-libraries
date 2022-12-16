@@ -19,6 +19,7 @@
 
         <!-- Slider -->
         <attr name="trp_sliderWidth" format="dimension" />
+        <attr name="trp_sliderRangeWidth" format="dimension" />
         <attr name="trp_sliderColor" format="color" />
         <attr name="trp_sliderRangeColor" format="color" />
         <attr name="trp_sliderRangeGradientStart" format="color" />
