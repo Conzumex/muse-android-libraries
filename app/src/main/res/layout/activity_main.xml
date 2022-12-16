@@ -32,12 +32,10 @@
         app:trp_hourFormat="FORMAT_24"
         app:trp_sliderColor="#989b9b"
         app:trp_sliderRangeColor="#EF0053"
-        app:trp_sliderWidth="28dp"
-        app:trp_sliderRangeWidth="20dp"
+        app:trp_sliderWidth="50dp"
+        app:trp_sliderRangeWidth="25dp"
         app:trp_startTime="22:00"
         app:trp_stepTimeMinutes="10"
-        app:trp_thumbColor="#000000"
-        app:trp_thumbIconEnd="@drawable/ic_clear_black_24dp"
         app:trp_thumbIconSize="10dp"
         app:trp_thumbIconStart="@drawable/ic_backspace_black_24dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

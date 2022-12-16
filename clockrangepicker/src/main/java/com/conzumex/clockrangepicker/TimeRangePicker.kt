@@ -515,10 +515,10 @@ class TimeRangePicker @JvmOverloads constructor(
         _gradientPaint.color = color
 
         _sliderCapRect.set(
-            posX - _sliderWidth / 2f,
-            posY - _sliderWidth / 2f,
-            posX + _sliderWidth / 2f,
-            posY + _sliderWidth / 2f
+            posX - _sliderRangeWidth / 2f,
+            posY - _sliderRangeWidth / 2f,
+            posX + _sliderRangeWidth / 2f,
+            posY + _sliderRangeWidth / 2f
         )
         canvas.drawArc(
             _sliderCapRect,
