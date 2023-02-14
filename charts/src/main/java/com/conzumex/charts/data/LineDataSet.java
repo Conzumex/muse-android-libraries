@@ -4,6 +4,7 @@ package com.conzumex.charts.data;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
+import android.graphics.LinearGradient;
 import android.util.Log;
 
 import com.conzumex.charts.utils.ColorTemplate;
@@ -58,6 +59,11 @@ public class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     private IFillFormatter mFillFormatter = new DefaultFillFormatter();
 
     /**
+     * LinearGradient for make the line as gradient
+     */
+    private int[] mGradientColors = null;
+
+    /**
      * if true, drawing circles is enabled
      */
     private boolean mDrawCircles = true;
@@ -104,6 +110,7 @@ public class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
         lineDataSet.mDrawCircleHole = mDrawCircleHole;
         lineDataSet.mDrawCircles = mDrawCircleHole;
         lineDataSet.mFillFormatter = mFillFormatter;
+        lineDataSet.mGradientColors = mGradientColors;
         lineDataSet.mMode = mMode;
     }
 
@@ -406,6 +413,20 @@ public class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
     @Override
     public IFillFormatter getFillFormatter() {
         return mFillFormatter;
+    }
+
+    /**
+     * Sets a Colors for gradient line for the dataset
+     *
+     * @param gradientColors
+     */
+    public void setGradientColors(int[] gradientColors) {
+        this.mGradientColors = gradientColors;
+    }
+
+    @Override
+    public int[] getGradientColors() {
+        return mGradientColors;
     }
 
     public enum Mode {

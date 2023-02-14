@@ -1,6 +1,7 @@
 package com.conzumex.charts.interfaces.datasets;
 
 import android.graphics.DashPathEffect;
+import android.graphics.LinearGradient;
 
 import com.conzumex.charts.data.Entry;
 import com.conzumex.charts.data.LineDataSet;
@@ -100,4 +101,11 @@ public interface ILineDataSet extends ILineRadarDataSet<Entry> {
      * @return
      */
     IFillFormatter getFillFormatter();
+
+    /**
+     * Returns the LinearGradient for the dataset
+     *
+     * @return
+     */
+    int[] getGradientColors();
 }
