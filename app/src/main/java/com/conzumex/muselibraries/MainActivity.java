@@ -35,11 +35,11 @@ public class MainActivity extends AppCompatActivity {
 
         LineChart lineChart = findViewById(R.id.line_chart);
 
-        loadChart(lineChart,getLineData());
+        loadChart(lineChart,getLineData(lineChart));
 
     }
 
-    private LineData getLineData(){
+    private LineData getLineData(LineChart lineChart){
         LineData lineData = new LineData();
         List<List<Entry>> entriesList = new ArrayList<>();
 
@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
             LineDataSet lineDataSet = new LineDataSet(e, "Intensity items");
             lineDataSet.setDrawCircles(false);
             lineDataSet.setDrawValues(false);
+            lineDataSet.setGradientColors(getGradientColors(10,110));
             lineDataSet.setLineWidth(2.5f);
             lineDataSet.setDrawHorizontalHighlightIndicator(false);
             lineDataSet.setDrawVerticalHighlightIndicator(false);
@@ -119,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
 
         LineDataSet lineDataSet = new LineDataSet(entries, "Intensity items 2");
         lineDataSet.setDrawCircles(false);
-        lineDataSet.setSecondary(true);
         lineDataSet.setColor(Color.parseColor("#800035"));
         lineDataSet.setDrawValues(false);
         lineDataSet.setLineWidth(1.5f);
@@ -233,17 +233,22 @@ public class MainActivity extends AppCompatActivity {
         lineChart.moveViewToX(chartPosition);
         lineChart.setVisibleXRangeMaximum(1440);
 //        lineChart.setRendererLeftYAxis(new GlucoseGraphYAxisRenderer(lineChart.getViewPortHandler(), yAxis, lineChart.getTransformer(YAxis.AxisDependency.LEFT)));
-        lineChart.post(() -> {
-            setupGradient(lineChart, 10, 110);
-        });
+//        lineChart.post(() -> {
+//            setupGradient(lineChart, 10, 110);
+//        });
     }
 
 
     private void setupGradient(LineChart mChart, float minAxis, float maxAxis) {
 
         Paint paint = mChart.getRenderer().getPaintRender();
-        int height = mChart.getHeight();
-        int width = mChart.getWidth();
+
+//        LinearGradient linGrad = getGradient(minAxis,maxAxis);
+//        paint.setShader(linGrad);
+//        mChart.invalidate();
+    }
+
+    private int[] getGradientColors(float minAxis, float maxAxis) {
         int difference = (int) (maxAxis - minAxis);
         int stepValue = 10;
         if (difference > 90) stepValue = 20;
@@ -263,9 +268,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        LinearGradient linGrad = new LinearGradient(0, height, 0, 0, gradientColors, null, Shader.TileMode.REPEAT);
-        paint.setShader(linGrad);
-        mChart.invalidate();
+        return gradientColors;
     }
 
 }

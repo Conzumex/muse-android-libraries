@@ -3,8 +3,10 @@ package com.conzumex.charts.renderer;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 
 import com.conzumex.charts.animation.ChartAnimator;
@@ -96,6 +98,11 @@ public class LineChartRenderer extends LineRadarRenderer {
 
         for (ILineDataSet set : lineData.getDataSets()) {
 
+            if(set.getGradientColors()!=null){
+                mRenderPaint = getGradientLine(mRenderPaint,set.getGradientColors());
+            }else{
+                mRenderPaint.setShader(null);
+            }
             if (set.isVisible())
                 drawDataSet(c, set);
         }
@@ -859,5 +866,11 @@ public class LineChartRenderer extends LineRadarRenderer {
         protected Bitmap getBitmap(int index) {
             return circleBitmaps[index % circleBitmaps.length];
         }
+    }
+
+    private Paint getGradientLine(Paint paint,int[] colors){
+        LinearGradient gradient = new LinearGradient(0, mChart.getHeight(), 0, 0, colors, null, Shader.TileMode.REPEAT);
+        paint.setShader(gradient);
+        return paint;
     }
 }
