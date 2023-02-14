@@ -4,9 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#000000"
     tools:context=".MainActivity">
 
+    <com.conzumex.charts.charts.LineChart
+        android:id="@+id/line_chart"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_marginStart="10dp"
+        android:layout_weight="1"
+        android:textSize="8sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <TextView
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello World!"
@@ -15,27 +28,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.conzumex.clockrangepicker.TimeRangePicker
-        android:id="@+id/picker"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:trp_clockFace="SAMSUNG"
-        app:trp_clockLabelColor="#989b9b"
-        app:trp_clockLabelSize="12sp"
-        app:trp_endTime="6:00"
-        app:trp_hourFormat="FORMAT_24"
-        app:trp_sliderColor="#989b9b"
-        app:trp_sliderRangeColor="#EF0053"
-        app:trp_sliderWidth="50dp"
-        app:trp_sliderRangeWidth="25dp"
-        app:trp_startTime="22:00"
-        app:trp_stepTimeMinutes="10"
-        app:trp_thumbIconSize="10dp"
-        app:trp_thumbIconStart="@drawable/ic_backspace_black_24dp" />
+    <!--    <com.conzumex.muselibraries.ArcPointer-->
+    <!--        android:id="@+id/arcPointer"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        app:circularflow_radiusInDP="50"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>
