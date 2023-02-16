@@ -10,6 +10,8 @@ import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.conzumex.charts.charts.LineChart;
 import com.conzumex.charts.components.XAxis;
@@ -22,33 +24,56 @@ import com.conzumex.charts.listener.OnChartValueSelectedListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
+    List<Entry> listEntries;
+    LineData data;
+    EditText edtText;
+    Button btn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         LineChart lineChart = findViewById(R.id.line_chart);
+        edtText = findViewById(R.id.edt_text);
+        btn = findViewById(R.id.button);
 
-        loadChart(lineChart,getLineData(lineChart));
+
+        listEntries = getEntries();
+        data = getLineData(listEntries);
+        loadChart(lineChart,data);
+
+        btn.setOnClickListener(view->{
+            int val = Integer.parseInt(edtText.getText().toString());
+            listEntries = getEntries();
+
+            Entry newEntry = getYValueForAverage(val,listEntries);
+            newEntry.setIcon(getDrawable(R.drawable.ic_graph_marker));
+
+            Entry temp2Entry = new Entry(val+20, newEntry.getY(),newEntry.getIcon());
+
+//            listEntries.add(newEntry);
+//
+//            Collections.sort(listEntries);
+            data = getLineData(listEntries);
+            List<Entry> listIcons = new ArrayList<>();
+            listIcons.add(newEntry);
+//            listIcons.add(temp2Entry);
+            LineDataSet iconSet = new LineDataSet(listIcons,"icons");
+            data.addDataSet(iconSet);
+            loadChart(lineChart,data);
+        });
 
     }
 
-    private LineData getLineData(LineChart lineChart){
-        LineData lineData = new LineData();
-        List<List<Entry>> entriesList = new ArrayList<>();
-
-        Calendar tempCal = Calendar.getInstance();
-
+    private List<Entry> getEntries(){
         List<Entry> entries = new ArrayList<>();
-
-        int previousIndex = 0;
-
         entries.add(new Entry(10,15));
         entries.add(new Entry(20,20));
         entries.add(new Entry(30,25));
@@ -69,24 +94,22 @@ public class MainActivity extends AppCompatActivity {
         entries.add(new Entry(180,60));
         entries.add(new Entry(190,45));
         entries.add(new Entry(200,50));
-
-        if (!entries.isEmpty()) entriesList.add(new ArrayList<>(entries));
-
-        lineData.addDataSet(getSecondaryLineDataSet());
-
-        for (List<Entry> e : entriesList) {
-            LineDataSet lineDataSet = new LineDataSet(e, "Intensity items");
-            lineDataSet.setDrawCircles(false);
-            lineDataSet.setDrawValues(false);
-            lineDataSet.setGradientColors(getGradientColors(10,110));
-            lineDataSet.setLineWidth(2.5f);
-            lineDataSet.setDrawHorizontalHighlightIndicator(false);
-            lineDataSet.setDrawVerticalHighlightIndicator(false);
-            lineDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
-            lineData.addDataSet(lineDataSet);
-        }
+        return entries;
+    }
 
 
+    private LineData getLineData(List<Entry> entries){
+        LineData lineData = new LineData();
+//        lineData.addDataSet(getSecondaryLineDataSet());
+        LineDataSet lineDataSet = new LineDataSet(entries, "Intensity items");
+        lineDataSet.setDrawCircles(false);
+        lineDataSet.setDrawValues(false);
+        lineDataSet.setGradientColors(getGradientColors(10,110));
+        lineDataSet.setLineWidth(2.5f);
+        lineDataSet.setDrawHorizontalHighlightIndicator(false);
+        lineDataSet.setDrawVerticalHighlightIndicator(false);
+        lineDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+        lineData.addDataSet(lineDataSet);
         return lineData;
     }
 
@@ -123,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
         lineDataSet.setColor(Color.parseColor("#800035"));
         lineDataSet.setDrawValues(false);
         lineDataSet.setLineWidth(1.5f);
+        lineDataSet.setGradientColors(getGradientColors(10,110));
         lineDataSet.setDrawHorizontalHighlightIndicator(false);
         lineDataSet.setDrawVerticalHighlightIndicator(false);
         lineDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
@@ -175,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawLabels(true);
         xAxis.setAxisMinimum(0f);
-        xAxis.setAxisMaximum(500);
+        xAxis.setAxisMaximum(210);
         xAxis.setDrawAxisLine(false);
         xAxis.setTextColor(Color.parseColor("#3c3c3c"));
         xAxis.setLabelRotationAngle(90);
@@ -220,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        lineChart.setVisibleXRangeMaximum(700);
+        lineChart.setVisibleXRangeMaximum(210);
         lineChart.setVisibleXRangeMinimum(7);
         Calendar tempCal = Calendar.getInstance();
         int hourVal = tempCal.get(Calendar.HOUR_OF_DAY);
@@ -230,8 +254,8 @@ public class MainActivity extends AppCompatActivity {
             int index = hourVal * 60;
             chartPosition = index - 600;    //to get the position of 10 hour back
         }
-        lineChart.moveViewToX(chartPosition);
-        lineChart.setVisibleXRangeMaximum(1440);
+        lineChart.moveViewToX(0);
+        lineChart.setVisibleXRangeMaximum(210);
 //        lineChart.setRendererLeftYAxis(new GlucoseGraphYAxisRenderer(lineChart.getViewPortHandler(), yAxis, lineChart.getTransformer(YAxis.AxisDependency.LEFT)));
 //        lineChart.post(() -> {
 //            setupGradient(lineChart, 10, 110);
@@ -269,6 +293,72 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return gradientColors;
+    }
+
+    private Entry getYValueForAverage(float x,List<Entry> listEntries){
+        Entry result;
+        //if list has no items returns null
+        if(listEntries.isEmpty())
+            return null;
+        int lastPos = listEntries.size()-1;
+        //if x is before the first item, return item same as first
+        if(listEntries.get(0).getX()>=x){
+            return listEntries.get(0);
+        }else if(listEntries.get(lastPos).getX()<=x){    //if x is after the last x value, take as last entry
+            return listEntries.get(lastPos);
+        }
+        //find the nearest index if it between the last and first item
+        float distance = Math.abs(listEntries.get(0).getX() - x);
+        int idx = 0;
+        for(int c = 1; c < listEntries.size(); c++){
+            float cdistance = Math.abs(listEntries.get(c).getX() - x);
+            if(cdistance < distance){
+                idx = c;
+                distance = cdistance;
+            }
+        }
+
+        Entry tempEntry1 = listEntries.get(idx);
+        Entry tempEntry2;
+        float startX = tempEntry1.getX();
+        float endX;
+        if(tempEntry1.getX()<x) {
+            tempEntry2 = listEntries.get(idx+1);
+            endX = tempEntry2.getX();
+        }
+        else if(tempEntry1.getX()==x)
+            return tempEntry1;
+        else {
+            tempEntry2 = listEntries.get(idx-1);
+            startX = tempEntry2.getX();
+            endX = tempEntry1.getX();
+        }
+
+        float y1 = tempEntry1.getY();
+        float y2 = tempEntry2.getY();
+
+        float difference = endX - startX;
+        float percentage = (x-startX)/difference;
+
+        float resultY;
+
+        if(tempEntry1.getY() == tempEntry2.getY()){
+            resultY = tempEntry1.getY();
+        }else if(tempEntry1.getY()<tempEntry2.getY() && tempEntry1.getX()<tempEntry2.getX()){
+            resultY = tempEntry1.getY() + (percentage * (tempEntry2.getY()-tempEntry1.getY()));
+            Log.d("TEST","1 resultY "+resultY+" e1Y = "+tempEntry1.getY()+" + (perce * (e2y "+tempEntry2.getY()+" - "+tempEntry1.getY());
+        }else if(tempEntry1.getY()>tempEntry2.getY() && tempEntry1.getX()>tempEntry2.getX()){
+            resultY = tempEntry2.getY() + (percentage * (tempEntry1.getY()-tempEntry2.getY()));
+            Log.d("TEST","2 resultY "+resultY+" e2Y = "+tempEntry2.getY()+" + (perce * (e1y "+tempEntry1.getY()+" - "+tempEntry2.getY());
+        }else if(tempEntry2.getY()>tempEntry1.getY()){
+            resultY = tempEntry2.getY() - (percentage * (tempEntry2.getY()-tempEntry1.getY()));
+            Log.d("TEST","4 resultY "+resultY+" e2Y = "+tempEntry2.getY()+" + (perce * (e2y "+tempEntry2.getY()+" - "+tempEntry1.getY());
+        }else{
+            resultY = tempEntry1.getY() - (percentage * (tempEntry1.getY()-tempEntry2.getY()));
+            Log.d("TEST","3 resultY "+resultY+" e2Y = "+tempEntry2.getY()+" + (perce * (e1y "+tempEntry1.getY()+" - "+tempEntry2.getY());
+        }
+
+        return new Entry(x,resultY);
     }
 
 }
