@@ -1,12 +1,9 @@
 package com.conzumex.muselibraries;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.ResourcesCompat;
 
 import android.graphics.Color;
-import android.graphics.LinearGradient;
 import android.graphics.Paint;
-import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,13 +18,11 @@ import com.conzumex.charts.data.LineData;
 import com.conzumex.charts.data.LineDataSet;
 import com.conzumex.charts.highlight.Highlight;
 import com.conzumex.charts.listener.OnChartValueSelectedListener;
+import com.conzumex.progressbar.RoundedProgressBar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     LineData data;
     EditText edtText;
     Button btn;
+    RoundedProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         LineChart lineChart = findViewById(R.id.line_chart);
         edtText = findViewById(R.id.edt_text);
         btn = findViewById(R.id.button);
+        progressBar = findViewById(R.id.prog_test);
 
 
         listEntries = getEntries();
@@ -68,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
             LineDataSet iconSet = new LineDataSet(listIcons,"icons");
             data.addDataSet(iconSet);
             loadChart(lineChart,data);
+            progressBar.setProgressPercentage(val,true);
         });
 
     }

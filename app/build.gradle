@@ -39,4 +39,5 @@ dependencies {
     implementation project(':countrypicker')
     implementation project(':charts')
     implementation project(':clockrangepicker')
+    implementation project(':progressbar')
 }
