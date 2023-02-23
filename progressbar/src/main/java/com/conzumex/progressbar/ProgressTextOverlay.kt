@@ -33,6 +33,7 @@ internal class ProgressTextOverlay @JvmOverloads constructor(
     // ProgressTextOverlay state
     private var progressValue: Float = START_PROGRESS_VALUE
     private var textSize: Float = defaultTextSize
+    private var relativeProgressMax: Int = 100
     private var showProgressText: Boolean = defaultShowProgressText
     private var textContainerHeight: Float = 0f
     private var textContainerWidth: Float = 0f
@@ -80,7 +81,7 @@ internal class ProgressTextOverlay @JvmOverloads constructor(
 //            } else { // should use outside position
                 // Outside position = (Position to draw) + (Padding of text)
                 xPosition = (width * progressValue) + textSidePadding
-                val tempVal = (progressValue/100)*120
+                val tempVal = (progressValue/100)*relativeProgressMax
                 canvas?.drawText(progressTextFormatter.getProgressText(tempVal), xPosition, yPosition, backgroundTextOverlayPaint)
 //            }
         }
@@ -138,6 +139,11 @@ internal class ProgressTextOverlay @JvmOverloads constructor(
         this.textSize = newTextSize
         reCalculateTextHeight()
         reCalculateTextWidth()
+        invalidate()
+    }
+
+    fun setRelativeProgressMax(newProgressMax: Int) {
+        this.relativeProgressMax = newProgressMax
         invalidate()
     }
 

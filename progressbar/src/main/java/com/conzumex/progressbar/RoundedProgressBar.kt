@@ -86,6 +86,7 @@ class RoundedProgressBar @JvmOverloads constructor(
     private var lastReportedWidth: Int = 0
     // Instance state (ProgressTextOverlay related)
     private var textSize: Float = defaultTextSize
+    private var relativeProgressMax = 100
     @ColorInt private var progressTextColor: Int = defaultProgressTextColor
     @ColorInt private var backgroundTextColor: Int = defaultBackgroundTextColor
     private var showProgressText: Boolean = defaultShowProgressText
@@ -105,7 +106,7 @@ class RoundedProgressBar @JvmOverloads constructor(
         val view = LayoutInflater.from(context).inflate(R.layout.layout_rounded_progress_bar, this, false)
         progressBar = view.rounded_progress_bar
         progressTextOverlay = view.progress_text_overlay
-        progressBar.max = PROGRESS_BAR_MAX * PROGRESS_SCALAR // This is done so animations look smoother
+        progressBar.max = relativeProgressMax * PROGRESS_SCALAR // This is done so animations look smoother
 
         initAttributes(attrs)
         addView(view)
@@ -130,6 +131,10 @@ class RoundedProgressBar @JvmOverloads constructor(
         // Set text size from xml attributes (If exists and isn't the default value)
         val newTextSize = rpbAttributes.getDimension(R.styleable.RoundedProgressBar_rpbTextSize, defaultTextSize)
         if (newTextSize != defaultTextSize) setTextSize(newTextSize)
+
+        // Set Relative Progress Max from xml attributes (If exists and isn't the default value)
+        val relativeMaxProgress = rpbAttributes.getInteger(R.styleable.RoundedProgressBar_rpbRelativeMax, relativeProgressMax)
+        if (relativeMaxProgress != relativeProgressMax) setRelativeProgressMax(relativeMaxProgress)
 
         // Set progress bar text color via xml (If exists and isn't the default value)
         @ColorInt val newProgressTextColor = rpbAttributes.getColor(R.styleable.RoundedProgressBar_rpbProgressTextColor, defaultProgressTextColor)
@@ -320,7 +325,7 @@ class RoundedProgressBar @JvmOverloads constructor(
      * is then used to calculate the position of the @see[ProgressTextOverlay]
      */
     private fun getTextPositionRatio(progressPercentage: Double): Float {
-        return (progressPercentage / PROGRESS_BAR_MAX).toFloat()
+        return (progressPercentage / relativeProgressMax).toFloat()
     }
 
     // ################################## //
@@ -412,6 +417,17 @@ class RoundedProgressBar @JvmOverloads constructor(
     fun setTextSize(newTextSize: Float) {
         textSize = newTextSize
         progressTextOverlay.setTextSize(newTextSize)
+    }
+
+    /**
+     * Sets relative progress maximum to add padding at the end
+     *
+     * @param maxProgress morethan 100 will make the progressbar smaller
+     */
+    fun setRelativeProgressMax(maxProgress: Int) {
+        relativeProgressMax = maxProgress
+        progressTextOverlay.setRelativeProgressMax(maxProgress)
+        progressBar.max = relativeProgressMax * PROGRESS_SCALAR
     }
 
     /**
@@ -560,6 +576,7 @@ class RoundedProgressBar @JvmOverloads constructor(
         savedState.savedIsRadiusRestricted = isRadiusRestricted
 
         savedState.savedTextSize = textSize
+        savedState.savedRelativeProgressMax = relativeProgressMax
         savedState.savedProgressTextColor = progressTextColor
         savedState.savedBackgroundTextColor = backgroundTextColor
         savedState.savedShowProgressText = showProgressText
@@ -590,6 +607,7 @@ class RoundedProgressBar @JvmOverloads constructor(
 
             // ProgressTextOverlay related
             textSize = state.savedTextSize
+            relativeProgressMax = state.savedRelativeProgressMax
             progressTextColor = state.savedProgressTextColor
             backgroundTextColor = state.savedBackgroundTextColor
             showProgressText = state.savedShowProgressText
@@ -597,6 +615,7 @@ class RoundedProgressBar @JvmOverloads constructor(
             customFontPath = state.savedCustomFontPath
             customFontFamily = state.savedCustomFontFamily
             setTextSize(textSize)
+            setRelativeProgressMax(relativeProgressMax)
             setProgressTextColor(progressTextColor)
             setBackgroundTextColor(backgroundTextColor)
             showProgressText(showProgressText)
@@ -633,6 +652,7 @@ class RoundedProgressBar @JvmOverloads constructor(
 
         // ProgressTextOverlay related
         var savedTextSize: Float = 0f
+        var savedRelativeProgressMax: Int = 100
         @ColorInt var savedProgressTextColor: Int = 0
         @ColorInt var savedBackgroundTextColor: Int = 0
         var savedShowProgressText: Boolean = true

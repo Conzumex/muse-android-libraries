@@ -15,6 +15,7 @@
         <attr name="rpbCornerRadiusBottomLeft" format="dimension" />
 
         <attr name="rpbTextSize" format="dimension" />
+        <attr name="rpbRelativeMax" format="integer" />
         <attr name="rpbTextPadding" format="dimension" />
         <attr name="rpbCustomFontPath" format="reference" />
         <attr name="rpbFontFamily" format="reference" />

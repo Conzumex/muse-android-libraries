@@ -21,9 +21,31 @@
         app:rpbCornerRadius="6dp"
         app:rpbFontFamily="@font/rb_medium"
         app:rpbProgress="60"
+        app:rpbRelativeMax="120"
         app:rpbProgressColor="#FF5555"
         app:rpbProgressTextColor="#FFFFFF"
         app:rpbTextPadding="12dp" />
+
+    <com.conzumex.progressbar.RoundedProgressBar
+        android:id="@+id/pb_120"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginHorizontal="80dp"
+        android:paddingStart="0dp"
+        app:rpbRelativeMax="140"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button"
+        app:rpbProgressTextColor="@color/white"
+        app:rpbBackgroundTextColor="@color/white"
+        app:rpbFontFamily="@font/nunito_bold"
+        app:rpbBackgroundColor="#191919"
+        app:rpbCornerRadius="5dp"
+        app:rpbProgressColor="#D80000"
+        app:rpbProgress="65"
+        android:paddingEnd="0dp"
+        tools:rpbProgress="66.7" />
 
     <com.conzumex.charts.charts.LineChart
         android:id="@+id/line_chart"

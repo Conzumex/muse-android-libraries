@@ -1,5 +1,6 @@
 package com.conzumex.muselibraries;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
@@ -18,8 +19,10 @@ import com.conzumex.charts.data.LineData;
 import com.conzumex.charts.data.LineDataSet;
 import com.conzumex.charts.highlight.Highlight;
 import com.conzumex.charts.listener.OnChartValueSelectedListener;
+import com.conzumex.progressbar.ProgressTextFormatter;
 import com.conzumex.progressbar.RoundedProgressBar;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -30,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
     LineData data;
     EditText edtText;
     Button btn;
-    RoundedProgressBar progressBar;
+    RoundedProgressBar progressBar,progressBar2;
+    ProgressTextFormatter progressFormatter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,14 +44,32 @@ public class MainActivity extends AppCompatActivity {
         edtText = findViewById(R.id.edt_text);
         btn = findViewById(R.id.button);
         progressBar = findViewById(R.id.prog_test);
+        progressBar2 = findViewById(R.id.pb_120);
 
+
+
+        progressFormatter = new ProgressTextFormatter() {
+            @NonNull
+            @Override
+            public String getProgressText(float v) {
+                return new DecimalFormat("0.#").format(Math.round(v * 1000.0) / 10.0)+"%";
+            }
+
+            @NonNull
+            @Override
+            public String getMinWidthString() {
+                return "%";
+            }
+        };
 
         listEntries = getEntries();
         data = getLineData(listEntries);
         loadChart(lineChart,data);
 
+        progressBar2.setProgressTextFormatter(progressFormatter);
+
         btn.setOnClickListener(view->{
-            int val = Integer.parseInt(edtText.getText().toString());
+            float val = Float.parseFloat(edtText.getText().toString());
             listEntries = getEntries();
 
             Entry newEntry = getYValueForAverage(val,listEntries);
@@ -66,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
             data.addDataSet(iconSet);
             loadChart(lineChart,data);
             progressBar.setProgressPercentage(val,true);
+            progressBar2.setProgressPercentage(val,true);
         });
 
     }
