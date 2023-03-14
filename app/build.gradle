@@ -40,4 +40,5 @@ dependencies {
     implementation project(':charts')
     implementation project(':clockrangepicker')
     implementation project(':progressbar')
+    implementation project(':seekbar')
 }

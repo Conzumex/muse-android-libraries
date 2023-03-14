@@ -68,6 +68,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+    <com.conzumex.seekbar.DoubleValueSeekBarView
+        android:id="@+id/seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="20dp"
+        app:r2CurrentMaxValue="120"
+        app:r2CurrentMinValue="90"
+        app:r2barHeight="11dp"
+        app:r2baseColor="#3b3b3b"
+        app:seekFontFamily="@font/nunito_bold"
+        app:r2circleFillColor="#FB4343"
+        app:r2circleRadius="15dp"
+        app:r2circleTextColor="@color/white"
+        app:r2circleTextSize="@dimen/value_bar_circleTextSize"
+        app:r2fillColor="@color/white"
+        app:r2maxValue="170"
+        app:r2maxValueStep="5"
+        app:r2minValue="60"
+        app:r2minValueStep="5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
         android:id="@+id/edt_text"
         android:layout_width="wrap_content"
