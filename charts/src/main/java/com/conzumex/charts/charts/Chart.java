@@ -315,6 +315,17 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
     }
 
     /**
+     * Clears the chart from all data (sets it to null) without
+     * calling invalidate()).
+     */
+    public void clearDataOnly() {
+        mData = null;
+        mOffsetsCalculated = false;
+        mIndicesToHighlight = null;
+        mChartTouchListener.setLastHighlighted(null);
+    }
+
+    /**
      * Removes all DataSets (and thereby Entries) from the chart. Does not set the data object to null. Also refreshes the
      * chart by calling invalidate().
      */
