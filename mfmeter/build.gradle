@@ -1,13 +1,13 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
+    id 'maven-publish'
 }
 
 android {
-    namespace 'com.conzumex.muselibraries'
+    namespace 'com.conzumex.mfmeter'
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.conzumex.muselibraries"
         minSdk 21
         targetSdk 32
         versionCode 1
@@ -31,15 +31,22 @@ android {
 dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'com.google.android.material:material:1.7.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.google.android.material:material:1.8.0'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
-    implementation project(':countrypicker')
-    implementation project(':charts')
-    implementation project(':clockrangepicker')
-    implementation project(':progressbar')
-    implementation project(':seekbar')
-    implementation project(':mfmeter')
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+}
+
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = 'com.github.conzumex.muse-android-libraries'
+            artifactId = 'mfmeter'
+            version = '1.0.1'
+
+            afterEvaluate {
+                from components.release
+            }
+        }
+    }
 }

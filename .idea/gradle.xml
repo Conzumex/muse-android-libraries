@@ -14,6 +14,7 @@
             <option value="$PROJECT_DIR$/charts" />
             <option value="$PROJECT_DIR$/clockrangepicker" />
             <option value="$PROJECT_DIR$/countrypicker" />
+            <option value="$PROJECT_DIR$/mfmeter" />
             <option value="$PROJECT_DIR$/progressbar" />
             <option value="$PROJECT_DIR$/seekbar" />
           </set>
