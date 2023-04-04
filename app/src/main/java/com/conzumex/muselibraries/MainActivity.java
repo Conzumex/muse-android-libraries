@@ -19,12 +19,17 @@ import com.conzumex.charts.data.LineData;
 import com.conzumex.charts.data.LineDataSet;
 import com.conzumex.charts.highlight.Highlight;
 import com.conzumex.charts.listener.OnChartValueSelectedListener;
+import com.conzumex.mfmeter.FuelIcon;
+import com.conzumex.mfmeter.FuelLog;
+import com.conzumex.mfmeter.FuelSession;
+import com.conzumex.mfmeter.MFMeter;
 import com.conzumex.progressbar.ProgressTextFormatter;
 import com.conzumex.progressbar.RoundedProgressBar;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     Button btn;
     RoundedProgressBar progressBar,progressBar2;
     ProgressTextFormatter progressFormatter;
+    MFMeter meter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +51,18 @@ public class MainActivity extends AppCompatActivity {
         btn = findViewById(R.id.button);
         progressBar = findViewById(R.id.prog_test);
         progressBar2 = findViewById(R.id.pb_120);
+        meter = findViewById(R.id.meter);
 
+
+        long tempStartTime = 1680546600000L;
+        List<FuelSession> list = new ArrayList<>();
+        list.add(new FuelSession(new Date(tempStartTime+(1000*60*30)),new Date(tempStartTime+(1000*60*90)),Color.parseColor("#f71e1e"),Color.parseColor("#40CB2020")));
+        list.add(new FuelSession(new Date(tempStartTime+(1000*60*150)),new Date(tempStartTime+(1000*60*200)),Color.parseColor("#f71e1e"),Color.parseColor("#40CB2020")));
+        List<FuelLog> listLog = new ArrayList<>();
+        listLog.add(new FuelLog(new Date(tempStartTime+(1000*60*50)),new Date(tempStartTime+(1000*60*70))));
+        List<FuelIcon> listIcon = new ArrayList<>();
+        listIcon.add(new FuelIcon(new Date(tempStartTime+(1000*60*70)),R.drawable.ic_graph_marker));
+        meter.loadData(list,listLog,listIcon);
 
 
         progressFormatter = new ProgressTextFormatter() {
