@@ -66,7 +66,6 @@ public class MFMeter extends View {
     float sizeTextHour = 12 * getResources().getDisplayMetrics().scaledDensity;
     float sizeTextLog = 12 * getResources().getDisplayMetrics().scaledDensity;
 
-    int customFontFamily = 0;
     Typeface fontFace = null;
 
     //Draw Items
@@ -97,9 +96,13 @@ public class MFMeter extends View {
                 R.styleable.MFMeter, 0, 0);
         // Set a custom font family via its reference
         int fontId = typedArray.getResourceId(R.styleable.MFMeter_meterFontFamily,0);
-        if (fontId != 0) customFontFamily = fontId;
-        if(customFontFamily!=0) {
-            fontFace = ResourcesCompat.getFont(context, customFontFamily);
+        if(fontId!=0) {
+            fontFace = ResourcesCompat.getFont(context, fontId);
+        }
+        //set text size
+        if (typedArray.hasValue(R.styleable.MFMeter_meterTextSize)) {
+            sizeTextHour = typedArray.getDimensionPixelSize(R.styleable.MFMeter_meterTextSize, 0);
+            sizeTextLog = typedArray.getDimensionPixelSize(R.styleable.MFMeter_meterTextSize, 0);
         }
     }
 
