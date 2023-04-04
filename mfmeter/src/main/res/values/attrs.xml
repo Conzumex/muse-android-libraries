@@ -4,6 +4,7 @@
         <attr name="meterTextSize" format="dimension" />
         <attr name="meterFontFamily" format="reference" />
         <attr name="meterFillBackground" format="boolean" />
+        <attr name="meterSnapSessions" format="boolean" />
     </declare-styleable>
 
 </resources>

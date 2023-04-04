@@ -34,23 +34,23 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    List<Entry> listEntries;
-    LineData data;
-    EditText edtText;
-    Button btn;
-    RoundedProgressBar progressBar,progressBar2;
-    ProgressTextFormatter progressFormatter;
+//    List<Entry> listEntries;
+//    LineData data;
+//    EditText edtText;
+//    Button btn;
+//    RoundedProgressBar progressBar,progressBar2;
+//    ProgressTextFormatter progressFormatter;
     MFMeter meter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        LineChart lineChart = findViewById(R.id.line_chart);
-        edtText = findViewById(R.id.edt_text);
-        btn = findViewById(R.id.button);
-        progressBar = findViewById(R.id.prog_test);
-        progressBar2 = findViewById(R.id.pb_120);
+//        LineChart lineChart = findViewById(R.id.line_chart);
+//        edtText = findViewById(R.id.edt_text);
+//        btn = findViewById(R.id.button);
+//        progressBar = findViewById(R.id.prog_test);
+//        progressBar2 = findViewById(R.id.pb_120);
         meter = findViewById(R.id.meter);
 
 
@@ -65,48 +65,48 @@ public class MainActivity extends AppCompatActivity {
         meter.loadData(list,listLog,listIcon);
 
 
-        progressFormatter = new ProgressTextFormatter() {
-            @NonNull
-            @Override
-            public String getProgressText(float v) {
-                return new DecimalFormat("0.#").format(Math.round(v * 1000.0) / 10.0)+"%";
-            }
-
-            @NonNull
-            @Override
-            public String getMinWidthString() {
-                return "%";
-            }
-        };
-
-        listEntries = getEntries();
-        data = getLineData(listEntries);
-        loadChart(lineChart,data);
-
-        progressBar2.setProgressTextFormatter(progressFormatter);
-
-        btn.setOnClickListener(view->{
-            float val = Float.parseFloat(edtText.getText().toString());
-            listEntries = getEntries();
-
-            Entry newEntry = getYValueForAverage(val,listEntries);
-            newEntry.setIcon(getDrawable(R.drawable.ic_graph_marker));
-
-            Entry temp2Entry = new Entry(val+20, newEntry.getY(),newEntry.getIcon());
-
-//            listEntries.add(newEntry);
+//        progressFormatter = new ProgressTextFormatter() {
+//            @NonNull
+//            @Override
+//            public String getProgressText(float v) {
+//                return new DecimalFormat("0.#").format(Math.round(v * 1000.0) / 10.0)+"%";
+//            }
 //
-//            Collections.sort(listEntries);
-            data = getLineData(listEntries);
-            List<Entry> listIcons = new ArrayList<>();
-            listIcons.add(newEntry);
-//            listIcons.add(temp2Entry);
-            LineDataSet iconSet = new LineDataSet(listIcons,"icons");
-            data.addDataSet(iconSet);
-            loadChart(lineChart,data);
-            progressBar.setProgressPercentage(val,true);
-            progressBar2.setProgressPercentage(val,true);
-        });
+//            @NonNull
+//            @Override
+//            public String getMinWidthString() {
+//                return "%";
+//            }
+//        };
+//
+//        listEntries = getEntries();
+//        data = getLineData(listEntries);
+//        loadChart(lineChart,data);
+//
+//        progressBar2.setProgressTextFormatter(progressFormatter);
+//
+//        btn.setOnClickListener(view->{
+//            float val = Float.parseFloat(edtText.getText().toString());
+//            listEntries = getEntries();
+//
+//            Entry newEntry = getYValueForAverage(val,listEntries);
+//            newEntry.setIcon(getDrawable(R.drawable.ic_graph_marker));
+//
+//            Entry temp2Entry = new Entry(val+20, newEntry.getY(),newEntry.getIcon());
+//
+////            listEntries.add(newEntry);
+////
+////            Collections.sort(listEntries);
+//            data = getLineData(listEntries);
+//            List<Entry> listIcons = new ArrayList<>();
+//            listIcons.add(newEntry);
+////            listIcons.add(temp2Entry);
+//            LineDataSet iconSet = new LineDataSet(listIcons,"icons");
+//            data.addDataSet(iconSet);
+//            loadChart(lineChart,data);
+//            progressBar.setProgressPercentage(val,true);
+//            progressBar2.setProgressPercentage(val,true);
+//        });
 
     }
 

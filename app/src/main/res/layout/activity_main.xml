@@ -6,57 +6,57 @@
     android:layout_height="match_parent"
     android:background="#000000">
 
-    <com.conzumex.progressbar.RoundedProgressBar
-        android:id="@+id/prog_test"
-        android:layout_width="0dp"
-        android:layout_height="32dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginHorizontal="30dp"
-        android:layout_weight="1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:rpbBackgroundColor="#2E5C2C"
-        app:rpbBackgroundTextColor="#FFFFFF"
-        app:rpbCornerRadius="6dp"
-        app:rpbFontFamily="@font/rb_medium"
-        app:rpbProgress="60"
-        app:rpbRelativeMax="120"
-        app:rpbProgressColor="#FF5555"
-        app:rpbProgressTextColor="#FFFFFF"
-        app:rpbTextPadding="12dp" />
+<!--    <com.conzumex.progressbar.RoundedProgressBar-->
+<!--        android:id="@+id/prog_test"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="32dp"-->
+<!--        android:layout_marginTop="20dp"-->
+<!--        android:layout_marginHorizontal="30dp"-->
+<!--        android:layout_weight="1"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:rpbBackgroundColor="#2E5C2C"-->
+<!--        app:rpbBackgroundTextColor="#FFFFFF"-->
+<!--        app:rpbCornerRadius="6dp"-->
+<!--        app:rpbFontFamily="@font/rb_medium"-->
+<!--        app:rpbProgress="60"-->
+<!--        app:rpbRelativeMax="120"-->
+<!--        app:rpbProgressColor="#FF5555"-->
+<!--        app:rpbProgressTextColor="#FFFFFF"-->
+<!--        app:rpbTextPadding="12dp" />-->
 
-    <com.conzumex.progressbar.RoundedProgressBar
-        android:id="@+id/pb_120"
-        android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginHorizontal="80dp"
-        android:paddingStart="0dp"
-        app:rpbRelativeMax="140"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button"
-        app:rpbProgressTextColor="@color/white"
-        app:rpbBackgroundTextColor="@color/white"
-        app:rpbFontFamily="@font/nunito_bold"
-        app:rpbBackgroundColor="#191919"
-        app:rpbCornerRadius="5dp"
-        app:rpbProgressColor="#D80000"
-        app:rpbProgress="65"
-        android:paddingEnd="0dp"
-        tools:rpbProgress="66.7" />
+<!--    <com.conzumex.progressbar.RoundedProgressBar-->
+<!--        android:id="@+id/pb_120"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="25dp"-->
+<!--        android:layout_marginTop="20dp"-->
+<!--        android:layout_marginHorizontal="80dp"-->
+<!--        android:paddingStart="0dp"-->
+<!--        app:rpbRelativeMax="140"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/button"-->
+<!--        app:rpbProgressTextColor="@color/white"-->
+<!--        app:rpbBackgroundTextColor="@color/white"-->
+<!--        app:rpbFontFamily="@font/nunito_bold"-->
+<!--        app:rpbBackgroundColor="#191919"-->
+<!--        app:rpbCornerRadius="5dp"-->
+<!--        app:rpbProgressColor="#D80000"-->
+<!--        app:rpbProgress="65"-->
+<!--        android:paddingEnd="0dp"-->
+<!--        tools:rpbProgress="66.7" />-->
 
-    <com.conzumex.charts.charts.LineChart
-        android:id="@+id/line_chart"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_marginStart="10dp"
-        android:layout_weight="1"
-        android:textSize="8sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+<!--    <com.conzumex.charts.charts.LineChart-->
+<!--        android:id="@+id/line_chart"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="250dp"-->
+<!--        android:layout_marginStart="10dp"-->
+<!--        android:layout_weight="1"-->
+<!--        android:textSize="8sp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent" />-->
 
     <com.conzumex.mfmeter.MFMeter
         android:id="@+id/meter"
@@ -70,52 +70,52 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <com.conzumex.seekbar.DoubleValueSeekBarView
-        android:id="@+id/seekbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="20dp"
-        app:r2CurrentMaxValue="120"
-        app:r2CurrentMinValue="90"
-        app:r2barHeight="11dp"
-        app:r2baseColor="#3b3b3b"
-        app:seekFontFamily="@font/nunito_bold"
-        app:r2circleFillColor="#FB4343"
-        app:r2circleRadius="15dp"
-        app:r2circleTextColor="@color/white"
-        app:r2circleTextSize="@dimen/value_bar_circleTextSize"
-        app:r2fillColor="@color/white"
-        app:r2maxValue="170"
-        app:r2maxValueStep="5"
-        app:r2minValue="60"
-        app:r2minValueStep="5"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+<!--    <com.conzumex.seekbar.DoubleValueSeekBarView-->
+<!--        android:id="@+id/seekbar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginHorizontal="20dp"-->
+<!--        android:layout_marginTop="20dp"-->
+<!--        app:r2CurrentMaxValue="120"-->
+<!--        app:r2CurrentMinValue="90"-->
+<!--        app:r2barHeight="11dp"-->
+<!--        app:r2baseColor="#3b3b3b"-->
+<!--        app:seekFontFamily="@font/nunito_bold"-->
+<!--        app:r2circleFillColor="#FB4343"-->
+<!--        app:r2circleRadius="15dp"-->
+<!--        app:r2circleTextColor="@color/white"-->
+<!--        app:r2circleTextSize="@dimen/value_bar_circleTextSize"-->
+<!--        app:r2fillColor="@color/white"-->
+<!--        app:r2maxValue="170"-->
+<!--        app:r2maxValueStep="5"-->
+<!--        app:r2minValue="60"-->
+<!--        app:r2minValueStep="5"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
-    <EditText
-        android:id="@+id/edt_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:layout_marginTop="20dp"
-        android:inputType="textPersonName"
-        android:text=""
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/prog_test" />
+<!--    <EditText-->
+<!--        android:id="@+id/edt_text"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:ems="10"-->
+<!--        android:layout_marginTop="20dp"-->
+<!--        android:inputType="textPersonName"-->
+<!--        android:text=""-->
+<!--        android:textColor="@color/white"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/prog_test" />-->
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_text" />
+<!--    <Button-->
+<!--        android:id="@+id/button"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Button"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/edt_text" />-->
 
     <!--    <com.conzumex.muselibraries.ArcPointer-->
     <!--        android:id="@+id/arcPointer"-->

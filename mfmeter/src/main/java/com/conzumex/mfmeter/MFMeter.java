@@ -21,10 +21,10 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.res.ResourcesCompat;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MFMeter extends View {
-    Scroller mScroller;
     int parentViewWidth,parentViewHeight;
     //new test
     float lastX,lastY;
@@ -67,7 +67,12 @@ public class MFMeter extends View {
     float sizeTextLog = 12 * getResources().getDisplayMetrics().scaledDensity;
 
     Typeface fontFace = null;
-    boolean isFillBackground = false;
+    boolean isFillBackground = true;
+    boolean snapToSessions = false;
+    List<Integer> snapPositions = new ArrayList<>();
+    int currentSnapPos = -1;
+    int scrollStartX = 0;
+    boolean isScrolling = false;
 
     //Draw Items
     List<FuelLog> logItems = new ArrayList<>();
@@ -89,7 +94,6 @@ public class MFMeter extends View {
         mPaint = getBackgroundPaint(mPaint);
 
         rectSquare = new RectF(0, 0, mItemWidth, mItemHeight);
-        mScroller = new Scroller(context);
 
         scroller = new OverScroller(context, new AccelerateDecelerateInterpolator());
 
@@ -108,6 +112,10 @@ public class MFMeter extends View {
         //set background fill
         if (typedArray.hasValue(R.styleable.MFMeter_meterFillBackground)) {
             isFillBackground = typedArray.getBoolean(R.styleable.MFMeter_meterFillBackground, false);
+        }
+        //set snap sessions
+        if (typedArray.hasValue(R.styleable.MFMeter_meterSnapSessions)) {
+            snapToSessions = typedArray.getBoolean(R.styleable.MFMeter_meterSnapSessions, false);
         }
     }
 
@@ -151,6 +159,8 @@ public class MFMeter extends View {
                 lastX = -event.getRawX();
                 lastScrollX = -event.getRawX();
                 lastY = event.getRawY();
+                scrollStartX = getScrollX();
+                isScrolling = true;
                 break;
             case  MotionEvent.ACTION_MOVE :
                 moveImage(-event.getRawX());
@@ -173,6 +183,7 @@ public class MFMeter extends View {
             case MotionEvent.ACTION_CANCEL :
                 velocityTracker.recycle();
                 velocityTracker = null;
+                isScrolling = false;
                 break;
             case MotionEvent.ACTION_UP :
                 velocityTracker.computeCurrentVelocity(1000);
@@ -187,6 +198,7 @@ public class MFMeter extends View {
                 invalidate();
                 velocityTracker.recycle();
                 velocityTracker = null;
+                isScrolling = false;
                 break;
         }
         return true;
@@ -242,10 +254,28 @@ public class MFMeter extends View {
         drawBottomSection(canvas);
         drawTopSection(canvas);
         canvas.restore();
-        if(mScroller.computeScrollOffset()) {
-            scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
-        }
+        if(snapToSessions && !isScrolling)
+            validateSnapping();
+    }
 
+    void validateSnapping(){
+        if(snapPositions.size()>0 && currentSnapPos == -1){     //for the initial snap position
+            scrollTo(snapPositions.get(0),0);
+            currentSnapPos = 0;
+            scrollStartX = snapPositions.get(0);
+        }else{
+            int scrolled = getScrollX() - scrollStartX;
+            if(scrolled > 300){         //for right scroll
+                if(currentSnapPos<snapPositions.size()-1)
+                    currentSnapPos++;
+            }else if(scrolled<-300){   //for left scroll
+                if(currentSnapPos>0)
+                    currentSnapPos--;
+            }
+
+            scrollTo(snapPositions.get(currentSnapPos),0);
+            scrollStartX = snapPositions.get(currentSnapPos);
+        }
     }
 
     void drawBottomSection(Canvas canvas){
@@ -283,21 +313,19 @@ public class MFMeter extends View {
 
     void drawSessions(Canvas canvas){
         if(!sessionItems.isEmpty()){
+            snapPositions = new ArrayList<>();
             for(FuelSession item : sessionItems){
                 drawSessionItem(canvas,item);
+                snapPositions.add(getSessionItemPos(item));
             }
+            Collections.sort(snapPositions);
         }
     }
 
     void drawSessionItem(Canvas canvas,FuelSession session){
         int sessionBottomPos = mSectionDivider - sessionGapBottom;
-        int sessionStartTimeInMinutes = session.getStartMinutes();
-        int sessionEndTimeInMinutes = session.getEndMinutes();
-        int totalSessionMinutes = hourCount * hourSectionsCount * 10;
-        int sessionStartMarkerIndex = sessionStartTimeInMinutes/10;
-        int sessionEndMarkerIndex = sessionEndTimeInMinutes/10;
-        int sessionMarkerStartPos = markerStartMargin + (markerGap*sessionStartMarkerIndex);
-        int sessionMarkerEndPos = markerStartMargin + (markerGap*sessionEndMarkerIndex);
+        int sessionMarkerStartPos = markerStartMargin + (markerGap*(session.getStartMinutes()/10));
+        int sessionMarkerEndPos = markerStartMargin + (markerGap*(session.getEndMinutes()/10));
 
         canvas.drawRect(new RectF(sessionMarkerStartPos,sessionBottomPos,sessionMarkerEndPos,sessionBottomPos-sessionMarkerHeight), getSessionPaint(mPaint,session));
         canvas.drawLine(sessionMarkerStartPos, sessionBottomPos, sessionMarkerStartPos, sessionBottomPos - sessionMarkerHeight, getSessionMarkerPaint(mPaint,session));
@@ -312,13 +340,8 @@ public class MFMeter extends View {
     }
     void drawLogItem(Canvas canvas, FuelLog logItem){
         int logBottomPos = mSectionDivider - sessionGapBottom - sessionMarkerHeight - logGapBottom;
-        int logStartTimeInMinutes = logItem.getStartMinutes();
-        int logEndTimeInMinutes = logItem.getEndMinutes();
-        int totalSessionMinutes = hourCount * hourSectionsCount * 10;
-        int logStartMarkerIndex = logStartTimeInMinutes/10;
-        int logEndMarkerIndex = logEndTimeInMinutes/10;
-        int logMarkerStartPos = markerStartMargin + (markerGap*logStartMarkerIndex);
-        int logMarkerEndPos = markerStartMargin + (markerGap*logEndMarkerIndex);
+        int logMarkerStartPos = markerStartMargin + (markerGap*(logItem.getStartMinutes()/10));
+        int logMarkerEndPos = markerStartMargin + (markerGap*(logItem.getEndMinutes()/10));
         int textCenterPos = logMarkerStartPos+((logMarkerEndPos - logMarkerStartPos)/2);
 
         canvas.drawRect(new RectF(logMarkerStartPos,logBottomPos,logMarkerEndPos,logBottomPos-logHeight), getLogPaint(mPaint));
@@ -334,10 +357,7 @@ public class MFMeter extends View {
     }
     void drawIconItem(Canvas canvas,FuelIcon item) {
         int sessionBottomPos = mSectionDivider - sessionGapBottom + iconLineMinusMarginBottom;
-        int iconTimeInMinutes = item.getTimeMinutes();
-        int totalSessionMinutes = hourCount * hourSectionsCount * 10;
-        int iconIndex = iconTimeInMinutes / 10;
-        int iconPos = markerStartMargin + (markerGap * iconIndex);
+        int iconPos = markerStartMargin + (markerGap * (item.getTimeMinutes() / 10));
 
         canvas.drawLine(iconPos, sessionBottomPos, iconPos, sessionBottomPos - iconLineHeight, getIconPaint(mPaint));
 
@@ -350,6 +370,28 @@ public class MFMeter extends View {
             d.setBounds(iconBoxStartX, iconBoxStartY, iconBoxEndX, iconBoxEndY);
             d.draw(canvas);
         }
+    }
+
+    private int getSessionItemPos(FuelSession session){
+        int sessionMarkerStartPos = markerStartMargin + (markerGap*(session.getStartMinutes()/10));
+        int sessionMarkerEndPos = markerStartMargin + (markerGap*(session.getEndMinutes()/10));
+        int midVal = (sessionMarkerStartPos + sessionMarkerEndPos) / 2;
+        int movePos = midVal - (parentViewWidth / 2);
+        if(movePos<mItemStartX)
+            movePos = mItemStartX;
+        else if(movePos>mItemEndX)
+            movePos = mItemEndX;
+        return movePos;
+    }
+
+    private int getSessionItemPos(int startPos,int endPos){
+        int midVal = (startPos + endPos) / 2;
+        int movePos = midVal - (parentViewWidth / 2);
+        if(movePos<mItemStartX)
+            movePos = mItemStartX;
+        else if(movePos>mItemEndX)
+            movePos = mItemEndX;
+        return movePos;
     }
 
 
