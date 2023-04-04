@@ -67,6 +67,7 @@ public class MFMeter extends View {
     float sizeTextLog = 12 * getResources().getDisplayMetrics().scaledDensity;
 
     Typeface fontFace = null;
+    boolean isFillBackground = false;
 
     //Draw Items
     List<FuelLog> logItems = new ArrayList<>();
@@ -103,6 +104,10 @@ public class MFMeter extends View {
         if (typedArray.hasValue(R.styleable.MFMeter_meterTextSize)) {
             sizeTextHour = typedArray.getDimensionPixelSize(R.styleable.MFMeter_meterTextSize, 0);
             sizeTextLog = typedArray.getDimensionPixelSize(R.styleable.MFMeter_meterTextSize, 0);
+        }
+        //set background fill
+        if (typedArray.hasValue(R.styleable.MFMeter_meterFillBackground)) {
+            isFillBackground = typedArray.getBoolean(R.styleable.MFMeter_meterFillBackground, false);
         }
     }
 
@@ -231,7 +236,8 @@ public class MFMeter extends View {
         super.onDraw(canvas);
 
         canvas.save();
-        canvas.drawRoundRect(rectSquare, 10, 10, getBackgroundPaint(mPaint));
+        if(isFillBackground)
+            canvas.drawRoundRect(rectSquare, 10, 10, getBackgroundPaint(mPaint));
         canvas.drawLine(0, mSectionDivider, mItemWidth, mSectionDivider, getDividerPaint(mPaint));
         drawBottomSection(canvas);
         drawTopSection(canvas);
