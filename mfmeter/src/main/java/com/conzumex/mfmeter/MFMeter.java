@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -16,14 +17,13 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.OverScroller;
 import android.widget.Scroller;
 
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.res.ResourcesCompat;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MFMeter extends View {
-
-    private static final int INVALID_POINTER_ID = -1;
     Scroller mScroller;
     int parentViewWidth,parentViewHeight;
     //new test
@@ -46,7 +46,7 @@ public class MFMeter extends View {
     int markerWidth = 10;
     int sessionMarkerWidth = 15;
     int logGapBottom = 30, logHeight = 40, logGapTop = 20;
-    int iconLineHeight = 200,iconLineWidth = 3, iconLineMinusMarginBottom = 5;
+    int iconLineHeight = 200,iconLineWidth = 5, iconLineMinusMarginBottom = 5;
     int iconSize = 75;
 
     int colorBackground = Color.parseColor("#191919");
@@ -72,6 +72,7 @@ public class MFMeter extends View {
     //Draw Items
     List<FuelLog> logItems = new ArrayList<>();
     List<FuelSession> sessionItems = new ArrayList<>();
+    List<FuelIcon> iconItems = new ArrayList<>();
 
     public MFMeter(Context context) {
         this(context, null, 0);
@@ -210,6 +211,18 @@ public class MFMeter extends View {
         invalidate();
     }
 
+    public void addIcons(List<FuelIcon> iconItems){
+        this.iconItems = iconItems;
+        invalidate();
+    }
+
+    public void loadData(List<FuelSession> sessions, List<FuelLog> logs, List<FuelIcon> icons){
+        sessionItems = sessions;
+        logItems = logs;
+        iconItems = icons;
+        invalidate();
+    }
+
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -277,9 +290,9 @@ public class MFMeter extends View {
         int sessionMarkerStartPos = markerStartMargin + (markerGap*sessionStartMarkerIndex);
         int sessionMarkerEndPos = markerStartMargin + (markerGap*sessionEndMarkerIndex);
 
-        canvas.drawRect(new RectF(sessionMarkerStartPos,sessionBottomPos,sessionMarkerEndPos,sessionBottomPos-sessionMarkerHeight), getSessionPaint(mPaint));
-        canvas.drawLine(sessionMarkerStartPos, sessionBottomPos, sessionMarkerStartPos, sessionBottomPos - sessionMarkerHeight, getSessionMarkerPaint(mPaint));
-        canvas.drawLine(sessionMarkerEndPos, sessionBottomPos, sessionMarkerEndPos, sessionBottomPos - sessionMarkerHeight, getSessionMarkerPaint(mPaint));
+        canvas.drawRect(new RectF(sessionMarkerStartPos,sessionBottomPos,sessionMarkerEndPos,sessionBottomPos-sessionMarkerHeight), getSessionPaint(mPaint,session));
+        canvas.drawLine(sessionMarkerStartPos, sessionBottomPos, sessionMarkerStartPos, sessionBottomPos - sessionMarkerHeight, getSessionMarkerPaint(mPaint,session));
+        canvas.drawLine(sessionMarkerEndPos, sessionBottomPos, sessionMarkerEndPos, sessionBottomPos - sessionMarkerHeight, getSessionMarkerPaint(mPaint,session));
     }
     void drawLogs(Canvas canvas){
         if(!logItems.isEmpty()){
@@ -303,9 +316,16 @@ public class MFMeter extends View {
         canvas.drawText(logItem.getDuration(), textCenterPos, logBottomPos - logHeight - logGapTop, getLogTextPaint(mPaint));
     }
 
-    void drawIcons(Canvas canvas) {
+    void drawIcons(Canvas canvas){
+        if(!iconItems.isEmpty()){
+            for(FuelIcon item : iconItems){
+                drawIconItem(canvas,item);
+            }
+        }
+    }
+    void drawIconItem(Canvas canvas,FuelIcon item) {
         int sessionBottomPos = mSectionDivider - sessionGapBottom + iconLineMinusMarginBottom;
-        int iconTimeInMinutes = 130;
+        int iconTimeInMinutes = item.getTimeMinutes();
         int totalSessionMinutes = hourCount * hourSectionsCount * 10;
         int iconIndex = iconTimeInMinutes / 10;
         int iconPos = markerStartMargin + (markerGap * iconIndex);
@@ -316,11 +336,11 @@ public class MFMeter extends View {
         int iconBoxEndX = iconBoxStartX + iconSize;
         int iconBoxStartY = sessionBottomPos - iconLineHeight - iconSize ;
         int iconBoxEndY = iconBoxStartY + iconSize;
-//        Drawable d = AppCompatResources.getDrawable(getContext(), R.drawable.image_gtag_achievement_3);
-//        if (d != null){
-//            d.setBounds(iconBoxStartX, iconBoxStartY, iconBoxEndX, iconBoxEndY);
-//            d.draw(canvas);
-//        }
+        Drawable d = AppCompatResources.getDrawable(getContext(), item.icon);
+        if (d != null){
+            d.setBounds(iconBoxStartX, iconBoxStartY, iconBoxEndX, iconBoxEndY);
+            d.draw(canvas);
+        }
     }
 
 
@@ -359,16 +379,16 @@ public class MFMeter extends View {
         paint.setColor(colorMinuteMarker);
         return paint;
     }
-    Paint getSessionMarkerPaint(Paint paint){
+    Paint getSessionMarkerPaint(Paint paint,FuelSession item){
         paint.reset();
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStrokeWidth(sessionMarkerWidth);
-        paint.setColor(colorSessionMarker);
+        paint.setColor(item.markerColor);
         return paint;
     }
-    Paint getSessionPaint(Paint paint){
+    Paint getSessionPaint(Paint paint,FuelSession item){
         paint.reset();
-        paint.setColor(colorSession);
+        paint.setColor(item.sessionColor);
         return paint;
     }
     Paint getLogPaint(Paint paint){
