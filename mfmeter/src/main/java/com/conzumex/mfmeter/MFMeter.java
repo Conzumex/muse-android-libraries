@@ -242,6 +242,11 @@ public class MFMeter extends View {
         iconItems = icons;
         invalidate();
     }
+    
+    public void setSnapPos(int pos){
+        currentSnapPos = pos;
+        invalidate();
+    }
 
     @Override
     public void onDraw(Canvas canvas) {
@@ -259,6 +264,15 @@ public class MFMeter extends View {
     }
 
     void validateSnapping(){
+        if(snapPositions.isEmpty()) {
+            Log.d("SNAP","Items empty");
+            return;
+        }
+
+        if(snapPositions.size()<=currentSnapPos){
+            Log.d("SNAP","Position beyond limit");
+            currentSnapPos = -1;
+        }
         if(snapPositions.size()>0 && currentSnapPos == -1){     //for the initial snap position
             scrollTo(snapPositions.get(0),0);
             currentSnapPos = 0;

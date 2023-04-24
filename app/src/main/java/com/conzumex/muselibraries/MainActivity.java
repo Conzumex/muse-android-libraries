@@ -58,12 +58,16 @@ public class MainActivity extends AppCompatActivity {
         List<FuelSession> list = new ArrayList<>();
         list.add(new FuelSession(new Date(tempStartTime+(1000*60*30)),new Date(tempStartTime+(1000*60*90)),Color.parseColor("#f71e1e"),Color.parseColor("#40CB2020")));
         list.add(new FuelSession(new Date(tempStartTime+(1000*60*150)),new Date(tempStartTime+(1000*60*200)),Color.parseColor("#f71e1e"),Color.parseColor("#40CB2020")));
+        list.add(new FuelSession(new Date(tempStartTime+(1000*60*350)),new Date(tempStartTime+(1000*60*450)),Color.parseColor("#f71e1e"),Color.parseColor("#40CB2020")));
+        list.add(new FuelSession(new Date(tempStartTime+(1000*60*500)),new Date(tempStartTime+(1000*60*550)),Color.parseColor("#f71e1e"),Color.parseColor("#40CB2020")));
+        list.add(new FuelSession(new Date(tempStartTime+(1000*60*750)),new Date(tempStartTime+(1000*60*1000)),Color.parseColor("#f71e1e"),Color.parseColor("#40CB2020")));
         List<FuelLog> listLog = new ArrayList<>();
         listLog.add(new FuelLog(new Date(tempStartTime+(1000*60*50)),new Date(tempStartTime+(1000*60*70))));
         List<FuelIcon> listIcon = new ArrayList<>();
         listIcon.add(new FuelIcon(new Date(tempStartTime+(1000*60*70)),R.drawable.ic_graph_marker));
         meter.loadData(list,listLog,listIcon);
 
+        meter.setSnapPos(2);
 
 //        progressFormatter = new ProgressTextFormatter() {
 //            @NonNull
