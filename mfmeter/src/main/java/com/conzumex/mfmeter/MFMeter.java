@@ -253,6 +253,14 @@ public class MFMeter extends View {
         invalidate();
     }
 
+    public int getSnapPos(){
+        return currentSnapPos;
+    }
+
+    public boolean isSnapEnabled(){
+        return snapToSessions;
+    }
+
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
