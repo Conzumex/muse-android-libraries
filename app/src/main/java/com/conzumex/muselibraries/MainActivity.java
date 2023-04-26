@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         meter.loadData(list,listLog,listIcon);
 
         meter.setSnapPos(2);
+        meter.setSnapEnabled(true);
 
 //        progressFormatter = new ProgressTextFormatter() {
 //            @NonNull
