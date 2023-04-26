@@ -261,6 +261,28 @@ public class MFMeter extends View {
         return snapToSessions;
     }
 
+    public void scrollToSnapPos(int pos){
+        if(snapPositions.isEmpty() || snapPositions.size()<=pos) {
+            Log.d("SNAP","Items empty or beyond limit");
+            return;
+        }
+
+        scrollTo(snapPositions.get(pos),0);
+    }
+
+    public void scrollToSnapPos(int pos,boolean isChangeSnapped){
+        if(snapPositions.isEmpty() || snapPositions.size()<=pos) {
+            Log.d("SNAP","Items empty or beyond limit");
+            return;
+        }
+
+        scrollTo(snapPositions.get(pos),0);
+        if(isChangeSnapped) {
+            currentSnapPos = pos;
+            scrollStartX = snapPositions.get(pos);
+        }
+    }
+
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);

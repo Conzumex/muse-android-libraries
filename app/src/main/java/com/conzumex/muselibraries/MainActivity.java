@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
 //    RoundedProgressBar progressBar,progressBar2;
 //    ProgressTextFormatter progressFormatter;
     MFMeter meter;
+    Button btn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
 //        progressBar = findViewById(R.id.prog_test);
 //        progressBar2 = findViewById(R.id.pb_120);
         meter = findViewById(R.id.meter);
+        btn = findViewById(R.id.button);
 
 
         long tempStartTime = 1680546600000L;
@@ -68,7 +70,11 @@ public class MainActivity extends AppCompatActivity {
         meter.loadData(list,listLog,listIcon);
 
         meter.setSnapPos(2);
-        meter.setSnapEnabled(true);
+        meter.setSnapEnabled(false);
+
+        btn.setOnClickListener(vew->{
+            meter.scrollToSnapPos(3);
+        });
 
 //        progressFormatter = new ProgressTextFormatter() {
 //            @NonNull
