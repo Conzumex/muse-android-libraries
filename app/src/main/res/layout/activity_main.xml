@@ -58,6 +58,64 @@
 <!--        app:layout_constraintEnd_toEndOf="parent"-->
 <!--        app:layout_constraintStart_toStartOf="parent" />-->
 
+    <com.conzumex.charts.charts.RoundedBarChart
+        android:id="@+id/barchart"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_weight="1"
+        android:textSize="10sp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:radius="5dp"
+        tools:visibility="visible" />
+
+    <com.conzumex.progressbar.RoundedProgressBarVertical
+        android:id="@+id/roundedProgressBarVertical"
+        android:layout_width="20dp"
+        android:layout_height="100dp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_weight="1"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/meter"
+        app:rpbBackgroundColor="#AAAAAA"
+        app:rpbBackgroundTextColor="#F10054"
+        app:rpbCornerRadius="5dp"
+        app:rpbFontFamily="@font/rb_medium"
+        app:rpbProgress="50"
+        app:rpbProgressColor="@color/white"
+        app:rpbProgressTextColor="@color/red"
+        app:rpbRelativeMax="100"
+        app:rpbTextPadding="0dp"
+        app:rpbTextSize="10sp" />
+
+    <com.conzumex.progressbar.RoundedProgressBar
+        android:layout_width="100dp"
+        android:layout_height="20dp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/roundedProgressBarVertical"
+        app:rpbBackgroundColor="#AAAAAA"
+        app:rpbBackgroundTextColor="#F10054"
+        app:rpbCornerRadius="5dp"
+        app:rpbFontFamily="@font/rb_medium"
+        app:rpbProgress="90"
+        app:rpbProgressColor="@color/white"
+        app:rpbProgressTextColor="@color/red"
+        app:rpbRelativeMax="100"
+        app:rpbTextPadding="5dp"
+        app:rpbTextSize="10sp" />
+
     <com.conzumex.mfmeter.MFMeter
         android:id="@+id/meter"
         android:layout_width="match_parent"

@@ -2,6 +2,8 @@ package com.conzumex.muselibraries;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.res.ResourcesCompat;
 
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -12,11 +14,17 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.conzumex.charts.charts.LineChart;
+import com.conzumex.charts.charts.RoundedBarChart;
+import com.conzumex.charts.components.AxisBase;
 import com.conzumex.charts.components.XAxis;
 import com.conzumex.charts.components.YAxis;
+import com.conzumex.charts.data.BarData;
+import com.conzumex.charts.data.BarDataSet;
+import com.conzumex.charts.data.BarEntry;
 import com.conzumex.charts.data.Entry;
 import com.conzumex.charts.data.LineData;
 import com.conzumex.charts.data.LineDataSet;
+import com.conzumex.charts.formatter.IAxisValueFormatter;
 import com.conzumex.charts.highlight.Highlight;
 import com.conzumex.charts.listener.OnChartValueSelectedListener;
 import com.conzumex.mfmeter.FuelIcon;
@@ -25,6 +33,7 @@ import com.conzumex.mfmeter.FuelSession;
 import com.conzumex.mfmeter.MFMeter;
 import com.conzumex.progressbar.ProgressTextFormatter;
 import com.conzumex.progressbar.RoundedProgressBar;
+import com.conzumex.progressbar.RoundedProgressBarVertical;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -42,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
 //    ProgressTextFormatter progressFormatter;
     MFMeter meter;
     Button btn;
+    RoundedBarChart barChart;
+    RoundedProgressBarVertical rbVertical;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
 //        progressBar2 = findViewById(R.id.pb_120);
         meter = findViewById(R.id.meter);
         btn = findViewById(R.id.button);
+        barChart = findViewById(R.id.barchart);
+        rbVertical = findViewById(R.id.roundedProgressBarVertical);
 
 
         long tempStartTime = 1680546600000L;
@@ -74,6 +87,20 @@ public class MainActivity extends AppCompatActivity {
 
         btn.setOnClickListener(vew->{
             meter.scrollToSnapPos(3);
+        });
+
+        rbVertical.setProgressTextFormatter(new ProgressTextFormatter() {
+            @NonNull
+            @Override
+            public String getMinWidthString() {
+                return "100";
+            }
+
+            @NonNull
+            @Override
+            public String getProgressText(float progressValue) {
+                return (int)(progressValue*100)+"";
+            }
         });
 
 //        progressFormatter = new ProgressTextFormatter() {
@@ -119,6 +146,8 @@ public class MainActivity extends AppCompatActivity {
 //            progressBar2.setProgressPercentage(val,true);
 //        });
 
+        loadChart();
+
     }
 
     private List<Entry> getEntries(){
@@ -143,6 +172,73 @@ public class MainActivity extends AppCompatActivity {
         entries.add(new Entry(180,60));
         entries.add(new Entry(190,45));
         entries.add(new Entry(200,50));
+        return entries;
+    }
+
+    void loadChart() {
+        List<BarEntry> barData = getTestStressData();
+
+        if (barData.isEmpty()) {
+            barChart.setData(null);
+            barChart.setNoDataText("No Data Available");
+            barChart.invalidate();
+            return;
+        }
+
+        BarDataSet set = new BarDataSet(barData, "BarDataSet");
+        set.setValueTextColor(Color.WHITE);
+        set.setHighLightAlpha(0);
+        set.setDrawValues(false);
+        set.setHighlightEnabled(false);
+        set.setColors(getColor(R.color.white));
+        set.setDrawIcons(false);
+        set.setFormLineWidth(5);
+        set.setHighLightAlpha(255);
+        set.setHighLightColor(getColor(R.color.white));
+        set.setHighlightEnabled(true);
+
+        BarData data = new BarData(set);
+        data.setBarWidth(0.5f); // set custom bar width
+
+        barChart.setData(data);
+        barChart.getLegend().setEnabled(false);
+        barChart.setScaleEnabled(false);
+        barChart.setFitBars(true); // make the x-axis fit exactly all bars
+        barChart.getDescription().setEnabled(false);
+        barChart.getAxisLeft().setEnabled(false);
+        YAxis yAxis = barChart.getAxisRight();
+        yAxis.setDrawLabels(true);
+        yAxis.setDrawGridLines(false);
+        yAxis.setDrawAxisLine(false);
+        barChart.getAxisLeft().setAxisMinimum(-10.0f);
+        barChart.getAxisLeft().setAxisMaximum(105f);
+        yAxis.setAxisMinimum(-10.0f);
+        yAxis.setAxisMaximum(105f);
+        yAxis.setTextColor(getColor(R.color.white));
+        yAxis.setTypeface(ResourcesCompat.getFont(getApplicationContext(), R.font.rb_medium));
+
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setDrawLabels(true);
+        xAxis.setDrawAxisLine(false);
+        xAxis.setDrawGridLines(false);
+        xAxis.setPosition(XAxis.XAxisPosition.TOP);
+        xAxis.setTextColor(getColor(R.color.white));
+        xAxis.setTypeface(ResourcesCompat.getFont(getApplicationContext(), R.font.rb_medium));
+
+        barChart.invalidate();
+    }
+
+    public static List<BarEntry> getTestStressData(){
+        List<BarEntry> entries = new ArrayList<>();
+
+        entries.add(new BarEntry(0, 100));
+        entries.add(new BarEntry(1, 75));
+        entries.add(new BarEntry(2, 60));
+        entries.add(new BarEntry(3, 80));
+        entries.add(new BarEntry(4, 70));
+        entries.add(new BarEntry(5, 64));
+        entries.add(new BarEntry(6, 36));
+
         return entries;
     }
 
