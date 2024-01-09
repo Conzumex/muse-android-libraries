@@ -15,12 +15,16 @@ import android.widget.EditText;
 
 import com.conzumex.charts.charts.LineChart;
 import com.conzumex.charts.charts.RoundedBarChart;
+import com.conzumex.charts.charts.RoundedCandleChart;
 import com.conzumex.charts.components.AxisBase;
 import com.conzumex.charts.components.XAxis;
 import com.conzumex.charts.components.YAxis;
 import com.conzumex.charts.data.BarData;
 import com.conzumex.charts.data.BarDataSet;
 import com.conzumex.charts.data.BarEntry;
+import com.conzumex.charts.data.CandleData;
+import com.conzumex.charts.data.CandleDataSet;
+import com.conzumex.charts.data.CandleEntry;
 import com.conzumex.charts.data.Entry;
 import com.conzumex.charts.data.LineData;
 import com.conzumex.charts.data.LineDataSet;
@@ -34,6 +38,8 @@ import com.conzumex.mfmeter.MFMeter;
 import com.conzumex.progressbar.ProgressTextFormatter;
 import com.conzumex.progressbar.RoundedProgressBar;
 import com.conzumex.progressbar.RoundedProgressBarVertical;
+import com.conzumex.progressbar.charts.ProgressBarGraphChart;
+import com.conzumex.progressbar.charts.ProgressRoundGraphChart;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -52,7 +58,11 @@ public class MainActivity extends AppCompatActivity {
     MFMeter meter;
     Button btn;
     RoundedBarChart barChart;
-    RoundedProgressBarVertical rbVertical;
+//    RoundedProgressBarVertical rbVertical;
+    ProgressBarGraphChart pbBarchart;
+    ProgressRoundGraphChart pbRoundchart;
+
+    RoundedCandleChart roundCandle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +76,11 @@ public class MainActivity extends AppCompatActivity {
         meter = findViewById(R.id.meter);
         btn = findViewById(R.id.button);
         barChart = findViewById(R.id.barchart);
-        rbVertical = findViewById(R.id.roundedProgressBarVertical);
+        pbBarchart = findViewById(R.id.pb_barchart);
+        pbRoundchart = findViewById(R.id.pb_roundchart);
+//        rbVertical = findViewById(R.id.roundedProgressBarVertical);
+
+        roundCandle = findViewById(R.id.chart_progress_2);
 
 
         long tempStartTime = 1680546600000L;
@@ -89,19 +103,19 @@ public class MainActivity extends AppCompatActivity {
             meter.scrollToSnapPos(3);
         });
 
-        rbVertical.setProgressTextFormatter(new ProgressTextFormatter() {
-            @NonNull
-            @Override
-            public String getMinWidthString() {
-                return "100";
-            }
-
-            @NonNull
-            @Override
-            public String getProgressText(float progressValue) {
-                return (int)(progressValue*100)+"";
-            }
-        });
+//        rbVertical.setProgressTextFormatter(new ProgressTextFormatter() {
+//            @NonNull
+//            @Override
+//            public String getMinWidthString() {
+//                return "100";
+//            }
+//
+//            @NonNull
+//            @Override
+//            public String getProgressText(float progressValue) {
+//                return (int)(progressValue*100)+"";
+//            }
+//        });
 
 //        progressFormatter = new ProgressTextFormatter() {
 //            @NonNull
@@ -148,6 +162,127 @@ public class MainActivity extends AppCompatActivity {
 
         loadChart();
 
+        loadCandleData();
+        List<Integer> entries = new ArrayList<>();
+        entries.add(54);
+        entries.add(75);
+        entries.add(60);
+        entries.add(80);
+        entries.add(70);
+        entries.add(64);
+        entries.add(36);
+        pbBarchart.setProgressData(entries);
+        pbBarchart.disablePercentage("9");
+        pbRoundchart.setProgressData(entries);
+
+    }
+
+    private void loadCandleData(){
+        List<CandleEntry> canldes = new ArrayList<>();
+        canldes.add(new CandleEntry(1,20,40,20,40));
+        canldes.add(new CandleEntry(2,30,55,30,55));
+        canldes.add(new CandleEntry(3,50,80,50,80));
+        canldes.add(new CandleEntry(4,20,90,20,90));
+
+        CandleDataSet dataSet = new CandleDataSet(canldes,"candles");
+        dataSet.setDrawValues(true);
+        dataSet.setColor(Color.rgb(80, 80, 80));
+//        dataSet.setShadowColor(getColor(R.color.transparent));
+        dataSet.setShadowWidth(0f);
+        dataSet.setBarSpace(0.4f);
+        dataSet.setIncreasingColor(Color.parseColor("#d13100"));
+        dataSet.setIncreasingPaintStyle(Paint.Style.FILL);
+        dataSet.setHighlightEnabled(true);
+        dataSet.setDrawHorizontalHighlightIndicator(false);
+        dataSet.enableDashedHighlightLine(10f, 5f, 0f);
+        dataSet.setHighLightColor(Color.parseColor("#cecece"));
+        dataSet.setHighlightLineWidth(1);
+        dataSet.setValueTextColor(Color.parseColor("#9c9c9c"));
+//        dataSet.setValueTypeface(ResourcesCompat.getFont(this, R.font.nunito_semi_bold));
+        dataSet.setValueTextSize(6);
+//        Date finalStartDateLabels = startDate;
+//        dataSet.setValueFormatter((value,entry, dataSetIndex, viewPortHandler) -> {
+//            try {
+//                Calendar c = Calendar.getInstance();
+//                if (finalStartDateLabels == null) return "";
+//                c.setTime(finalStartDateLabels);
+//                c.add(Calendar.SECOND, (int) value);
+//                return TimeUtils.getCustomTimeFormat(c.getTime(), "hh:mm");
+//            } catch (Exception e) {
+//                return "";
+//            }
+//        });
+
+
+        //for maximum hour value
+
+
+
+//        CandleData data = new CandleData(dataSet);
+//        CombinedData dataCombined = new CombinedData();
+//        dataCombined.setData(data);
+
+
+//        binding.sleepTimeBarChartView.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.CANDLE, CombinedChart.DrawOrder.LINE});
+//        binding.sleepTimeBarChartView.setData(dataCombined);
+//        binding.sleepTimeBarChartView.getLegend().setEnabled(false);
+//        binding.sleepTimeBarChartView.setScaleEnabled(false);
+//        binding.sleepTimeBarChartView.getDescription().setEnabled(false);
+//        binding.sleepTimeBarChartView.setHighlightPerDragEnabled(true);
+//        binding.sleepTimeBarChartView.getAxisLeft().setEnabled(false);
+
+
+        CandleData cdData= new CandleData(dataSet);
+
+        roundCandle.setData(cdData);
+        roundCandle.getLegend().setEnabled(false);
+        roundCandle.setScaleEnabled(false);
+        roundCandle.getDescription().setEnabled(false);
+        roundCandle.setHighlightPerDragEnabled(true);
+        roundCandle.getAxisLeft().setEnabled(false);
+
+        roundCandle.getAxisLeft().setAxisMaximum(100);
+        roundCandle.getAxisLeft().setAxisMinimum(0);
+        YAxis yAxis = roundCandle.getAxisRight();
+        yAxis.setDrawLabels(true);
+        yAxis.setDrawAxisLine(true);
+        yAxis.setDrawGridLinesBehindData(true);
+        yAxis.setAxisMaximum(100);
+        yAxis.setAxisMinimum(0);
+//        yAxis.setLabelCount(hourCount+1);
+//        yAxis.setGranularityEnabled(true);
+//        yAxis.setGranularity(3600);
+        yAxis.enableGridDashedLine(10f, 10f, 0f);
+        yAxis.setGridColor(Color.parseColor("#fefefe"));
+        yAxis.setTextColor(getColor(R.color.white));
+//        Date finalStartDate = new Date();
+//        yAxis.setValueFormatter((value, axis) -> {
+//            try {
+//                Calendar c = Calendar.getInstance();
+//                if (finalStartDate == null) return "";
+//
+//                c.setTime(finalStartDate);
+//                c.add(Calendar.SECOND, (int) value);
+//
+//                return TimeUtils.getCustomTimeFormat(c.getTime(), "hh:mm aa");
+//            } catch (Exception e) {
+//                return "";
+//            }
+//        });
+
+
+        XAxis xAxis = roundCandle.getXAxis();
+        xAxis.setDrawLabels(true);
+        xAxis.setDrawAxisLine(true);
+        xAxis.setDrawGridLinesBehindData(true);
+        xAxis.setAxisMinimum(-1);
+        xAxis.setAxisMaximum(8);
+        xAxis.enableGridDashedLine(10f, 10f, 0f);
+        xAxis.setGridColor(Color.parseColor("#fefefe"));
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setTextColor(getColor(R.color.white));
+
+        roundCandle.invalidate();
     }
 
     private List<Entry> getEntries(){

@@ -4,5 +4,8 @@
     <color name="rpb_default_progress_bg_color">#BBBBBB</color>
     <color name="rpb_default_progress_color">#FF9B42</color>
     <color name="rpb_default_text_color">#000000</color>
+    <color name="rpb_white">#FFFFFF</color>
+    <color name="rpb_black">#000000</color>
+    <color name="rpb_grey">#9F9F9F</color>
 
 </resources>

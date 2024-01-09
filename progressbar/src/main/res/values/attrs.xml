@@ -24,4 +24,51 @@
         <attr name="rpbShowProgressText" format="boolean" />
         <attr name="rpbIsRadiusRestricted" format="boolean" />
     </declare-styleable>
+
+
+    <attr name="barHeight" format="dimension" />
+    <attr name="cornerRadius" format="dimension" />
+    <attr name="selectedPos" format="integer" />
+    <attr name="selectedFont" format="reference" />
+    <attr name="unSelectedFont" format="reference" />
+    <attr name="selectedProgressColor" format="reference|color" />
+    <attr name="unSelectedProgressColor" format="reference|color" />
+    <attr name="selectedProgressBackgroundColor" format="reference|color" />
+    <attr name="unSelectedProgressBackgroundColor" format="reference|color" />
+    <attr name="selectedLabelColor" format="reference|color" />
+    <attr name="unSelectedLabelColor" format="reference|color" />
+    <attr name="selectedProgressTextColor" format="reference|color" />
+    <attr name="unSelectedProgressTextColor" format="reference|color" />
+    <attr name="progressDrawable" format="reference" />
+
+    <declare-styleable name="ProgressBarGraphChart">
+        <attr name="barHeight"/>
+        <attr name="cornerRadius"/>
+        <attr name="selectedPos"/>
+        <attr name="selectedFont"/>
+        <attr name="unSelectedFont"/>
+        <attr name="selectedProgressColor"/>
+        <attr name="unSelectedProgressColor"/>
+        <attr name="selectedProgressBackgroundColor"/>
+        <attr name="unSelectedProgressBackgroundColor"/>
+        <attr name="selectedLabelColor"/>
+        <attr name="unSelectedLabelColor"/>
+        <attr name="selectedProgressTextColor"/>
+        <attr name="unSelectedProgressTextColor"/>
+    </declare-styleable>
+    <declare-styleable name="ProgressRoundGraphChart">
+        <attr name="cornerRadius"/>
+        <attr name="selectedPos"/>
+        <attr name="selectedFont"/>
+        <attr name="unSelectedFont"/>
+        <attr name="selectedProgressColor"/>
+        <attr name="unSelectedProgressColor"/>
+        <attr name="progressDrawable"/>
+        <attr name="selectedLabelColor"/>
+        <attr name="unSelectedLabelColor"/>
+        <attr name="selectedProgressTextColor"/>
+        <attr name="unSelectedProgressTextColor"/>
+        <attr name="selectedProgressTextSize" format="dimension"/>
+        <attr name="unSelectedProgressTextSize" format="dimension"/>
+    </declare-styleable>
 </resources>

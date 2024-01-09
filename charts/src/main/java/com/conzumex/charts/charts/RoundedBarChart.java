@@ -3,6 +3,7 @@ package com.conzumex.charts.charts;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.LinearGradient;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.AttributeSet;
@@ -11,15 +12,19 @@ import com.conzumex.charts.R;
 import com.conzumex.charts.animation.ChartAnimator;
 import com.conzumex.charts.buffer.BarBuffer;
 import com.conzumex.charts.data.BarData;
+import com.conzumex.charts.data.BarDataSet;
 import com.conzumex.charts.data.BarEntry;
 import com.conzumex.charts.highlight.Highlight;
 import com.conzumex.charts.highlight.Range;
 import com.conzumex.charts.interfaces.dataprovider.BarDataProvider;
 import com.conzumex.charts.interfaces.datasets.IBarDataSet;
 import com.conzumex.charts.renderer.BarChartRenderer;
+import com.conzumex.charts.utils.Fill;
 import com.conzumex.charts.utils.Transformer;
 import com.conzumex.charts.utils.Utils;
 import com.conzumex.charts.utils.ViewPortHandler;
+
+import java.util.List;
 
 public class RoundedBarChart extends BarChart {
     public RoundedBarChart(Context context) {
@@ -62,10 +67,10 @@ public class RoundedBarChart extends BarChart {
     private class RoundedBarChartRenderer extends BarChartRenderer {
         private RectF mBarShadowRectBuffer = new RectF();
         float[] corners = new float[]{
-                    0, 0,        // Top left radius in px
-                    0, 0,        // Top right radius in px
-                    0, 0,          // Bottom right radius in px
-                    0, 0           // Bottom left radius in px
+                0, 0,        // Top left radius in px
+                0, 0,        // Top right radius in px
+                0, 0,          // Bottom right radius in px
+                0, 0           // Bottom left radius in px
         };
 
         RoundedBarChartRenderer(BarDataProvider chart, ChartAnimator animator, ViewPortHandler viewPortHandler, int mRadius) {
@@ -141,12 +146,6 @@ public class RoundedBarChart extends BarChart {
                 prepareBarHighlight(e.getX(), y1, y2, barData.getBarWidth() / 2f, trans);
 
                 setHighlightDrawPos(high, mBarRect);
-
-                mBarRect.top = mBarRect.top - 10;
-                mBarRect.bottom = mBarRect.bottom + 10;
-                mBarRect.left = mBarRect.left - 10;
-                mBarRect.right = mBarRect.right + 10;
-
                 Path path = new Path();
                 path.addRoundRect(mBarRect, corners, Path.Direction.CW);
                 c.drawPath(path, mHighlightPaint);
@@ -237,37 +236,24 @@ public class RoundedBarChart extends BarChart {
                     mRenderPaint.setColor(dataSet.getColor(j / 4));
                 }
 
-//                if (dataSet.getGradientColor() != null) {
-//                    GradientColor gradientColor = dataSet.getGradientColor();
-//                    mRenderPaint.setShader(
-//                            new LinearGradient(
-//                                    buffer.buffer[j],
-//                                    buffer.buffer[j + 3],
-//                                    buffer.buffer[j],
-//                                    buffer.buffer[j + 1],
-//                                    gradientColor.getStartColor(),
-//                                    gradientColor.getEndColor(),
-//                                    android.graphics.Shader.TileMode.MIRROR));
-//                }
+                BarDataSet mBarData = (BarDataSet) dataSet;
+                if (mBarData.getFills() != null) {
+                    List<Fill> gradientColors = mBarData.getFills();
+                    mRenderPaint.setShader(
+                            new LinearGradient(
+                                    buffer.buffer[j],
+                                    buffer.buffer[j + 3],
+                                    buffer.buffer[j],
+                                    buffer.buffer[j + 1],
+                                    gradientColors.get(0).getGradientColors()[0],
+                                    gradientColors.get(0).getGradientColors()[1],
+                                    android.graphics.Shader.TileMode.MIRROR));
+                }
 
-//                if (dataSet.getGradientColors() != null) {
-//                    mRenderPaint.setShader(
-//                            new LinearGradient(
-//                                    buffer.buffer[j],
-//                                    buffer.buffer[j + 3],
-//                                    buffer.buffer[j],
-//                                    buffer.buffer[j + 1],
-//                                    dataSet.getGradientColor(j / 4).getStartColor(),
-//                                    dataSet.getGradientColor(j / 4).getEndColor(),
-//                                    android.graphics.Shader.TileMode.MIRROR));
-//                }
 
 
                 Path path = new Path();
-                RectF contentRect = mViewPortHandler.getContentRect();
-                float topHeight = (contentRect.bottom - contentRect.top) - buffer.buffer[j + 3];
-//                RectF rect = new RectF(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],buffer.buffer[j + 3]);
-                RectF rect = new RectF(buffer.buffer[j], topHeight , buffer.buffer[j + 2],buffer.buffer[j + 3]);
+                RectF rect = new RectF(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],buffer.buffer[j + 3]);
                 path.addRoundRect(rect, corners, Path.Direction.CW);
                 c.drawPath(path, mRenderPaint);
 

@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:background="#000"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="15dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Mo"
+                android:textColor="#a9a9a9"
+                android:textSize="10sp" />
+
+            <com.conzumex.progressbar.RoundedProgressBarVertical
+                android:layout_width="20dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
+                app:rpbCornerRadius="2dp"
+                tools:rpbProgress="50"
+                app:rpbRelativeMax="100"
+                app:rpbTextPadding="0dp"
+                app:rpbTextSize="10sp" />
+            <View
+            android:layout_width="match_parent"
+            android:layout_height="15dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            tools:scaleX="1.15"
+            tools:scaleY="1.15"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="15dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Tu"
+                tools:textStyle="bold"
+                tools:textColor="@color/rpb_white"
+                android:textColor="@color/rpb_grey"
+                android:textSize="10sp" />
+
+            <com.conzumex.progressbar.RoundedProgressBarVertical
+                android:layout_width="20dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
+                app:rpbCornerRadius="2dp"
+                tools:rpbProgress="50"
+                tools:rpbProgressColor="@color/rpb_white"
+                app:rpbRelativeMax="100"
+                app:rpbTextPadding="0dp"
+                app:rpbTextSize="10sp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="15dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="15dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="We"
+                android:textColor="@color/rpb_grey"
+                android:textSize="10sp" />
+
+            <com.conzumex.progressbar.RoundedProgressBarVertical
+                android:layout_width="20dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
+                app:rpbCornerRadius="2dp"
+                tools:rpbProgress="50"
+                app:rpbRelativeMax="100"
+                app:rpbTextPadding="0dp"
+                app:rpbTextSize="10sp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="15dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="15dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Th"
+                android:textColor="@color/rpb_grey"
+                android:textSize="10sp" />
+
+            <com.conzumex.progressbar.RoundedProgressBarVertical
+                android:layout_width="20dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
+                app:rpbCornerRadius="2dp"
+                tools:rpbProgress="50"
+                app:rpbRelativeMax="100"
+                app:rpbTextPadding="0dp"
+                app:rpbTextSize="10sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="15dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="15dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Fr"
+                android:textColor="@color/rpb_grey"
+                android:textSize="10sp" />
+
+            <com.conzumex.progressbar.RoundedProgressBarVertical
+                android:layout_width="20dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
+                app:rpbCornerRadius="2dp"
+                tools:rpbProgress="50"
+                app:rpbRelativeMax="100"
+                app:rpbTextPadding="0dp"
+                app:rpbTextSize="10sp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="15dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="15dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Sa"
+                android:textColor="@color/rpb_grey"
+                android:textSize="10sp" />
+
+            <com.conzumex.progressbar.RoundedProgressBarVertical
+                android:layout_width="20dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
+                app:rpbCornerRadius="2dp"
+                tools:rpbProgress="50"
+                app:rpbRelativeMax="100"
+                app:rpbTextPadding="0dp"
+                app:rpbTextSize="10sp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="15dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="15dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Su"
+                android:textColor="@color/rpb_grey"
+                android:textSize="10sp" />
+
+            <com.conzumex.progressbar.RoundedProgressBarVertical
+                android:layout_width="20dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
+                app:rpbCornerRadius="2dp"
+                tools:rpbProgress="50"
+                app:rpbRelativeMax="100"
+                app:rpbTextPadding="0dp"
+                app:rpbTextSize="10sp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="15dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
