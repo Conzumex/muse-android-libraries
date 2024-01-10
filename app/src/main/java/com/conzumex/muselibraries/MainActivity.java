@@ -16,6 +16,7 @@ import android.widget.EditText;
 import com.conzumex.charts.charts.LineChart;
 import com.conzumex.charts.charts.RoundedBarChart;
 import com.conzumex.charts.charts.RoundedCandleChart;
+import com.conzumex.charts.charts.RoundedCombinedChart;
 import com.conzumex.charts.components.AxisBase;
 import com.conzumex.charts.components.XAxis;
 import com.conzumex.charts.components.YAxis;
@@ -25,6 +26,7 @@ import com.conzumex.charts.data.BarEntry;
 import com.conzumex.charts.data.CandleData;
 import com.conzumex.charts.data.CandleDataSet;
 import com.conzumex.charts.data.CandleEntry;
+import com.conzumex.charts.data.CombinedData;
 import com.conzumex.charts.data.Entry;
 import com.conzumex.charts.data.LineData;
 import com.conzumex.charts.data.LineDataSet;
@@ -62,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     ProgressBarGraphChart pbBarchart;
     ProgressRoundGraphChart pbRoundchart;
 
-    RoundedCandleChart roundCandle;
+    RoundedCombinedChart roundCandle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -218,9 +220,9 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-//        CandleData data = new CandleData(dataSet);
-//        CombinedData dataCombined = new CombinedData();
-//        dataCombined.setData(data);
+        CandleData data = new CandleData(dataSet);
+        CombinedData dataCombined = new CombinedData();
+        dataCombined.setData(data);
 
 
 //        binding.sleepTimeBarChartView.setDrawOrder(new CombinedChart.DrawOrder[]{CombinedChart.DrawOrder.CANDLE, CombinedChart.DrawOrder.LINE});
@@ -234,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
 
         CandleData cdData= new CandleData(dataSet);
 
-        roundCandle.setData(cdData);
+        roundCandle.setData(dataCombined);
         roundCandle.getLegend().setEnabled(false);
         roundCandle.setScaleEnabled(false);
         roundCandle.getDescription().setEnabled(false);

@@ -71,11 +71,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <com.conzumex.charts.charts.RoundedCandleChart
+    <com.conzumex.charts.charts.RoundedCombinedChart
         android:id="@+id/chart_progress_2"
         android:layout_width="0dp"
         android:layout_height="200dp"
-        app:candleRadius="10dp"
+        app:radius="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

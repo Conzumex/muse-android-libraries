@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <attr name="radius" format="dimension" />
+    <attr name="top_radius" format="dimension" />
+    <attr name="bottom_radius" format="dimension" />
     <declare-styleable name="RoundedBarChart">
-        <attr name="radius" format="dimension" />
-        <attr name="top_radius" format="dimension" />
-        <attr name="bottom_radius" format="dimension" />
+        <attr name="radius"/>
+        <attr name="top_radius"/>
+        <attr name="bottom_radius"/>
     </declare-styleable>
     <declare-styleable name="RoundedCandleChart">
         <attr name="candleRadius" format="dimension" />
         <attr name="candleTopRadius" format="dimension" />
         <attr name="candleBottomRadius" format="dimension" />
+    </declare-styleable>
+    <declare-styleable name="RoundedCombinedChart">
+        <attr name="radius"/>
+        <attr name="top_radius"/>
+        <attr name="bottom_radius"/>
     </declare-styleable>
 </resources>
