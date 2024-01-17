@@ -71,8 +71,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <com.conzumex.charts.charts.RoundedCombinedChart
-        android:id="@+id/chart_progress_2"
+    <com.conzumex.mfmeter.sleepgraph.SleepStageGraph
+        android:id="@+id/sleep_graph"
         android:layout_width="0dp"
         android:layout_height="200dp"
         app:radius="10dp"
@@ -115,7 +115,7 @@
         app:layout_constraintBottom_toTopOf="@+id/pb_barchart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chart_progress_2"
+        app:layout_constraintTop_toBottomOf="@+id/sleep_graph"
         app:selectedLabelColor="#fff"
         app:selectedPos="3"
         app:selectedProgressTextSize="5sp"

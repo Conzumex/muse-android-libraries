@@ -37,6 +37,8 @@ import com.conzumex.mfmeter.FuelIcon;
 import com.conzumex.mfmeter.FuelLog;
 import com.conzumex.mfmeter.FuelSession;
 import com.conzumex.mfmeter.MFMeter;
+import com.conzumex.mfmeter.sleepgraph.SleepEntry;
+import com.conzumex.mfmeter.sleepgraph.SleepStageGraph;
 import com.conzumex.progressbar.ProgressTextFormatter;
 import com.conzumex.progressbar.RoundedProgressBar;
 import com.conzumex.progressbar.RoundedProgressBarVertical;
@@ -65,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     ProgressRoundGraphChart pbRoundchart;
 
     RoundedCombinedChart roundCandle;
+    SleepStageGraph sleepGraph;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +85,8 @@ public class MainActivity extends AppCompatActivity {
         pbRoundchart = findViewById(R.id.pb_roundchart);
 //        rbVertical = findViewById(R.id.roundedProgressBarVertical);
 
-        roundCandle = findViewById(R.id.chart_progress_2);
+//        roundCandle = findViewById(R.id.chart_progress_2);
+        sleepGraph = findViewById(R.id.sleep_graph);
 
 
         long tempStartTime = 1680546600000L;
@@ -164,7 +168,31 @@ public class MainActivity extends AppCompatActivity {
 
         loadChart();
 
-        loadCandleData();
+        List<SleepEntry> sleepEntries = new ArrayList<>();
+        sleepEntries.add(new SleepEntry(0,2));
+        sleepEntries.add(new SleepEntry(1,3));
+        sleepEntries.add(new SleepEntry(2,2));
+        sleepEntries.add(new SleepEntry(3,1));
+        sleepEntries.add(new SleepEntry(4,3));
+        sleepEntries.add(new SleepEntry(6,2));
+        sleepEntries.add(new SleepEntry(7,0));
+        sleepEntries.add(new SleepEntry(8,2));
+
+        sleepGraph.loadData(sleepEntries);
+        sleepGraph.setLabelXFormatter(value -> ((int)value)+" am");
+        sleepGraph.setLabelYFormatter(value -> {
+            if(value==0)
+                return "Deep";
+            else if(value==1)
+                return "Light";
+            else if(value==2)
+                return "REM";
+            else
+                return "Awake";
+        });
+
+
+//        loadCandleData();
         List<Integer> entries = new ArrayList<>();
         entries.add(54);
         entries.add(75);
