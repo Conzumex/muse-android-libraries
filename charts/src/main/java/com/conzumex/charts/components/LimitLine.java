@@ -37,6 +37,12 @@ public class LimitLine extends ComponentBase {
     /** indicates the position of the LimitLine label */
     private LimitLabelPosition mLabelPosition = LimitLabelPosition.RIGHT_TOP;
 
+    /** get gradient colors from the limitline */
+    private int[] gradientColors = null;
+
+    /** get height of the gradient from the limitline */
+    private float gradientHeight = -1;
+
     /** enum that indicates the position of the LimitLine label */
     public enum LimitLabelPosition {
         LEFT_TOP, LEFT_BOTTOM, RIGHT_TOP, RIGHT_BOTTOM
@@ -210,5 +216,31 @@ public class LimitLine extends ComponentBase {
      */
     public String getLabel() {
         return mLabel;
+    }
+
+    /** set the gradient colors from the limit line. it will enable when colors are set
+     *
+     * @param gradientColors colors array
+     * */
+    public void setGradientColors(int[] gradientColors) {
+        this.gradientColors = gradientColors;
+    }
+
+    /**
+     * Returns the gradient colors from the limit line.
+     *
+     * @return colors array
+     * */
+    public int[] getGradientColors() {
+        return gradientColors;
+    }
+
+    /**
+     * Returns the gradient height from the limit line.
+     *
+     * @return height of gradient
+     * */
+    public float getGradientHeight() {
+        return gradientHeight;
     }
 }

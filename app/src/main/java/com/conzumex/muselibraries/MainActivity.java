@@ -8,6 +8,7 @@ import androidx.core.content.res.ResourcesCompat;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -18,6 +19,7 @@ import com.conzumex.charts.charts.RoundedBarChart;
 import com.conzumex.charts.charts.RoundedCandleChart;
 import com.conzumex.charts.charts.RoundedCombinedChart;
 import com.conzumex.charts.components.AxisBase;
+import com.conzumex.charts.components.LimitLine;
 import com.conzumex.charts.components.XAxis;
 import com.conzumex.charts.components.YAxis;
 import com.conzumex.charts.data.BarData;
@@ -68,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
     RoundedCombinedChart roundCandle;
     SleepStageGraph sleepGraph;
+    LineChart lineChart;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,10 +86,13 @@ public class MainActivity extends AppCompatActivity {
         barChart = findViewById(R.id.barchart);
         pbBarchart = findViewById(R.id.pb_barchart);
         pbRoundchart = findViewById(R.id.pb_roundchart);
+        lineChart = findViewById(R.id.line_chart);
 //        rbVertical = findViewById(R.id.roundedProgressBarVertical);
 
 //        roundCandle = findViewById(R.id.chart_progress_2);
         sleepGraph = findViewById(R.id.sleep_graph);
+
+        loadChart(lineChart);
 
 
         long tempStartTime = 1680546600000L;
@@ -205,6 +211,138 @@ public class MainActivity extends AppCompatActivity {
         pbBarchart.disablePercentage("9");
         pbRoundchart.setProgressData(entries);
 
+    }
+
+    void loadChart(LineChart lineChart) {
+        List<Entry> lineData = getTestTemperatureData();
+
+        if (lineData.isEmpty()) {
+            lineChart.setData(null);
+            lineChart.setNoDataText("No Data Available");
+            lineChart.setNoDataTextColor(getColor(R.color.white));
+            lineChart.invalidate();
+            return;
+        }
+
+        int lastPos = lineData.size()-1;
+        Entry tempLastEntry = lineData.get(lastPos);
+//        tempLastEntry.setIcon(AppCompatResources.getDrawable(getApplicationContext(),R.drawable.ic_graph_marker));
+        lineData.set(lastPos,tempLastEntry);
+
+        LineDataSet set = new LineDataSet(lineData, "lineDataSet");
+        set.setValueTextColor(Color.WHITE);
+        set.setHighlightEnabled(false);
+        set.setColors(getColor(R.color.purple_200));
+        set.setDrawIcons(true);
+        set.setDrawValues(false);
+        set.setDrawCircles(false);
+        set.setLineWidth(2);
+
+        List<Entry> fillEntries = new ArrayList<>();
+        fillEntries.add(new Entry(0.5f,99));
+        fillEntries.add(new Entry(24.5f,99));
+        LineDataSet fillset = new LineDataSet(fillEntries, "fillDataSet");
+        fillset.setDrawFilled(true);
+        fillset.setDrawCircles(false);
+        fillset.setColor(getColor(R.color.white));
+        fillset.setHighlightEnabled(false);
+        int[] colors = new int[]{getColor(R.color.new_graph_intensity_red_light), getColor(R.color.new_graph_intensity_orange_light), getColor(R.color.new_graph_intensity_yellow_light), getColor(R.color.new_graph_intensity_green_light),};
+        fillset.setFillDrawable(new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP, colors));
+
+        LineData data = new LineData(set);
+//        data.addDataSet(fillset);
+
+        lineChart.setData(data);
+        lineChart.getLegend().setEnabled(false);
+        lineChart.setScaleEnabled(false);
+        lineChart.getDescription().setEnabled(false);
+        lineChart.getAxisLeft().setEnabled(false);
+        YAxis yAxis = lineChart.getAxisRight();
+        yAxis.setDrawLabels(true);
+        yAxis.setDrawGridLines(true);
+        yAxis.setDrawAxisLine(false);
+        lineChart.getAxisLeft().setAxisMinimum(97.5f);
+        yAxis.setAxisMinimum(97.5f);
+        yAxis.setAxisMaximum(100.5f);
+        yAxis.setGranularity(1.0f);
+        yAxis.setTextColor(getColor(R.color.white));
+
+        LimitLine limitLine = new LimitLine(99);
+        limitLine.enableDashedLine(10f,10f,0);
+        limitLine.setLineColor(getColor(R.color.white));
+        limitLine.setLineWidth(1f);
+        limitLine.setGradientColors(new int[]{getColor(R.color.new_graph_intensity_red_light),getColor(R.color.transparent)});
+        yAxis.addLimitLine(limitLine);
+        yAxis.setDrawLimitLinesBehindData(true);
+
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setDrawLabels(true);
+        xAxis.setDrawAxisLine(false);
+        xAxis.setDrawGridLines(false);
+        xAxis.setAxisMinimum(0.5f);
+        xAxis.setAxisMaximum(24.5f);
+        xAxis.setGranularity(1.0f);
+        xAxis.setLabelCount(6);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setTextColor(getColor(R.color.white));
+//        xAxis.setValueFormatter(new IAxisValueFormatter() {
+//            @Override
+//            public String getFormattedValue(float value, AxisBase axis) {
+//                try {
+//                    int itemPos = (int) value;
+//                    return TimeUtils.formatHourForGraph(itemPos);
+//                } catch (Exception e) {
+//                    return "";
+//                }
+//            }
+//        });
+
+        lineChart.invalidate();
+//        lineChart.post(() -> {
+//            CustomMarkerView mv = new CustomMarkerView(context, R.layout.custom_graph_marker);
+//            int width = lineChart.getWidth();
+//            mv.setChartWidth(width);
+//            lineChart.setMarkerView(mv);
+//            mv.setSupplier((e, highlight) -> {
+//                int itemPos = (int) e.getX();
+//                if (tempPrevEntry == null || tempPrevEntry != e) {
+//                    mVibrator.vibrate(VibrationUtils.SHORT_VIBRATE);
+//                    tempPrevEntry = e;
+//                }
+//                return "<font color=#ffffff>" + TimeUtils.getWeekDayName(itemPos) + "  : </font> <font color=#f2e14c>" + (int) e.getY() + " km</font>";
+//            });
+//        });
+    }
+
+    List<Entry> getTestTemperatureData(){
+        List<Entry> entries = new ArrayList<>();
+
+        entries.add(new Entry(0, 98));
+        entries.add(new Entry(1, 98.2f));
+        entries.add(new Entry(2, 98.3f));
+        entries.add(new Entry(3, 98.5f));
+        entries.add(new Entry(4, 98.4f));
+        entries.add(new Entry(5, 98.3f));
+        entries.add(new Entry(6, 98.7f));
+        entries.add(new Entry(7, 99));
+        entries.add(new Entry(8, 98.8f));
+        entries.add(new Entry(9, 98));
+        entries.add(new Entry(10, 98.4f));
+        entries.add(new Entry(11, 99));
+        entries.add(new Entry(12, 99.5f));
+        entries.add(new Entry(13, 99));
+        entries.add(new Entry(14, 98.3f));
+        entries.add(new Entry(15, 98.5f));
+        entries.add(new Entry(16, 98));
+//        entries.add(new Entry(17, 100));
+//        entries.add(new Entry(18, 100));
+//        entries.add(new Entry(19, 100));
+//        entries.add(new Entry(20, 100));
+//        entries.add(new Entry(21, 98));
+//        entries.add(new Entry(22, 98));
+//        entries.add(new Entry(23, 98));
+
+        return entries;
     }
 
     private void loadCandleData(){

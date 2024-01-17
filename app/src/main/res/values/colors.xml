@@ -7,4 +7,9 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="new_graph_intensity_green_light">#405FD738</color>
+    <color name="new_graph_intensity_yellow_light">#40d0d03f</color>
+    <color name="new_graph_intensity_orange_light">#40d0722d</color>
+    <color name="new_graph_intensity_red_light">#40e20c2e</color>
+    <color name="transparent">#00E20C2E</color>
 </resources>

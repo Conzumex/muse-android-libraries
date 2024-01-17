@@ -2,10 +2,13 @@ package com.conzumex.charts.renderer;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Path;
+import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Shader;
 
 import com.conzumex.charts.components.LimitLine;
 import com.conzumex.charts.components.YAxis;
@@ -293,6 +296,19 @@ public class YAxisRenderer extends AxisRenderer {
             limitLinePath.lineTo(mViewPortHandler.contentRight(), pts[1]);
 
             c.drawPath(limitLinePath, mLimitLinePaint);
+            if(l.getGradientColors()!=null) {
+                float gradientTop = 0;
+                if(l.getGradientHeight()!=-1){
+                    gradientTop = pts[1] - l.getGradientHeight();
+                }
+                mLimitLinePaint.setPathEffect(null);
+                mLimitLinePaint.setStyle(Paint.Style.FILL);
+                mLimitLinePaint.setShader(new LinearGradient(0, pts[1], 0, gradientTop, l.getGradientColors(),null, Shader.TileMode.CLAMP));
+                c.drawRect(new RectF(0, gradientTop, mViewPortHandler.contentRight(), pts[1]), mLimitLinePaint);
+                mLimitLinePaint.setShader(null);
+                mLimitLinePaint.setStyle(Paint.Style.STROKE);
+                mLimitLinePaint.setPathEffect(l.getDashPathEffect());
+            }
             limitLinePath.reset();
             // c.drawLines(pts, mLimitLinePaint);
 
