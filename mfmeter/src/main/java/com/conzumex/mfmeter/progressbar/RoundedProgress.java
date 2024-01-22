@@ -68,16 +68,16 @@ public class RoundedProgress extends View {
             radius = newCornerRadius;
 
         // Set progress bar text color via xml (If exists and isn't the default value)
-        @ColorInt int newTextColor = attributes.getColor(R.styleable.RoundedProgress_rTextColor, -1);
-        if (newTextColor != -1) textColor = newTextColor;
+        @ColorInt int newTextColor = attributes.getColor(R.styleable.RoundedProgress_rTextColor, textColor);
+        if (newTextColor != textColor) textColor = newTextColor;
 
         // Set progress bar text color via xml (If exists and isn't the default value)
-        @ColorInt int newProgressColor = attributes.getColor(R.styleable.RoundedProgress_rProgressColor, -1);
-        if (newProgressColor != -1) progressColor = newProgressColor;
+        @ColorInt int newProgressColor = attributes.getColor(R.styleable.RoundedProgress_rProgressColor, progressColor);
+        if (newProgressColor != progressColor) progressColor = newProgressColor;
 
         // Set progress bar text color via xml (If exists and isn't the default value)
-        @ColorInt int newBackgroundColor = attributes.getColor(R.styleable.RoundedProgress_rBackgroundColor, -1);
-        if (newBackgroundColor != -1) backgroundColor = newBackgroundColor;
+        @ColorInt int newBackgroundColor = attributes.getColor(R.styleable.RoundedProgress_rBackgroundColor, backgroundColor);
+        if (newBackgroundColor != backgroundColor) backgroundColor = newBackgroundColor;
 
         // Set a custom font family via its reference
         int fontId = attributes.getResourceId(R.styleable.RoundedProgress_rFontFamily,-1);

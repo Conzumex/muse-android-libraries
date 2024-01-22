@@ -166,7 +166,7 @@
         android:layout_marginTop="20dp"
         app:rProgressColor="@color/green"
         app:rBackgroundColor="#3C3C3C"
-        app:rTextColor="#F3F3F3"
+        app:rTextColor="#FFFFFF"
         app:rFontFamily="@font/nunito_bold"
         app:rTextSize="12sp"
         app:rProgress="55"
