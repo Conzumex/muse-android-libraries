@@ -158,11 +158,38 @@ public class RoundedProgress extends View {
         return textMeasureWidth;
     }
 
+    public interface TextFormatter{
+
+        String getText(int progress);
+    }
+    //setter methods
     public void setValueFormatter(TextFormatter formatter){
         this.valueFormatter = formatter;
     }
 
-    public interface TextFormatter{
-        String getText(int progress);
+    public void setTextColor(int textColor) {
+        this.textColor = textColor;
+        invalidate();
+    }
+
+    public void setProgressBackgroundColor(int backgroundColor) {
+        this.backgroundColor = backgroundColor;
+        invalidate();
+    }
+
+    public void setProgressColor(int progressColor) {
+        this.progressColor = progressColor;
+        invalidate();
+    }
+
+    public void setProgress(int curProgress) {
+        this.curProgress = curProgress;
+        invalidate();
+    }
+
+    //getter methods
+
+    public int getCurrentProgress() {
+        return curProgress;
     }
 }
