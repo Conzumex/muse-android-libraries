@@ -39,6 +39,7 @@ import com.conzumex.mfmeter.FuelIcon;
 import com.conzumex.mfmeter.FuelLog;
 import com.conzumex.mfmeter.FuelSession;
 import com.conzumex.mfmeter.MFMeter;
+import com.conzumex.mfmeter.progressbar.RoundedProgress;
 import com.conzumex.mfmeter.sleepgraph.SleepEntry;
 import com.conzumex.mfmeter.sleepgraph.SleepStageGraph;
 import com.conzumex.progressbar.ProgressTextFormatter;
@@ -91,6 +92,12 @@ public class MainActivity extends AppCompatActivity {
 
 //        roundCandle = findViewById(R.id.chart_progress_2);
         sleepGraph = findViewById(R.id.sleep_graph);
+        RoundedProgress rpBar = findViewById(R.id.pb_outer);
+        rpBar.setValueFormatter(progress -> {
+            if(progress>50)
+                return "big "+progress;
+            return progress+"%";
+        });
 
         loadChart(lineChart);
 
@@ -210,6 +217,20 @@ public class MainActivity extends AppCompatActivity {
         pbBarchart.setProgressData(entries);
         pbBarchart.disablePercentage("9");
         pbRoundchart.setProgressData(entries);
+
+//        pbOuter.setProgressTextFormatter(new ProgressTextFormatter() {
+//            @NonNull
+//            @Override
+//            public String getMinWidthString() {
+//                return "100% und tto";
+//            }
+//
+//            @NonNull
+//            @Override
+//            public String getProgressText(float progressValue) {
+//                return progressValue+"";
+//            }
+//        });
 
     }
 

@@ -7,4 +7,16 @@
         <attr name="meterSnapSessions" format="boolean" />
     </declare-styleable>
 
+
+    <declare-styleable name="RoundedProgress">
+        <attr name="rProgress" format="integer" />
+        <attr name="rProgressColor" format="reference|color" />
+        <attr name="rBackgroundColor" format="reference|color" />
+        <attr name="rTextColor" format="reference|color" />
+        <attr name="rCornerRadius" format="dimension" />
+        <attr name="rTextSize" format="dimension" />
+        <attr name="rTextPaddingStart" format="dimension" />
+        <attr name="rTextPaddingEnd" format="dimension" />
+        <attr name="rFontFamily" format="reference" />
+    </declare-styleable>
 </resources>

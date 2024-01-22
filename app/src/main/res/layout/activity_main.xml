@@ -158,6 +158,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <com.conzumex.mfmeter.progressbar.RoundedProgress
+        android:id="@+id/pb_outer"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="20dp"
+        app:rProgressColor="@color/green"
+        app:rBackgroundColor="#3C3C3C"
+        app:rTextColor="#F3F3F3"
+        app:rFontFamily="@font/nunito_bold"
+        app:rTextSize="12sp"
+        app:rProgress="55"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pb_roundchart"
+         />
+
+
 
     <!--    <com.conzumex.seekbar.DoubleValueSeekBarView-->
 <!--        android:id="@+id/seekbar"-->
