@@ -364,4 +364,24 @@ public class SleepStageGraph extends View {
         this.labelYFormatter = labelYFormatter;
     }
 
+    public void setMaxXvalue(float maxXvalue) {
+        this.maxXvalue = maxXvalue;
+    }
+
+    public void setMinXvalue(float minXvalue) {
+        this.minXvalue = minXvalue;
+    }
+
+    public void setMinYvalue(float minYvalue) {
+        this.minYvalue = minYvalue;
+    }
+
+    public void setMaxYvalue(float maxYvalue) {
+        this.maxYvalue = maxYvalue;
+    }
+
+    @Override
+    public void invalidate() {
+        super.invalidate();
+    }
 }
