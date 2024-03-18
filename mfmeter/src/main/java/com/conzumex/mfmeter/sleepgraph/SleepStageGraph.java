@@ -12,6 +12,7 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.provider.CalendarContract;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -50,12 +51,13 @@ public class SleepStageGraph extends View {
     float minXvalue=0;
     float maxYvalue=3;
     float minYvalue=0;
-    Paint mPaint,gridPaint,mBarPaint,mLinePaint,labelPaint,edgeGridPaint;
+    Paint mPaint,gridPaint,mBarPaint,mLinePaint,labelPaint,edgeGridPaint,markerPaint;
     int barHeight = 75;
     int radiusBar = 7;
     float lineWidth = 4f;
     float textSize = 25;
-    int labelCount = 6;
+    int labelCount = 4;
+    float granularity = 100f;
     float prevBarLineY = -1,prevBarLineX = -1;
     int prevBarColor = -1;
     RectF rectSquare;
@@ -64,6 +66,7 @@ public class SleepStageGraph extends View {
     int colorXLabel = Color.parseColor("#707070");
     int colorYLabel = Color.parseColor("#707070");
     int colorEdgeHighlight = Color.parseColor("#ffffff");
+    int colorMarkerLine = Color.parseColor("#ffffff");
     int colorYAxis = Color.parseColor("#707070");
     int colorTemp = Color.parseColor("#fcfcfc");
     int gridXColor = Color.parseColor("#707070");
@@ -81,11 +84,14 @@ public class SleepStageGraph extends View {
     float insideAxisWidth = 50;
     boolean highlightEdges = true;
     float edgeLineWidth = 2f;
+    float markerLineWidth = 2f;
 
     DashPathEffect gridXEffect;
     DashPathEffect gridYEffect;
     boolean highlightEdgeValues = true;
     boolean changeLabelColors = true;
+
+    float touchX=102, touchY=-1;
 
     public SleepStageGraph(Context context) {
         this(context, null, 0);
@@ -101,6 +107,7 @@ public class SleepStageGraph extends View {
         mPaint = new Paint();
         gridPaint = new Paint();
         edgeGridPaint = new Paint();
+        markerPaint = new Paint();
         mBarPaint = new Paint();
         mLinePaint = new Paint();
         labelPaint = new Paint();
@@ -123,8 +130,8 @@ public class SleepStageGraph extends View {
         chartWidth = parentViewWidth-100;
         chartHeight = parentViewHeight-100;
 
-//        int tempHeight = 600;
-//        chartHeight = tempHeight - 100;
+        int tempHeight = 600;
+        chartHeight = tempHeight - 100;
         chartGraphHeight = chartHeight - chartOffsetV;
         chartGraphWidth = chartWidth - chartOffsetH - chartPaddingH;
         chartGraphStartX = 0 + (chartOffsetH/2) + (chartPaddingH/2);
@@ -161,11 +168,41 @@ public class SleepStageGraph extends View {
 //        canvas.drawRoundRect(itemRect2,10,10,mPaint);
 
         calculateDotValues();
-        drawLabels(canvas);
+        drawLabels2(canvas);
         drawValues(canvas);
         drawAxis(canvas);
         if(highlightEdges)
             drawGraphEdges(canvas);
+        if(touchX!=-1)
+            drawMarker(canvas);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        boolean touchedArea = false;
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                float eventX = event.getRawX();
+                if(eventX>=chartGraphStartX && eventX<=chartGraphEndX) {
+                    touchX = event.getRawX();
+                    touchY = event.getRawY();
+                    touchedArea = true;
+                }
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                eventX = event.getRawX();
+                if(eventX>=chartGraphStartX && eventX<=chartGraphEndX) {
+                    touchX = event.getRawX();
+                    touchY = event.getRawY();
+                    touchedArea = true;
+                }
+                break;
+            default:
+                return false;
+        }
+        invalidate();
+        return touchedArea;
     }
 
     public void loadData(List<SleepEntry> entries){
@@ -220,10 +257,10 @@ public class SleepStageGraph extends View {
         for(int i=0;i<entries.size();i++){
             float startX = (entries.get(i).xValue * xDotValue) + chartGraphStartX;
             float endX = chartGraphEndX;
+//            endX = (8*xDotValue)+chartGraphStartX;
             xValues.add(startX);
             if(i!=entries.size()-1) endX = (entries.get(i+1).xValue*xDotValue)+chartGraphStartX;
             if(i!=entries.size()-1) xValues.add(endX);
-            Log.d("Lines","start "+startX);
             mPaint.setColor(colorTemp);
             float yPos = (entries.get(i).yValue + 1) * yDotValue;
             yPos = yPos +chartGraphStartY;
@@ -320,6 +357,124 @@ public class SleepStageGraph extends View {
         }
 //        printDebug(xLabelInterval+"",canvas);
     }
+    void drawLabels2(Canvas canvas){
+//        printDebug(xDotValue+"",canvas);
+        labelPaint.setColor(colorTemp);
+        labelPaint.setTextAlign(Paint.Align.LEFT);
+        labelPaint.setTextSize(textSize);
+        Set<Float> yVals = SleepEntry.yValsUnique(entries);
+        labelPaint.setColor(colorYLabel);
+        for(Float yVal : yVals){
+            float yPos = (yVal + 1) * yDotValue;
+            yPos = yPos +chartGraphStartY;
+            float labelVal = (yPos/yDotValue)-1;
+            yPos = yPos - (yDotValue/2);
+            yPos = chartHeight - yPos;
+            if(changeLabelColors)
+                labelPaint.setColor(getPosColor((int)labelVal));
+            canvas.drawText(labelYFormatter.getLabel(labelVal),chartGraphEndX + (chartPaddingH/2) + 25,yPos+(textSize/2),labelPaint);
+        }
+
+        //for x labels
+        labelPaint.setColor(colorXLabel);
+        gridPaint.setColor(gridYColor);
+        float xLabelInterval = (chartGraphWidth)/labelCount;
+        //for the edge lines
+        float startGridXpos = chartGraphStartX - (lineWidth/2);
+        float endGridXpos = chartGraphWidth + (lineWidth/2)+chartGraphStartX;
+        if(gridXEffect!=null)
+            gridPaint.setPathEffect(gridXEffect);
+        canvas.drawLine(startGridXpos,chartHeight,startGridXpos,0,gridPaint);
+        canvas.drawLine(endGridXpos,chartHeight,endGridXpos,0,gridPaint);
+        labelPaint.setTextAlign(Paint.Align.LEFT);
+        if(highlightEdgeValues) {
+            labelPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+            labelPaint.setColor(colorEdgeHighlight);
+        }
+        float xValueStart = 0;
+        canvas.drawText(labelXFormatter.getLabel(xValueStart),chartGraphStartX,chartGraphEndY + 50,labelPaint);
+        labelPaint.setTextAlign(Paint.Align.RIGHT);
+        if(highlightEdgeValues) {
+            labelPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+            labelPaint.setColor(colorEdgeHighlight);
+        }
+        float xValueEnd = chartGraphWidth/xDotValue;
+        canvas.drawText(labelXFormatter.getLabel(xValueEnd),chartGraphWidth+chartGraphStartX,chartGraphEndY + 50,labelPaint);
+
+        //lessing by 1 for count the labels for inside the last and first labels
+        float xLabelCountsInside = (chartGraphWidth/xDotValue)-1;
+//        printDebug(xDotValue+"",canvas);
+        labelPaint.setTextAlign(Paint.Align.CENTER);
+        labelPaint.setColor(colorXLabel);
+        labelPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
+
+//        for(int i=0;i<xLabelCountsInside;i++){
+//            float gridXpos = ((i+1)*xDotValue)+chartGraphStartX;
+//            canvas.drawLine(gridXpos,chartHeight,gridXpos,0,gridPaint);
+//            canvas.drawText(labelXFormatter.getLabel(i+1),gridXpos,chartGraphEndY + 50,labelPaint);
+//        }
+        float pointValLabel = xLabelCountsInside/labelCount;
+        for(int i=0;i<labelCount;i++){
+            float indexAvg = pointValLabel * (i+1);
+            int roundPos = Math.round(indexAvg);
+            if(roundPos == 1 || roundPos == xLabelCountsInside)   continue;
+            float gridXpos = (roundPos*xDotValue)+chartGraphStartX;
+            canvas.drawLine(gridXpos,chartHeight,gridXpos,0,gridPaint);
+            canvas.drawText(labelXFormatter.getLabel(roundPos),gridXpos,chartGraphEndY + 50,labelPaint);
+        }
+
+        gridPaint.setPathEffect(null);
+//        for(int i=0;i<labelCount+1;i++){
+//            if(gridXEffect!=null)
+//                gridPaint.setPathEffect(gridXEffect);
+//            float gridXpos = (i*xLabelInterval)+chartGraphStartX;
+//            //to make the graph connected line width include the line
+//            if(i==0)
+//                gridXpos = gridXpos - (lineWidth/2);
+//            else if(i==labelCount)
+//                gridXpos = gridXpos + (lineWidth/2);
+//
+//            canvas.drawLine(gridXpos,chartHeight,gridXpos,0,gridPaint); //Grid lines
+//            gridPaint.setPathEffect(null);
+//            labelPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
+//            if(i==0) {
+//                labelPaint.setTextAlign(Paint.Align.LEFT);
+//                if(highlightEdgeValues) {
+//                    labelPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+//                    labelPaint.setColor(colorEdgeHighlight);
+//                }
+//            }else if(i==labelCount) {
+//                labelPaint.setTextAlign(Paint.Align.RIGHT);
+//                if(highlightEdgeValues) {
+//                    labelPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+//                    labelPaint.setColor(colorEdgeHighlight);
+//                }
+//            }else {
+//                labelPaint.setTextAlign(Paint.Align.CENTER);
+//                labelPaint.setColor(colorXLabel);
+//            }
+//            //avoiding offset when calculate the x value
+//            float xValue = ((i*xLabelInterval))/xDotValue;
+//            canvas.drawText(labelXFormatter.getLabel(xValue),(i*xLabelInterval)+chartGraphStartX,chartGraphEndY + 50,labelPaint);
+//        }
+//        printDebug(xLabelInterval+"",canvas);
+    }
+
+    void drawMarker(Canvas canvas){
+        markerPaint.setStrokeWidth(markerLineWidth);
+        markerPaint.setColor(colorMarkerLine);
+        float selectedX = (touchX - chartGraphStartX) / xDotValue;
+        DecimalFormat df = new DecimalFormat("#.#");
+        selectedX = Float.valueOf(df.format(selectedX));
+        canvas.drawLine(touchX,chartHeight,touchX,0,markerPaint); //Grid lines
+        SleepMarker markerTest = new SleepMarker(getContext());
+        SleepEntry selectedEntry = getEntry(selectedX);
+        markerTest.setContent(selectedX,selectedEntry);
+        float yPos = getYPosOfEntry(selectedEntry);
+//        printDebug(yPos+"",canvas);
+        yPos = barHeight>yPos?(barHeight*3)-(barHeight-yPos):yPos;
+        markerTest.draw(canvas,touchX,yPos-barHeight,chartGraphStartX,chartGraphEndX);
+    }
 
     void calculateDotValues(){
         xDotValue = chartGraphWidth / (maxXvalue-minXvalue + 1);
@@ -328,8 +483,8 @@ public class SleepStageGraph extends View {
 
     void printDebug(String text,Canvas canvas){
         Paint paint = new Paint();
-        paint.setColor(Color.RED);
-        paint.setTextSize(15);
+        paint.setColor(Color.YELLOW);
+        paint.setTextSize(25);
         canvas.drawText(text,10,chartGraphHeight - 50,paint);
     }
 
@@ -380,6 +535,33 @@ public class SleepStageGraph extends View {
         this.maxYvalue = maxYvalue;
     }
 
+    public SleepEntry getEntry(float xValue){
+        if(entries==null||entries.isEmpty())
+            return null;
+        SleepEntry selectedEntry = entries.get(entries.size()-1);
+        for(int i=entries.size()-1;i>=0;i--){
+            if(entries.get(i).xValue<=xValue) {
+                selectedEntry = entries.get(i);
+                break;
+            }
+        }
+        if (selectedEntry==null)    selectedEntry = entries.get(0);
+        return selectedEntry;
+    }
+
+    public float getYPosOfEntry(SleepEntry entry){
+        if(entry==null||entries==null||entries.isEmpty())
+            return -1;
+        Collections.sort(yValues);
+        return yValues.get((int) ((maxYvalue - minYvalue)-((int) entry.yValue)));
+    }
+    public float getXPosOfEntry(SleepEntry entry){
+        if(entry==null||entries==null||entries.isEmpty())
+            return -1;
+        int pos = entries.indexOf(entry);
+        if(pos==-1) return -1;
+        return xValues.get(pos);
+    }
     @Override
     public void invalidate() {
         super.invalidate();

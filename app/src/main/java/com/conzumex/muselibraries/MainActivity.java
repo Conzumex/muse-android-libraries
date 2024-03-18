@@ -203,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
             else
                 return "Awake";
         });
+//        sleepGraph.setMaxXvalue(20);
 
 
 //        loadCandleData();

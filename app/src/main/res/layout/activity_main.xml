@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000">
+    android:background="#1B1B1B">
 
 <!--    <com.conzumex.progressbar.RoundedProgressBar-->
 <!--        android:id="@+id/prog_test"-->
@@ -83,6 +83,7 @@
     <com.conzumex.mfmeter.sleepgraph.SleepStageGraph
         android:id="@+id/sleep_graph"
         android:layout_width="0dp"
+        android:layout_marginTop="10dp"
         android:layout_height="200dp"
         app:radius="10dp"
         app:layout_constraintEnd_toEndOf="parent"
