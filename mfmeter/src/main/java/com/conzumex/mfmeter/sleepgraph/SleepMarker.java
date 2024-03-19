@@ -46,8 +46,8 @@ public class SleepMarker extends RelativeLayout {
         inflated.layout(0, 0, inflated.getMeasuredWidth(), inflated.getMeasuredHeight());
     }
 
-    public void setContent(float xValue,SleepEntry entry){
-        tvValue.setText(xValue+" : "+entry.yValue);
+    public void setContent(CharSequence content){
+        tvValue.setText(content);
         measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
                 MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
         layout(0, 0, getMeasuredWidth(), getMeasuredHeight());
@@ -61,7 +61,7 @@ public class SleepMarker extends RelativeLayout {
         float midPoint = posX-(halfWidth);
         float midPointY = posY-(getHeight()/2);
         // translate to the correct position and draw
-//        midPoint = (midPoint-halfWidth)<minX?minX+((midPoint-halfWidth)-minX):midPoint;
+        midPoint = midPoint<minX?midPoint+(minX-midPoint):(midPoint+halfWidth*2)>maxX?midPoint-((midPoint+halfWidth*2)-maxX):midPoint;
         canvas.translate(midPoint , midPointY);
         draw(canvas);
         canvas.restoreToCount(saveId);

@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Set;
 
 public class SleepEntry implements Comparable<SleepEntry> {
-    float xValue;
-    float yValue;
+    public float xValue;
+    public float yValue;
 
     public SleepEntry(float xValue, float yValue) {
         this.xValue = xValue;

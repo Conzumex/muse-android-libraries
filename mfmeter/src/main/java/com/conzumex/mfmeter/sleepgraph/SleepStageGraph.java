@@ -83,6 +83,10 @@ public class SleepStageGraph extends View {
     boolean drawXAxis = true,drawYAxis = false;
     float insideAxisWidth = 50;
     boolean highlightEdges = true;
+    boolean highlightClick = true;
+    boolean drawMarkers = true;
+    int markerLayout = R.layout.marker_default;
+    MarkerFormatter markerFormatter;
     float edgeLineWidth = 2f;
     float markerLineWidth = 2f;
 
@@ -173,7 +177,7 @@ public class SleepStageGraph extends View {
         drawAxis(canvas);
         if(highlightEdges)
             drawGraphEdges(canvas);
-        if(touchX!=-1)
+        if(touchX!=-1 && (highlightClick||drawMarkers))
             drawMarker(canvas);
     }
 
@@ -466,14 +470,22 @@ public class SleepStageGraph extends View {
         float selectedX = (touchX - chartGraphStartX) / xDotValue;
         DecimalFormat df = new DecimalFormat("#.#");
         selectedX = Float.valueOf(df.format(selectedX));
-        canvas.drawLine(touchX,chartHeight,touchX,0,markerPaint); //Grid lines
-        SleepMarker markerTest = new SleepMarker(getContext());
-        SleepEntry selectedEntry = getEntry(selectedX);
-        markerTest.setContent(selectedX,selectedEntry);
-        float yPos = getYPosOfEntry(selectedEntry);
-//        printDebug(yPos+"",canvas);
-        yPos = barHeight>yPos?(barHeight*3)-(barHeight-yPos):yPos;
-        markerTest.draw(canvas,touchX,yPos-barHeight,chartGraphStartX,chartGraphEndX);
+        if(highlightClick)
+            canvas.drawLine(touchX,chartHeight,touchX,0,markerPaint); //Grid lines
+
+        //drawing marker views
+        if(drawMarkers) {
+            SleepMarker markerTest = new SleepMarker(getContext(),markerLayout);
+            SleepEntry selectedEntry = getEntry(selectedX);
+            if(markerFormatter==null)
+                markerTest.setContent(selectedX+"");
+            else
+                markerTest.setContent(markerFormatter.onContent(selectedX,selectedEntry));
+
+            float yPos = getYPosOfEntry(selectedEntry);
+            yPos = barHeight > yPos ? (barHeight * 3) - (barHeight - yPos) : yPos;
+            markerTest.draw(canvas, touchX, yPos - barHeight, chartGraphStartX, chartGraphEndX);
+        }
     }
 
     void calculateDotValues(){
@@ -562,6 +574,13 @@ public class SleepStageGraph extends View {
         if(pos==-1) return -1;
         return xValues.get(pos);
     }
+    public void setMarkerFormatter(MarkerFormatter mFormatter){
+        markerFormatter = mFormatter;
+    }
+    public interface MarkerFormatter{
+        CharSequence onContent(float x,SleepEntry entry);
+    }
+
     @Override
     public void invalidate() {
         super.invalidate();

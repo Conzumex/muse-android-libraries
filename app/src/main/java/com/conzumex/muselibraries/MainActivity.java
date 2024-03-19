@@ -10,6 +10,7 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
@@ -203,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
             else
                 return "Awake";
         });
+        sleepGraph.setMarkerFormatter((x, entry) -> Html.fromHtml("<font color='yellow'>Val : </font>"+x));
 //        sleepGraph.setMaxXvalue(20);
 
 
