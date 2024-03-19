@@ -21,6 +21,8 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.OverScroller;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.res.ResourcesCompat;
 
@@ -45,17 +47,20 @@ public class SleepStageGraph extends View {
     float chartGraphEndX,chartGraphEndY;
     float xDotValue,yDotValue;
     int axisWidth = 1;
-    /**This maxValue will  be draw the last bar till here
+    /** This maxValue will  be draw the last bar till here
      * */
     float maxXvalue=18f;
     float minXvalue=0;
     float maxYvalue=3;
     float minYvalue=0;
-    Paint mPaint,gridPaint,mBarPaint,mLinePaint,labelPaint,edgeGridPaint,markerPaint;
+    Paint mPaint,gridPaint,mBarPaint,mLinePaint,labelPaint,edgeGridPaint,markerPaint,noDataPaint;
     int barHeight = 75;
     int radiusBar = 7;
     float lineWidth = 4f;
     float textSize = 25;
+    Typeface fontFace = Typeface.DEFAULT;
+    String emptyText = "No Data";
+    int emptyTextColor = R.color.white;
     int labelCount = 4;
     float granularity = 100f;
     float prevBarLineY = -1,prevBarLineX = -1;
@@ -87,6 +92,9 @@ public class SleepStageGraph extends View {
     boolean drawMarkers = true;
     int markerLayout = R.layout.marker_default;
     MarkerFormatter markerFormatter;
+    ChartListener mClickListener;
+    SelectedChangeListener mChangeListener;
+    SleepEntry selectedGraphEntry = null;
     float edgeLineWidth = 2f;
     float markerLineWidth = 2f;
 
@@ -112,6 +120,7 @@ public class SleepStageGraph extends View {
         gridPaint = new Paint();
         edgeGridPaint = new Paint();
         markerPaint = new Paint();
+        noDataPaint = new Paint();
         mBarPaint = new Paint();
         mLinePaint = new Paint();
         labelPaint = new Paint();
@@ -172,13 +181,20 @@ public class SleepStageGraph extends View {
 //        canvas.drawRoundRect(itemRect2,10,10,mPaint);
 
         calculateDotValues();
-        drawLabels2(canvas);
-        drawValues(canvas);
+        drawLabels(canvas);
+//        if(entries.size()>20)
+        if(entries!=null && !entries.isEmpty())
+            drawValues(canvas);
+        else
+            drawEmptyData(canvas);
         drawAxis(canvas);
-        if(highlightEdges)
-            drawGraphEdges(canvas);
-        if(touchX!=-1 && (highlightClick||drawMarkers))
-            drawMarker(canvas);
+        if(entries!=null && !entries.isEmpty()) {
+//        if(entries.size()>20) {
+            if (highlightEdges)
+                drawGraphEdges(canvas);
+            if (touchX != -1)
+                drawMarker(canvas);
+        }
     }
 
     @Override
@@ -247,6 +263,13 @@ public class SleepStageGraph extends View {
             canvas.drawLine(0,chartHeight,chartWidth+insideAxisWidth,chartHeight,mPaint);   //xAxis
     }
 
+    void drawEmptyData(Canvas canvas){
+        noDataPaint.setColor(getResources().getColor(emptyTextColor));
+        noDataPaint.setTextSize(textSize);
+        noDataPaint.setTypeface(fontFace);
+        canvas.drawText(emptyText,chartWidth/2,chartHeight/2,noDataPaint);
+    }
+
     void drawValues(Canvas canvas){
         Collections.sort(entries);
         mLinePaint.setStrokeWidth(lineWidth);
@@ -301,68 +324,9 @@ public class SleepStageGraph extends View {
             prevBarLineX = endX;
             prevBarColor = barColor;
         }
-
-//        printDebug(tempDeb,canvas);
-
-
     }
 
     void drawLabels(Canvas canvas){
-        labelPaint.setColor(colorTemp);
-        labelPaint.setTextAlign(Paint.Align.LEFT);
-        labelPaint.setTextSize(textSize);
-        Set<Float> yVals = SleepEntry.yValsUnique(entries);
-        labelPaint.setColor(colorYLabel);
-        for(Float yVal : yVals){
-            float yPos = (yVal + 1) * yDotValue;
-            yPos = yPos +chartGraphStartY;
-            float labelVal = (yPos/yDotValue)-1;
-            yPos = yPos - (yDotValue/2);
-            yPos = chartHeight - yPos;
-            if(changeLabelColors)
-                labelPaint.setColor(getPosColor((int)labelVal));
-            canvas.drawText(labelYFormatter.getLabel(labelVal),chartGraphEndX + (chartPaddingH/2) + 25,yPos+(textSize/2),labelPaint);
-        }
-        labelPaint.setColor(colorXLabel);
-        gridPaint.setColor(gridYColor);
-        float xLabelInterval = (chartGraphWidth)/labelCount;
-        for(int i=0;i<labelCount+1;i++){
-            if(gridXEffect!=null)
-                gridPaint.setPathEffect(gridXEffect);
-            float gridXpos = (i*xLabelInterval)+chartGraphStartX;
-            //to make the graph connected line width include the line
-            if(i==0)
-                gridXpos = gridXpos - (lineWidth/2);
-            else if(i==labelCount)
-                gridXpos = gridXpos + (lineWidth/2);
-
-            canvas.drawLine(gridXpos,chartHeight,gridXpos,0,gridPaint); //Grid lines
-            gridPaint.setPathEffect(null);
-            labelPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
-            if(i==0) {
-                labelPaint.setTextAlign(Paint.Align.LEFT);
-                if(highlightEdgeValues) {
-                    labelPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-                    labelPaint.setColor(colorEdgeHighlight);
-                }
-            }else if(i==labelCount) {
-                labelPaint.setTextAlign(Paint.Align.RIGHT);
-                if(highlightEdgeValues) {
-                    labelPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-                    labelPaint.setColor(colorEdgeHighlight);
-                }
-            }else {
-                labelPaint.setTextAlign(Paint.Align.CENTER);
-                labelPaint.setColor(colorXLabel);
-            }
-            //avoiding offset when calculate the x value
-            float xValue = ((i*xLabelInterval))/xDotValue;
-            canvas.drawText(labelXFormatter.getLabel(xValue),(i*xLabelInterval)+chartGraphStartX,chartGraphEndY + 50,labelPaint);
-        }
-//        printDebug(xLabelInterval+"",canvas);
-    }
-    void drawLabels2(Canvas canvas){
-//        printDebug(xDotValue+"",canvas);
         labelPaint.setColor(colorTemp);
         labelPaint.setTextAlign(Paint.Align.LEFT);
         labelPaint.setTextSize(textSize);
@@ -392,14 +356,14 @@ public class SleepStageGraph extends View {
         canvas.drawLine(endGridXpos,chartHeight,endGridXpos,0,gridPaint);
         labelPaint.setTextAlign(Paint.Align.LEFT);
         if(highlightEdgeValues) {
-            labelPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+            labelPaint.setTypeface(Typeface.create(fontFace, Typeface.BOLD));
             labelPaint.setColor(colorEdgeHighlight);
         }
         float xValueStart = 0;
         canvas.drawText(labelXFormatter.getLabel(xValueStart),chartGraphStartX,chartGraphEndY + 50,labelPaint);
         labelPaint.setTextAlign(Paint.Align.RIGHT);
         if(highlightEdgeValues) {
-            labelPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+            labelPaint.setTypeface(Typeface.create(fontFace, Typeface.BOLD));
             labelPaint.setColor(colorEdgeHighlight);
         }
         float xValueEnd = chartGraphWidth/xDotValue;
@@ -407,16 +371,10 @@ public class SleepStageGraph extends View {
 
         //lessing by 1 for count the labels for inside the last and first labels
         float xLabelCountsInside = (chartGraphWidth/xDotValue)-1;
-//        printDebug(xDotValue+"",canvas);
         labelPaint.setTextAlign(Paint.Align.CENTER);
         labelPaint.setColor(colorXLabel);
-        labelPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
+        labelPaint.setTypeface(Typeface.create(fontFace, Typeface.NORMAL));
 
-//        for(int i=0;i<xLabelCountsInside;i++){
-//            float gridXpos = ((i+1)*xDotValue)+chartGraphStartX;
-//            canvas.drawLine(gridXpos,chartHeight,gridXpos,0,gridPaint);
-//            canvas.drawText(labelXFormatter.getLabel(i+1),gridXpos,chartGraphEndY + 50,labelPaint);
-//        }
         float pointValLabel = xLabelCountsInside/labelCount;
         for(int i=0;i<labelCount;i++){
             float indexAvg = pointValLabel * (i+1);
@@ -428,40 +386,6 @@ public class SleepStageGraph extends View {
         }
 
         gridPaint.setPathEffect(null);
-//        for(int i=0;i<labelCount+1;i++){
-//            if(gridXEffect!=null)
-//                gridPaint.setPathEffect(gridXEffect);
-//            float gridXpos = (i*xLabelInterval)+chartGraphStartX;
-//            //to make the graph connected line width include the line
-//            if(i==0)
-//                gridXpos = gridXpos - (lineWidth/2);
-//            else if(i==labelCount)
-//                gridXpos = gridXpos + (lineWidth/2);
-//
-//            canvas.drawLine(gridXpos,chartHeight,gridXpos,0,gridPaint); //Grid lines
-//            gridPaint.setPathEffect(null);
-//            labelPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
-//            if(i==0) {
-//                labelPaint.setTextAlign(Paint.Align.LEFT);
-//                if(highlightEdgeValues) {
-//                    labelPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-//                    labelPaint.setColor(colorEdgeHighlight);
-//                }
-//            }else if(i==labelCount) {
-//                labelPaint.setTextAlign(Paint.Align.RIGHT);
-//                if(highlightEdgeValues) {
-//                    labelPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-//                    labelPaint.setColor(colorEdgeHighlight);
-//                }
-//            }else {
-//                labelPaint.setTextAlign(Paint.Align.CENTER);
-//                labelPaint.setColor(colorXLabel);
-//            }
-//            //avoiding offset when calculate the x value
-//            float xValue = ((i*xLabelInterval))/xDotValue;
-//            canvas.drawText(labelXFormatter.getLabel(xValue),(i*xLabelInterval)+chartGraphStartX,chartGraphEndY + 50,labelPaint);
-//        }
-//        printDebug(xLabelInterval+"",canvas);
     }
 
     void drawMarker(Canvas canvas){
@@ -470,13 +394,18 @@ public class SleepStageGraph extends View {
         float selectedX = (touchX - chartGraphStartX) / xDotValue;
         DecimalFormat df = new DecimalFormat("#.#");
         selectedX = Float.valueOf(df.format(selectedX));
+        SleepEntry selectedEntry = getEntry(selectedX);
+        if(mChangeListener!=null && selectedEntry!=selectedGraphEntry)
+            mChangeListener.onChange(selectedGraphEntry,selectedEntry);
+        selectedGraphEntry = selectedEntry;
+        if(mClickListener!=null)
+            mClickListener.onClick(selectedX,selectedEntry);
         if(highlightClick)
             canvas.drawLine(touchX,chartHeight,touchX,0,markerPaint); //Grid lines
 
         //drawing marker views
         if(drawMarkers) {
             SleepMarker markerTest = new SleepMarker(getContext(),markerLayout);
-            SleepEntry selectedEntry = getEntry(selectedX);
             if(markerFormatter==null)
                 markerTest.setContent(selectedX+"");
             else
@@ -516,33 +445,41 @@ public class SleepStageGraph extends View {
         }
     }
 
+    /** set the dash effect for the grid lines Vertical*/
     public void setGridXDash(float width, float gap){
         this.gridXEffect = new DashPathEffect(new float[]{width,gap}, 0);
     }
+    /** set the dash effect for the grid lines Horizontal*/
     public void setGridYDash(float width, float gap){
         this.gridYEffect = new DashPathEffect(new float[]{width,gap}, 0);
     }
 
+    /** format the labels for xAxis*/
     public void setLabelXFormatter(labelFormatX labelXFormatter) {
         this.labelXFormatter = labelXFormatter;
     }
 
+    /** format the labels for yAxis*/
     public void setLabelYFormatter(labelFormatY labelYFormatter) {
         this.labelYFormatter = labelYFormatter;
     }
 
+    /** set maximum X Value*/
     public void setMaxXvalue(float maxXvalue) {
         this.maxXvalue = maxXvalue;
     }
 
+    /** set minimum X Value*/
     public void setMinXvalue(float minXvalue) {
         this.minXvalue = minXvalue;
     }
 
+    /** set minimum Y Value*/
     public void setMinYvalue(float minYvalue) {
         this.minYvalue = minYvalue;
     }
 
+    /** set max Y Value*/
     public void setMaxYvalue(float maxYvalue) {
         this.maxYvalue = maxYvalue;
     }
@@ -551,36 +488,105 @@ public class SleepStageGraph extends View {
         if(entries==null||entries.isEmpty())
             return null;
         SleepEntry selectedEntry = entries.get(entries.size()-1);
+        float minX = selectedEntry.xValue,maxX = -1;
         for(int i=entries.size()-1;i>=0;i--){
-            if(entries.get(i).xValue<=xValue) {
-                selectedEntry = entries.get(i);
-                break;
+            minX = Math.min(entries.get(i).xValue,minX);
+            if(entries.get(i).xValueClose==-1) {
+                if (entries.get(i).xValue <= xValue) {
+                    selectedEntry = entries.get(i);
+                    break;
+                }
+            }else{
+                maxX = Math.max(maxX,entries.get(i).xValueClose);
+                if (entries.get(i).xValue <= xValue && entries.get(i).xValueClose >= xValue) {
+                    selectedEntry = entries.get(i);
+                    break;
+                }
             }
         }
         if (selectedEntry==null)    selectedEntry = entries.get(0);
+        if(maxX!=-1 && (xValue < minX || xValue >maxX))
+            return null;
         return selectedEntry;
     }
 
-    public float getYPosOfEntry(SleepEntry entry){
+
+    private float getYPosOfEntry(SleepEntry entry){
         if(entry==null||entries==null||entries.isEmpty())
             return -1;
         Collections.sort(yValues);
         return yValues.get((int) ((maxYvalue - minYvalue)-((int) entry.yValue)));
     }
-    public float getXPosOfEntry(SleepEntry entry){
+    private float getXPosOfEntry(SleepEntry entry){
         if(entry==null||entries==null||entries.isEmpty())
             return -1;
         int pos = entries.indexOf(entry);
         if(pos==-1) return -1;
         return xValues.get(pos);
     }
+
+    /** Format the marker text as String */
     public void setMarkerFormatter(MarkerFormatter mFormatter){
         markerFormatter = mFormatter;
     }
     public interface MarkerFormatter{
-        CharSequence onContent(float x,SleepEntry entry);
+        @SuppressWarnings("ConstantConditions")
+        CharSequence onContent(float x,@Nullable SleepEntry entry);
+    }
+    /** Listener for the chart item clicks*/
+    public void setChartClickListener(ChartListener mClickListener){
+        this.mClickListener = mClickListener;
+    }
+    public interface ChartListener{
+        @SuppressWarnings("ConstantConditions")
+        void onClick(float x,@Nullable SleepEntry entry);
+    }
+    /** Listener for the selected item changes by checking the x value */
+    public void setSelectedChangeListener(SelectedChangeListener mListener){
+        mChangeListener = mListener;
+    }
+    public interface SelectedChangeListener{
+        @SuppressWarnings("ConstantConditions")
+        void onChange(@Nullable SleepEntry oldEntry, @Nullable SleepEntry newEntry);
+    }
+    /** make the graph clicked markerview enabled or disabled */
+    public void setDrawMarkers(boolean mValue){
+        drawMarkers = mValue;
     }
 
+    /** set layout for marker layout. Ensure that the layout contains a textview with id of 'textview'*/
+    public void setMarkerLayout(int markerLayout){
+        this.markerLayout = markerLayout;
+    }
+    /** make the graph clicked line indicator enabled or disabled */
+    public void setHighlightClick(boolean mValue){
+        highlightClick = mValue;
+    }
+    /** set the edge highlighting lines colors */
+    public void setColorMarkerLine(@ColorInt int value){
+        this.colorMarkerLine = value;
+    }
+    /** set the edge highlighting lines colors */
+    public void setColorEdgeHighlight(@ColorInt int colorEdgeHighlight){
+        this.colorEdgeHighlight = colorEdgeHighlight;
+    }
+    /** make the graph edges highlighted or disabled */
+    public void setHighlightEdges(boolean mValue){
+        highlightEdges = mValue;
+    }
+
+    /** set text to be displayed when data is empty*/
+    public void setEmptyText(String text){
+        emptyText = text;
+    }
+    /** set text color to the no data text*/
+    public void setEmptyTextColor(@ColorInt int color){
+        emptyTextColor = color;
+    }
+    /** set font family for the texts*/
+    public void setFontFace(Typeface fontFace){
+        this.fontFace = fontFace;
+    }
     @Override
     public void invalidate() {
         super.invalidate();

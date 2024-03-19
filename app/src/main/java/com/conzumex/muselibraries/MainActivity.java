@@ -1,12 +1,14 @@
 package com.conzumex.muselibraries;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.res.ResourcesCompat;
 
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -190,9 +192,9 @@ public class MainActivity extends AppCompatActivity {
         sleepEntries.add(new SleepEntry(4,3));
         sleepEntries.add(new SleepEntry(6,2));
         sleepEntries.add(new SleepEntry(7,0));
-        sleepEntries.add(new SleepEntry(8,2));
+        sleepEntries.add(new SleepEntry(8,2,10));
 
-        sleepGraph.loadData(sleepEntries);
+        sleepGraph.loadData(new ArrayList<>());
         sleepGraph.setLabelXFormatter(value -> ((int)value)+" am");
         sleepGraph.setLabelYFormatter(value -> {
             if(value==0)
@@ -205,6 +207,14 @@ public class MainActivity extends AppCompatActivity {
                 return "Awake";
         });
         sleepGraph.setMarkerFormatter((x, entry) -> Html.fromHtml("<font color='yellow'>Val : </font>"+x));
+        sleepGraph.setChartClickListener((x, entry) -> {
+//            Log.d("Clicked",entry.xValue+"");
+            Log.d("Clicked",entry!=null?entry.xValue+"":"null");
+        });
+        sleepGraph.setSelectedChangeListener((oldEntry, newEntry) -> {
+            Log.d("ClickCheck",newEntry!=null?newEntry.xValue+"":"null");
+        });
+        sleepGraph.setFontFace(ResourcesCompat.getFont(this, R.font.rb_medium));
 //        sleepGraph.setMaxXvalue(20);
 
 
