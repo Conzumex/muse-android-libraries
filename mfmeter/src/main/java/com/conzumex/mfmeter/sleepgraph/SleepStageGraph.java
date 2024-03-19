@@ -49,7 +49,7 @@ public class SleepStageGraph extends View {
     int axisWidth = 1;
     /** This maxValue will  be draw the last bar till here
      * */
-    float maxXvalue=18f;
+    float maxXvalue=8f;
     float minXvalue=0;
     float maxYvalue=3;
     float minYvalue=0;
@@ -103,7 +103,7 @@ public class SleepStageGraph extends View {
     boolean highlightEdgeValues = true;
     boolean changeLabelColors = true;
 
-    float touchX=102, touchY=-1;
+    float touchX=-1, touchY=-1;
 
     public SleepStageGraph(Context context) {
         this(context, null, 0);
@@ -130,8 +130,10 @@ public class SleepStageGraph extends View {
 
         gridXEffect = new DashPathEffect(new float[]{10,10}, 0);
 
-        loadDummyData();
+        if(isInEditMode())
+            loadDummyData();
     }
+
 
 
     @Override
@@ -143,8 +145,10 @@ public class SleepStageGraph extends View {
         chartWidth = parentViewWidth-100;
         chartHeight = parentViewHeight-100;
 
-        int tempHeight = 600;
-        chartHeight = tempHeight - 100;
+        if(isInEditMode()) {
+            int tempHeight = 600;
+            chartHeight = tempHeight - 100;
+        }
         chartGraphHeight = chartHeight - chartOffsetV;
         chartGraphWidth = chartWidth - chartOffsetH - chartPaddingH;
         chartGraphStartX = 0 + (chartOffsetH/2) + (chartPaddingH/2);
@@ -267,7 +271,7 @@ public class SleepStageGraph extends View {
         noDataPaint.setColor(getResources().getColor(emptyTextColor));
         noDataPaint.setTextSize(textSize);
         noDataPaint.setTypeface(fontFace);
-        canvas.drawText(emptyText,chartWidth/2,chartHeight/2,noDataPaint);
+        canvas.drawText(emptyText,chartGraphWidth/2,chartGraphHeight/2,noDataPaint);
     }
 
     void drawValues(Canvas canvas){

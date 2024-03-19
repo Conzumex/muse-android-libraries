@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
         sleepEntries.add(new SleepEntry(7,0));
         sleepEntries.add(new SleepEntry(8,2,10));
 
-        sleepGraph.loadData(new ArrayList<>());
+//        sleepGraph.loadData(new ArrayList<>());
         sleepGraph.setLabelXFormatter(value -> ((int)value)+" am");
         sleepGraph.setLabelYFormatter(value -> {
             if(value==0)
@@ -215,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("ClickCheck",newEntry!=null?newEntry.xValue+"":"null");
         });
         sleepGraph.setFontFace(ResourcesCompat.getFont(this, R.font.rb_medium));
+        sleepGraph.setEmptyText("Nothing entered");
 //        sleepGraph.setMaxXvalue(20);
 
 
