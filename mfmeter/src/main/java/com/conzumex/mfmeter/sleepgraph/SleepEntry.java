@@ -7,10 +7,16 @@ import java.util.Set;
 public class SleepEntry implements Comparable<SleepEntry> {
     public float xValue;
     public float yValue;
+    public float xValueClose =-1;
 
     public SleepEntry(float xValue, float yValue) {
         this.xValue = xValue;
         this.yValue = yValue;
+    }
+    public SleepEntry(float xValue, float yValue,float xValueClose) {
+        this.xValue = xValue;
+        this.yValue = yValue;
+        this.xValueClose = xValueClose;
     }
 
     @Override

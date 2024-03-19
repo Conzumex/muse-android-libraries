@@ -47,7 +47,7 @@ public class SleepStageGraph extends View {
     int axisWidth = 1;
     /**This maxValue will  be draw the last bar till here
      * */
-    float maxXvalue=8f;
+    float maxXvalue=18f;
     float minXvalue=0;
     float maxYvalue=3;
     float minYvalue=0;
@@ -221,7 +221,7 @@ public class SleepStageGraph extends View {
         entries.add(new SleepEntry(4,3));
         entries.add(new SleepEntry(6,2));
         entries.add(new SleepEntry(7,0));
-        entries.add(new SleepEntry(8,2));
+        entries.add(new SleepEntry(8,2,9));
     }
 
     void drawGraphEdges(Canvas canvas){
@@ -260,7 +260,7 @@ public class SleepStageGraph extends View {
         prevBarColor = -1;
         for(int i=0;i<entries.size();i++){
             float startX = (entries.get(i).xValue * xDotValue) + chartGraphStartX;
-            float endX = chartGraphEndX;
+            float endX = entries.get(i).xValueClose!=-1?(entries.get(i).xValueClose * xDotValue)+chartGraphStartX:chartGraphEndX;
 //            endX = (8*xDotValue)+chartGraphStartX;
             xValues.add(startX);
             if(i!=entries.size()-1) endX = (entries.get(i+1).xValue*xDotValue)+chartGraphStartX;
