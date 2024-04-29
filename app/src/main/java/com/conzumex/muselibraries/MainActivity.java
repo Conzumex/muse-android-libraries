@@ -38,6 +38,7 @@ import com.conzumex.charts.data.LineDataSet;
 import com.conzumex.charts.formatter.IAxisValueFormatter;
 import com.conzumex.charts.highlight.Highlight;
 import com.conzumex.charts.listener.OnChartValueSelectedListener;
+import com.conzumex.circleseekbar.DropletSeekBar;
 import com.conzumex.mfmeter.FuelIcon;
 import com.conzumex.mfmeter.FuelLog;
 import com.conzumex.mfmeter.FuelSession;
@@ -124,6 +125,14 @@ public class MainActivity extends AppCompatActivity {
         btn.setOnClickListener(vew->{
             meter.scrollToSnapPos(3);
         });
+
+        DropletSeekBar dropletSeekBar = findViewById(R.id.seekbar_drops);
+        dropletSeekBar.setProgressColor(Color.RED);
+        dropletSeekBar.setProgressGradient(new int[]{Color.parseColor("#F45B4D"),
+                Color.parseColor("#F2FFBE"),
+                Color.parseColor("#50C399")
+        });
+        dropletSeekBar.setProgress(43);
 
 //        rbVertical.setProgressTextFormatter(new ProgressTextFormatter() {
 //            @NonNull
