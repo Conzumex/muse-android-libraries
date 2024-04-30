@@ -208,7 +208,7 @@ public class CircleSeekBar extends View {
         mArcWidth = (int) (density * mArcWidth);
         mTextSize = (int) (density * mTextSize);
 
-        mThumbDrawable = ContextCompat.getDrawable(context, R.drawable.ic_circle_seekbar);
+        mThumbDrawable = ContextCompat.getDrawable(context, R.drawable.ic_ring_strain_goal_flag);
         if (attrs != null) {
             final TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CircleSeekBar, 0, 0);
             Drawable indicator = typedArray.getDrawable(R.styleable.CircleSeekBar_csb_thumbDrawable);
@@ -329,8 +329,8 @@ public class CircleSeekBar extends View {
             canvas.drawText(String.valueOf(mProgressDisplay), xPos, yPos, mTextPaint);
         }
 
-//        if(isInEditMode())
-//            canvas.drawPaint(new Paint());
+        if(isInEditMode())
+            canvas.drawPaint(new Paint());
 
         // draw the arc and progress
         canvas.drawCircle(mCenterX, mCenterY, mCircleRadius, mArcPaint);
@@ -353,7 +353,10 @@ public class CircleSeekBar extends View {
         int mOuterThumbX = (int) (mCenterX + (mCircleRadius+mThumbSize*1.5) * Math.cos(tempAngle));
         int mOuterThumbY = (int) (mCenterY - (mCircleRadius+mThumbSize*1.5) * Math.sin(tempAngle));
 
-        canvas.drawLine(tempMThumbX,tempMThumbY,mOuterThumbX,mOuterThumbY,mDashPaint);
+        int mOuterLineX = (int) (mCenterX + (mCircleRadius+mThumbSize) * Math.cos(tempAngle));
+        int mOuterLineY = (int) (mCenterY - (mCircleRadius+mThumbSize) * Math.sin(tempAngle));
+
+        canvas.drawLine(tempMThumbX,tempMThumbY,mOuterLineX,mOuterLineY,mDashPaint);
         canvas.drawArc(mArcRect, ANGLE_OFFSET, mProgressSweep, false, mProgressPaint);
         canvas.drawArc(mSecondaryArcRect, ANGLE_OFFSET, mSecondaryProgressSweep, false, mSecondaryProgressPaint);
 

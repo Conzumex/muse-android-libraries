@@ -31,7 +31,7 @@
         <attr name="currentProgress" format="integer"/>
         <attr name="thumbDrawable" format="reference"/>
         <attr name="thumbSize" format="dimension" />
-<!--        Pass gradient Colors as colors array-->
+        <!-- Pass gradient Colors as colors array -->
         <attr name="gradientColors" format="reference" />
     </declare-styleable>
 
