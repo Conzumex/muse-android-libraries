@@ -348,14 +348,14 @@ public class DropletSeekBar extends View {
         progressPosition = (currentProgress * progressStep) + minProgress;
 
 //        printDebug(maxProgress+""+" -"+ minProgress+"",canvas);
-        if(isInEditMode()) {
-            Paint bg = new Paint();
-            bg.setColor(Color.BLACK);
-
-//            bg.setShader(tempShader);
-//            canvas.drawPaint(bg);
-            canvas.drawRect(new Rect(0,0,getWidth(),150),bg);
-        }
+//        if(isInEditMode()) {
+//            Paint bg = new Paint();
+//            bg.setColor(Color.BLACK);
+//
+////            bg.setShader(tempShader);
+////            canvas.drawPaint(bg);
+//            canvas.drawRect(new Rect(0,0,getWidth(),150),bg);
+//        }
         mProgressPaint.setStrokeWidth(progressWidth);
         mProgressPaint.setStrokeCap(Paint.Cap.ROUND);
         if(gradientColors==null)
