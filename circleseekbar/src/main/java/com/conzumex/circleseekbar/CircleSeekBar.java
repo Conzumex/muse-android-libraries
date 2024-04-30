@@ -348,7 +348,7 @@ public class CircleSeekBar extends View {
         int tempMThumbX = (int) (mCenterX + mCircleRadius * Math.cos(tempAngle));
         int tempMThumbY = (int) (mCenterY - mCircleRadius * Math.sin(tempAngle));
 
-        printDebug("radius "+mCircleRadius+",    arcwidth    "+mProgressWidth+" : "+tempMThumbY+" sweep "+mProgressSweep,canvas);
+//        printDebug("radius "+mCircleRadius+",    arcwidth    "+mProgressWidth+" : "+tempMThumbY+" sweep "+mProgressSweep,canvas);
 
         int mOuterThumbX = (int) (mCenterX + (mCircleRadius+mThumbSize*1.5) * Math.cos(tempAngle));
         int mOuterThumbY = (int) (mCenterY - (mCircleRadius+mThumbSize*1.5) * Math.sin(tempAngle));
