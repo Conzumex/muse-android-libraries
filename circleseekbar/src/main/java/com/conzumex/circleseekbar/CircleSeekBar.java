@@ -329,8 +329,8 @@ public class CircleSeekBar extends View {
             canvas.drawText(String.valueOf(mProgressDisplay), xPos, yPos, mTextPaint);
         }
 
-        if(isInEditMode())
-            canvas.drawPaint(new Paint());
+//        if(isInEditMode())
+//            canvas.drawPaint(new Paint());
 
         // draw the arc and progress
         canvas.drawCircle(mCenterX, mCenterY, mCircleRadius, mArcPaint);
