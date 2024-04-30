@@ -89,6 +89,7 @@
         android:padding="64dp"
         android:visibility="visible"
         app:currentProgress="0"
+        app:gradientColors="@array/gradients"
         app:thumbDrawable="@drawable/ic_circle_seekbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -220,6 +220,12 @@ public class DropletSeekBar extends View {
             currentProgress = typedArray.getInteger(R.styleable.DropletSeekBar_currentProgress, currentProgress);
             mThumbSize = typedArray.getDimensionPixelSize(R.styleable.DropletSeekBar_thumbSize, 55);
 
+            int colorsId = typedArray.getResourceId(R.styleable.DropletSeekBar_gradientColors, 0);
+            if(colorsId!=0){
+                int[] colorsArray = typedArray.getResources().getIntArray(colorsId);
+                this.gradientColors = colorsArray;
+            }
+
 //            mMin = typedArray.getInteger(R.styleable.CircleSeekBar_csb_min, mMin);
 //            mMax = typedArray.getInteger(R.styleable.CircleSeekBar_csb_max, mMax);
 //            mStep = typedArray.getInteger(R.styleable.CircleSeekBar_csb_step, mStep);

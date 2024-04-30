@@ -12,4 +12,10 @@
     <color name="new_graph_intensity_orange_light">#40d0722d</color>
     <color name="new_graph_intensity_red_light">#40e20c2e</color>
     <color name="transparent">#00E20C2E</color>
+
+    <array name="gradients">
+        <item>#000000</item>
+        <item>#E65100</item>
+        <item>@color/colorPrimary</item>
+    </array>
 </resources>
