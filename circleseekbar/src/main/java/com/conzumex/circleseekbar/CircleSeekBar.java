@@ -88,7 +88,7 @@ public class CircleSeekBar extends View {
     private Paint mTextPaint;
     private int mTextSize = TEXT_SIZE_DEFAULT;
     private Rect mTextRect = new Rect();
-    private boolean mIsShowText = true;
+    private boolean mIsShowText = false;
 
     private int mCenterX;
     private int mCenterY;
