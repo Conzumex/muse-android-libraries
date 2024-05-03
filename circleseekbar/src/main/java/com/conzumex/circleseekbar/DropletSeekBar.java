@@ -131,6 +131,7 @@ public class DropletSeekBar extends View {
 
     public void setProgress(int mProgress) {
         this.currentProgress = mProgress;
+        invalidate();
     }
 
     public void setProgressColor(int color){

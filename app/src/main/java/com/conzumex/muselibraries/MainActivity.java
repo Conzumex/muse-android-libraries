@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
                 Color.parseColor("#F2FFBE"),
                 Color.parseColor("#50C399")
         });
-        dropletSeekBar.setProgress(43);
+        dropletSeekBar.setProgress(0);
 
 //        rbVertical.setProgressTextFormatter(new ProgressTextFormatter() {
 //            @NonNull

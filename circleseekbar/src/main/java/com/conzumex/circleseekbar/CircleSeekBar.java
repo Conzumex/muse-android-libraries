@@ -109,7 +109,7 @@ public class CircleSeekBar extends View {
     private double mAngle;
     private double mSecondaryAngle;
     private boolean mIsThumbSelected = false;
-
+    private boolean mIsClickEnabled = true;
     private OnSeekBarChangedListener mOnSeekBarChangeListener;
 
 
@@ -227,6 +227,7 @@ public class CircleSeekBar extends View {
             mTextSize = (int) typedArray.getDimension(R.styleable.CircleSeekBar_csb_textSize, mTextSize);
             textColor = typedArray.getColor(R.styleable.CircleSeekBar_csb_textColor, textColor);
             mIsShowText = typedArray.getBoolean(R.styleable.CircleSeekBar_csb_isShowText, mIsShowText);
+            mIsClickEnabled = typedArray.getBoolean(R.styleable.CircleSeekBar_csb_isClickable, mIsClickEnabled);
 
             mProgressWidth = (int) typedArray.getDimension(R.styleable.CircleSeekBar_csb_progressWidth, mProgressWidth);
             progressColor = typedArray.getColor(R.styleable.CircleSeekBar_csb_progressColor, progressColor);
@@ -399,6 +400,10 @@ public class CircleSeekBar extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        //to check the click is enabled or not
+        if(!mIsClickEnabled){
+            return false;
+        }
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN: {
                 // start moving the thumb (this is the first touch)
