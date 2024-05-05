@@ -84,7 +84,7 @@ public class DropletSeekBar extends View {
     private Paint mPaint;
     private Paint mProgressPaint;
     Paint mPaintQuad;
-    Path tempPath2,tempPath;
+    Path roundingPath;
     int progressColor = Color.WHITE;
     int[] gradientColors;
 //    private int mTextSize = TEXT_SIZE_DEFAULT;
@@ -131,7 +131,6 @@ public class DropletSeekBar extends View {
 
     public void setProgress(int mProgress) {
         this.currentProgress = mProgress;
-        invalidate();
     }
 
     public void setProgressColor(int color){
@@ -253,8 +252,7 @@ public class DropletSeekBar extends View {
         mPaint = new Paint();
         mProgressPaint = new Paint();
         mPaintQuad = new Paint();
-        tempPath2 = new Path();
-        tempPath = new Path();
+        roundingPath = new Path();
 
         progressWidth = 20f;
         thumbStrokeWidth = 10f;
@@ -386,20 +384,21 @@ public class DropletSeekBar extends View {
         else
             mPaintQuad.setShader(getGradientShader());
         float clipLineInside = (viewHeight - thumbStrokeWidth) + clipLineWidth;
+        roundingPath.reset();
         //move path to line and circle joint for the right clip
         float clipRightStart = progressPosition + thumbStrokeWidth;
-        tempPath.moveTo(clipRightStart, clipLineInside);
-        tempPath.quadTo(clipRightStart + (thumbStrokeWidth*2), thumbSize+(thumbStrokeWidth*2), (clipRightStart + (thumbStrokeWidth*2) + thumbStrokeWidth/2), thumbSize-thumbStrokeWidth);
-        tempPath.quadTo(clipRightStart + (thumbStrokeWidth*2), thumbSize+(thumbStrokeWidth*3), clipRightStart + (thumbStrokeWidth*2) + (thumbStrokeWidth*3), clipLineInside);
-        tempPath.lineTo(clipRightStart, clipLineInside);
+        roundingPath.moveTo(clipRightStart, clipLineInside);
+        roundingPath.quadTo(clipRightStart + (thumbStrokeWidth*2), thumbSize+(thumbStrokeWidth*2), (clipRightStart + (thumbStrokeWidth*2) + thumbStrokeWidth/2), thumbSize-thumbStrokeWidth);
+        roundingPath.quadTo(clipRightStart + (thumbStrokeWidth*2), thumbSize+(thumbStrokeWidth*3), clipRightStart + (thumbStrokeWidth*2) + (thumbStrokeWidth*3), clipLineInside);
+        roundingPath.lineTo(clipRightStart, clipLineInside);
         //move path to line and circle joint for the left clip
         float clipLeftStart = progressPosition - thumbStrokeWidth;
-        tempPath2.moveTo(clipLeftStart, clipLineInside);
-        tempPath2.quadTo(clipLeftStart - (thumbStrokeWidth*2), thumbSize+(thumbStrokeWidth*2), clipLeftStart - (thumbStrokeWidth*2) - (thumbStrokeWidth/2), thumbSize-thumbStrokeWidth);
-        tempPath2.quadTo(clipLeftStart - (thumbStrokeWidth*2), thumbSize+(thumbStrokeWidth*3), clipLeftStart - (thumbStrokeWidth*2) - (thumbStrokeWidth*3), clipLineInside);
-        tempPath2.lineTo(clipLeftStart, clipLineInside);
-        canvas.drawPath(tempPath,mPaintQuad);
-        canvas.drawPath(tempPath2,mPaintQuad);
+        roundingPath.moveTo(clipLeftStart, clipLineInside);
+        roundingPath.quadTo(clipLeftStart - (thumbStrokeWidth*2), thumbSize+(thumbStrokeWidth*2), clipLeftStart - (thumbStrokeWidth*2) - (thumbStrokeWidth/2), thumbSize-thumbStrokeWidth);
+        roundingPath.quadTo(clipLeftStart - (thumbStrokeWidth*2), thumbSize+(thumbStrokeWidth*3), clipLeftStart - (thumbStrokeWidth*2) - (thumbStrokeWidth*3), clipLineInside);
+        roundingPath.lineTo(clipLeftStart, clipLineInside);
+        canvas.drawPath(roundingPath,mPaintQuad);
+//        canvas.drawPath(tempPath,mPaintQuad);
 
         //
 //        tempPath.moveTo(160, 91);
