@@ -4,9 +4,13 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.RadialGradient;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Shader;
+import android.graphics.SweepGradient;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.View;
@@ -21,6 +25,8 @@ public class RoundedProgress extends View {
     //Colors
     int backgroundColor = Color.parseColor("#cecece");
     int progressColor = Color.parseColor("#f7331e");
+    int progressGradientColorStart = 0;
+    int progressGradientColorEnd = 0;
     int textColor = Color.parseColor("#000000");
     Paint mPaint;
     int parentViewWidth;
@@ -75,6 +81,12 @@ public class RoundedProgress extends View {
         @ColorInt int newProgressColor = attributes.getColor(R.styleable.RoundedProgress_rProgressColor, progressColor);
         if (newProgressColor != progressColor) progressColor = newProgressColor;
 
+        // Set progress bar gradient start color via xml (If exists and isn't the default value)
+        progressGradientColorStart = attributes.getColor(R.styleable.RoundedProgress_rProgressGradientStart, 0);
+
+        // Set progress bar gradient end via xml (If exists and isn't the default value)
+        progressGradientColorEnd = attributes.getColor(R.styleable.RoundedProgress_rProgressGradientEnd, 0);
+
         // Set progress bar text color via xml (If exists and isn't the default value)
         @ColorInt int newBackgroundColor = attributes.getColor(R.styleable.RoundedProgress_rBackgroundColor, backgroundColor);
         if (newBackgroundColor != backgroundColor) backgroundColor = newBackgroundColor;
@@ -117,8 +129,11 @@ public class RoundedProgress extends View {
         canvas.drawRoundRect(progressBackground,radius,radius,mPaint);
         mPaint.setColor(progressColor);
         float progressEnd = getProgressEndX();
+        if(progressGradientColorStart!=0&&progressGradientColorEnd!=0)
+            mPaint.setShader(getGradient(progressEnd));
         RectF progressItem = new RectF(0,0,progressEnd,parentViewHeight);
         canvas.drawRoundRect(progressItem,radius,radius,mPaint);
+        mPaint.setShader(null);
 
         mPaint.setTypeface(fontFace);
         mPaint.setTextSize(textSize);
@@ -158,6 +173,15 @@ public class RoundedProgress extends View {
         return textMeasureWidth;
     }
 
+    private Shader getGradient(double length){
+
+        double angleInRadians = Math.toRadians(45);
+        float endX = (float) (Math.sin(angleInRadians) * length);
+        float endY = (float) (Math.cos(angleInRadians) * length);
+
+        return new LinearGradient(0,0,endX, endY,  progressGradientColorStart, progressGradientColorEnd, Shader.TileMode.CLAMP);
+    }
+
     public interface TextFormatter{
 
         String getText(int progress);
@@ -179,6 +203,12 @@ public class RoundedProgress extends View {
 
     public void setProgressColor(int progressColor) {
         this.progressColor = progressColor;
+        invalidate();
+    }
+
+    public void setProgressGradient(int startColor, int endColor) {
+        this.progressGradientColorStart = startColor;
+        this.progressGradientColorEnd = endColor;
         invalidate();
     }
 

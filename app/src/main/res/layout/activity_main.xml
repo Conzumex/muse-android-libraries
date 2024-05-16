@@ -211,7 +211,7 @@
         app:rTextColor="#FFFFFF"
         app:rFontFamily="@font/nunito_bold"
         app:rTextSize="12sp"
-        app:rProgress="55"
+        app:rProgress="0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pb_roundchart"

@@ -11,6 +11,8 @@
     <declare-styleable name="RoundedProgress">
         <attr name="rProgress" format="integer" />
         <attr name="rProgressColor" format="reference|color" />
+        <attr name="rProgressGradientStart" format="reference|color" />
+        <attr name="rProgressGradientEnd" format="reference|color" />
         <attr name="rBackgroundColor" format="reference|color" />
         <attr name="rTextColor" format="reference|color" />
         <attr name="rCornerRadius" format="dimension" />
