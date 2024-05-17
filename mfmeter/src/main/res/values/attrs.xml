@@ -13,6 +13,7 @@
         <attr name="rProgressColor" format="reference|color" />
         <attr name="rProgressGradientStart" format="reference|color" />
         <attr name="rProgressGradientEnd" format="reference|color" />
+        <attr name="rProgressGradientAngle" format="integer" />
         <attr name="rBackgroundColor" format="reference|color" />
         <attr name="rTextColor" format="reference|color" />
         <attr name="rCornerRadius" format="dimension" />

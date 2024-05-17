@@ -27,6 +27,7 @@ public class RoundedProgress extends View {
     int progressColor = Color.parseColor("#f7331e");
     int progressGradientColorStart = 0;
     int progressGradientColorEnd = 0;
+    int gradientAngle = 45;
     int textColor = Color.parseColor("#000000");
     Paint mPaint;
     int parentViewWidth;
@@ -86,6 +87,7 @@ public class RoundedProgress extends View {
 
         // Set progress bar gradient end via xml (If exists and isn't the default value)
         progressGradientColorEnd = attributes.getColor(R.styleable.RoundedProgress_rProgressGradientEnd, 0);
+        gradientAngle = attributes.getInteger(R.styleable.RoundedProgress_rProgressGradientAngle, 45);
 
         // Set progress bar text color via xml (If exists and isn't the default value)
         @ColorInt int newBackgroundColor = attributes.getColor(R.styleable.RoundedProgress_rBackgroundColor, backgroundColor);
@@ -175,7 +177,7 @@ public class RoundedProgress extends View {
 
     private Shader getGradient(double length){
 
-        double angleInRadians = Math.toRadians(45);
+        double angleInRadians = Math.toRadians(gradientAngle);
         float endX = (float) (Math.sin(angleInRadians) * length);
         float endY = (float) (Math.cos(angleInRadians) * length);
 
