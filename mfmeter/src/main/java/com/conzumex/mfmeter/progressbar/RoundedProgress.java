@@ -38,7 +38,7 @@ public class RoundedProgress extends View {
     float radius = 20;
     int progressMin = 0;
     int progressMax = 100;
-    int curProgress = 99;
+    int curProgress = 75;
     float textPaddingStart = 20;
     float textPaddingEnd = 20;
     float textSize = 25;
@@ -46,6 +46,7 @@ public class RoundedProgress extends View {
     int textMeasureHeight;
     Typeface fontFace = Typeface.DEFAULT_BOLD;
     TextFormatter valueFormatter;
+    boolean isTextEnabled = true;
     public RoundedProgress(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
 
@@ -88,6 +89,7 @@ public class RoundedProgress extends View {
         // Set progress bar gradient end via xml (If exists and isn't the default value)
         progressGradientColorEnd = attributes.getColor(R.styleable.RoundedProgress_rProgressGradientEnd, 0);
         gradientAngle = attributes.getInteger(R.styleable.RoundedProgress_rProgressGradientAngle, 45);
+        isTextEnabled = attributes.getBoolean(R.styleable.RoundedProgress_rTextShow, true);
 
         // Set progress bar text color via xml (If exists and isn't the default value)
         @ColorInt int newBackgroundColor = attributes.getColor(R.styleable.RoundedProgress_rBackgroundColor, backgroundColor);
@@ -123,7 +125,8 @@ public class RoundedProgress extends View {
         parentViewHeight = getHeight();
         totalProgressPixels = parentViewWidth;
         progressWidth = parentViewWidth;
-        progressWidth = parentViewWidth - textPaddingStart - getTextWidth(valueFormatter.getText(curProgress)) - textPaddingEnd;
+        if(isTextEnabled)
+            progressWidth = parentViewWidth - textPaddingStart - getTextWidth(valueFormatter.getText(curProgress)) - textPaddingEnd;
 //        //todo make temporary height when developing
 //        parentViewHeight = 200;
         mPaint.setColor(backgroundColor);
@@ -136,11 +139,12 @@ public class RoundedProgress extends View {
         RectF progressItem = new RectF(0,0,progressEnd,parentViewHeight);
         canvas.drawRoundRect(progressItem,radius,radius,mPaint);
         mPaint.setShader(null);
-
-        mPaint.setTypeface(fontFace);
-        mPaint.setTextSize(textSize);
-        mPaint.setColor(textColor);
-        canvas.drawText(valueFormatter.getText(curProgress),progressEnd + textPaddingStart,(parentViewHeight/2)+(textMeasureHeight/2),mPaint);
+        if(isTextEnabled) {
+            mPaint.setTypeface(fontFace);
+            mPaint.setTextSize(textSize);
+            mPaint.setColor(textColor);
+            canvas.drawText(valueFormatter.getText(curProgress),progressEnd + textPaddingStart,(parentViewHeight/2)+(textMeasureHeight/2),mPaint);
+        }
     }
 
     float getProgressEndX(){

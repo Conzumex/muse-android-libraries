@@ -21,5 +21,6 @@
         <attr name="rTextPaddingStart" format="dimension" />
         <attr name="rTextPaddingEnd" format="dimension" />
         <attr name="rFontFamily" format="reference" />
+        <attr name="rTextShow" format="boolean" />
     </declare-styleable>
 </resources>
