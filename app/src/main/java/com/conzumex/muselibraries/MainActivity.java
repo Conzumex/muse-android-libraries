@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.res.ResourcesCompat;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -134,6 +136,8 @@ public class MainActivity extends AppCompatActivity {
         });
         dropletSeekBar.setProgress(0);
 
+        loadStress(dropletSeekBar);
+
 //        rbVertical.setProgressTextFormatter(new ProgressTextFormatter() {
 //            @NonNull
 //            @Override
@@ -255,6 +259,40 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
+    }
+
+    void loadStress(DropletSeekBar dropBar){
+        ValueAnimator animt = ValueAnimator.ofFloat(0,100);
+        animt.setDuration(5000);
+        animt.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(@NonNull ValueAnimator animation) {
+                Log.d("Change"," to "+(float)animation.getAnimatedValue());
+                dropBar.setProgress((float)animation.getAnimatedValue());
+            }
+        });
+        animt.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(@NonNull Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(@NonNull Animator animation) {
+                animt.reverse();
+            }
+
+            @Override
+            public void onAnimationCancel(@NonNull Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(@NonNull Animator animation) {
+
+            }
+        });
+        animt.start();
     }
 
     void loadChart(LineChart lineChart) {

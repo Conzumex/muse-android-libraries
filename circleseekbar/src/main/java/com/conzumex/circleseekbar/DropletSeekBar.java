@@ -115,7 +115,7 @@ public class DropletSeekBar extends View {
     float progressWidth,thumbStrokeWidth,clipLineWidth;
     float offset,thumbSize,minThumbWidth,maxProgress;
     float minProgress,progressPosition,viewHeight;
-    int currentProgress = 40;
+    float currentProgress = 40;
     float progressStep = 0;
 
     public DropletSeekBar(Context context) {
@@ -129,7 +129,7 @@ public class DropletSeekBar extends View {
         init(context, attrs);
     }
 
-    public void setProgress(int mProgress) {
+    public void setProgress(float mProgress) {
         this.currentProgress = mProgress;
         invalidate();
     }
@@ -218,7 +218,7 @@ public class DropletSeekBar extends View {
             Drawable indicator = typedArray.getDrawable(R.styleable.DropletSeekBar_thumbDrawable);
             if (indicator != null) mThumbDrawable = indicator;
 
-            currentProgress = typedArray.getInteger(R.styleable.DropletSeekBar_currentProgress, currentProgress);
+            currentProgress = typedArray.getInteger(R.styleable.DropletSeekBar_currentProgress, (int)currentProgress);
             mThumbSize = typedArray.getDimensionPixelSize(R.styleable.DropletSeekBar_thumbSize, 55);
 
             int colorsId = typedArray.getResourceId(R.styleable.DropletSeekBar_gradientColors, 0);
