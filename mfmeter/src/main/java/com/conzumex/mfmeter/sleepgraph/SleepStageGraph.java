@@ -145,10 +145,10 @@ public class SleepStageGraph extends View {
         chartWidth = parentViewWidth-100;
         chartHeight = parentViewHeight-100;
 
-        if(isInEditMode()) {
-            int tempHeight = 600;
-            chartHeight = tempHeight - 100;
-        }
+//        if(isInEditMode()) {
+//            int tempHeight = 700;
+//            chartHeight = tempHeight - 100;
+//        }
         chartGraphHeight = chartHeight - chartOffsetV;
         chartGraphWidth = chartWidth - chartOffsetH - chartPaddingH;
         chartGraphStartX = 0 + (chartOffsetH/2) + (chartPaddingH/2);
@@ -242,6 +242,7 @@ public class SleepStageGraph extends View {
         entries.add(new SleepEntry(6,2));
         entries.add(new SleepEntry(7,0));
         entries.add(new SleepEntry(8,2,9));
+        touchX = 600;
     }
 
     void drawGraphEdges(Canvas canvas){
@@ -416,7 +417,10 @@ public class SleepStageGraph extends View {
                 markerTest.setContent(markerFormatter.onContent(selectedX,selectedEntry));
 
             float yPos = getYPosOfEntry(selectedEntry);
-            yPos = barHeight > yPos ? (barHeight * 3) - (barHeight - yPos) : yPos;
+            int markerHeight = markerTest.getHeight();
+            float chartTopSpace = yPos - ((float) barHeight /2);
+//            printDebug(yPos+"y, barH"+barHeight+", marH "+markerHeight+" yDOt "+yDotValue+" yN"+chartTopSpace,canvas);
+            yPos = chartTopSpace < markerHeight ? (barHeight * 3) - (barHeight - yPos) : yPos;
             markerTest.draw(canvas, touchX, yPos - barHeight, chartGraphStartX, chartGraphEndX);
         }
     }

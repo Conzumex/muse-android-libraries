@@ -24,6 +24,7 @@
         <attr name="csb_textColor" format="color"/>
 
         <attr name="csb_isShowText" format="boolean" />
+        <attr name="csb_isShowThumb" format="boolean" />
         <attr name="csb_isClickable" format="boolean" />
 
     </declare-styleable>

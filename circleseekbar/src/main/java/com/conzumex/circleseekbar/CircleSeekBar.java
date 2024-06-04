@@ -89,6 +89,7 @@ public class CircleSeekBar extends View {
     private int mTextSize = TEXT_SIZE_DEFAULT;
     private Rect mTextRect = new Rect();
     private boolean mIsShowText = false;
+    private boolean mIsShowThumb = true;
 
     private int mCenterX;
     private int mCenterY;
@@ -154,6 +155,7 @@ public class CircleSeekBar extends View {
         mProgressDisplay = (mProgressDisplay < mMin) ? mMin : mProgressDisplay;
         mProgressSweep = (float) mProgressDisplay / valuePerDegree();
         mAngle = Math.PI / 2 - (mProgressSweep * Math.PI) / 180;
+        invalidate();
     }
 
     public void setSecondaryProgressDisplay(int progressDisplay) {
@@ -162,6 +164,7 @@ public class CircleSeekBar extends View {
         mSecondaryProgressDisplay = (mSecondaryProgressDisplay < mMin) ? mMin : mSecondaryProgressDisplay;
         mSecondaryProgressSweep = (float) mSecondaryProgressDisplay / valuePerDegree();
         mSecondaryAngle = Math.PI / 2 - (mSecondaryProgressSweep * Math.PI) / 180;
+        invalidate();
     }
 
     public void setProgressDisplayAndInvalidate(int progressDisplay) {
@@ -170,6 +173,14 @@ public class CircleSeekBar extends View {
             mOnSeekBarChangeListener.onPointsChanged(this, mProgressDisplay, false);
         }
         invalidate();
+    }
+
+    public void setShowThumb(boolean mShowThumb) {
+        this.mIsShowThumb = mShowThumb;
+        invalidate();
+    }
+    public boolean getShowThumb(){
+        return mIsShowThumb;
     }
 
     public int getProgressDisplay() {
@@ -227,6 +238,7 @@ public class CircleSeekBar extends View {
             mTextSize = (int) typedArray.getDimension(R.styleable.CircleSeekBar_csb_textSize, mTextSize);
             textColor = typedArray.getColor(R.styleable.CircleSeekBar_csb_textColor, textColor);
             mIsShowText = typedArray.getBoolean(R.styleable.CircleSeekBar_csb_isShowText, mIsShowText);
+            mIsShowThumb = typedArray.getBoolean(R.styleable.CircleSeekBar_csb_isShowThumb, mIsShowThumb);
             mIsClickEnabled = typedArray.getBoolean(R.styleable.CircleSeekBar_csb_isClickable, mIsClickEnabled);
 
             mProgressWidth = (int) typedArray.getDimension(R.styleable.CircleSeekBar_csb_progressWidth, mProgressWidth);
@@ -330,8 +342,8 @@ public class CircleSeekBar extends View {
             canvas.drawText(String.valueOf(mProgressDisplay), xPos, yPos, mTextPaint);
         }
 
-//        if(isInEditMode())
-//            canvas.drawPaint(new Paint());
+        if(isInEditMode())
+            canvas.drawPaint(new Paint());
 
         // draw the arc and progress
         canvas.drawCircle(mCenterX, mCenterY, mCircleRadius, mArcPaint);
@@ -357,13 +369,17 @@ public class CircleSeekBar extends View {
         int mOuterLineX = (int) (mCenterX + (mCircleRadius+mThumbSize) * Math.cos(tempAngle));
         int mOuterLineY = (int) (mCenterY - (mCircleRadius+mThumbSize) * Math.sin(tempAngle));
 
-        canvas.drawLine(tempMThumbX,tempMThumbY,mOuterLineX,mOuterLineY,mDashPaint);
+        if(mIsShowThumb)
+            canvas.drawLine(tempMThumbX,tempMThumbY,mOuterLineX,mOuterLineY,mDashPaint);
+
         canvas.drawArc(mArcRect, ANGLE_OFFSET, mProgressSweep, false, mProgressPaint);
         canvas.drawArc(mSecondaryArcRect, ANGLE_OFFSET, mSecondaryProgressSweep, false, mSecondaryProgressPaint);
 
-        mThumbDrawable.setBounds(mOuterThumbX - mThumbSize / 2, mOuterThumbY - mThumbSize / 2,
-                mOuterThumbX + mThumbSize / 2, mOuterThumbY + mThumbSize / 2);
-        mThumbDrawable.draw(canvas);
+        if(mIsShowThumb) {
+            mThumbDrawable.setBounds(mOuterThumbX - mThumbSize / 2, mOuterThumbY - mThumbSize / 2,
+                    mOuterThumbX + mThumbSize / 2, mOuterThumbY + mThumbSize / 2);
+            mThumbDrawable.draw(canvas);
+        }
     }
 
     void printDebug(String text,Canvas canvas){

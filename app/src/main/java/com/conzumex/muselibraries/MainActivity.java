@@ -40,6 +40,7 @@ import com.conzumex.charts.data.LineDataSet;
 import com.conzumex.charts.formatter.IAxisValueFormatter;
 import com.conzumex.charts.highlight.Highlight;
 import com.conzumex.charts.listener.OnChartValueSelectedListener;
+import com.conzumex.circleseekbar.CircleSeekBar;
 import com.conzumex.circleseekbar.DropletSeekBar;
 import com.conzumex.mfmeter.FuelIcon;
 import com.conzumex.mfmeter.FuelLog;
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
     RoundedCombinedChart roundCandle;
     SleepStageGraph sleepGraph;
     LineChart lineChart;
+    CircleSeekBar circleSeekBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         pbBarchart = findViewById(R.id.pb_barchart);
         pbRoundchart = findViewById(R.id.pb_roundchart);
         lineChart = findViewById(R.id.line_chart);
+        circleSeekBar = findViewById(R.id.circular);
 //        rbVertical = findViewById(R.id.roundedProgressBarVertical);
 
 //        roundCandle = findViewById(R.id.chart_progress_2);
@@ -126,6 +129,14 @@ public class MainActivity extends AppCompatActivity {
 
         btn.setOnClickListener(vew->{
             meter.scrollToSnapPos(3);
+            if(circleSeekBar.getShowThumb()){
+                circleSeekBar.setShowThumb(false);
+            }else{
+                circleSeekBar.setShowThumb(true);
+            }
+
+            int progress = circleSeekBar.getProgressDisplay();
+            circleSeekBar.setProgressDisplay(progress+10);
         });
 
         DropletSeekBar dropletSeekBar = findViewById(R.id.seekbar_drops);
@@ -207,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
         sleepEntries.add(new SleepEntry(7,0));
         sleepEntries.add(new SleepEntry(8,2,10));
 
-//        sleepGraph.loadData(new ArrayList<>());
+        sleepGraph.loadData(sleepEntries);
         sleepGraph.setLabelXFormatter(value -> ((int)value)+" am");
         sleepGraph.setLabelYFormatter(value -> {
             if(value==0)
