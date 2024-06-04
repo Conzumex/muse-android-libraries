@@ -49,7 +49,7 @@ public class CircleSeekBar extends View {
      */
     private int mStep = 1;
 
-    private int mArcWidth = 8;
+    private int mArcWidth = 12;
     private int mProgressWidth = 12;
 
     //
@@ -342,8 +342,8 @@ public class CircleSeekBar extends View {
             canvas.drawText(String.valueOf(mProgressDisplay), xPos, yPos, mTextPaint);
         }
 
-        if(isInEditMode())
-            canvas.drawPaint(new Paint());
+//        if(isInEditMode())
+//            canvas.drawPaint(new Paint());
 
         // draw the arc and progress
         canvas.drawCircle(mCenterX, mCenterY, mCircleRadius, mArcPaint);
