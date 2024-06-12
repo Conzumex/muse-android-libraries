@@ -126,6 +126,8 @@ public class RoundedCombinedChartRenderer extends DataRenderer {
                 data = ((LineChartRenderer)renderer).mChart.getLineData();
             else if (renderer instanceof CandleStickChartRenderer)
                 data = ((CandleStickChartRenderer)renderer).mChart.getCandleData();
+            else  if (renderer instanceof RoundedCandleStickChartRenderer)
+                data = ((RoundedCandleStickChartRenderer)renderer).mChart.getCandleData();
             else if (renderer instanceof ScatterChartRenderer)
                 data = ((ScatterChartRenderer)renderer).mChart.getScatterData();
             else if (renderer instanceof BubbleChartRenderer)
