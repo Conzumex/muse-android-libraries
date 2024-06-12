@@ -64,7 +64,7 @@ public class RoundedBarChart extends BarChart {
         setRenderer(new RoundedBarChartRenderer(this, getAnimator(), getViewPortHandler(), topRadius, bottomRadius));
     }
 
-    private class RoundedBarChartRenderer extends BarChartRenderer {
+    public class RoundedBarChartRenderer extends BarChartRenderer {
         private RectF mBarShadowRectBuffer = new RectF();
         float[] corners = new float[]{
                 0, 0,        // Top left radius in px

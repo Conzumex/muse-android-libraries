@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.conzumex.charts.animation.ChartAnimator;
 import com.conzumex.charts.charts.Chart;
+import com.conzumex.charts.charts.RoundedBarChart;
 import com.conzumex.charts.charts.RoundedCombinedChart.DrawOrder;
 import com.conzumex.charts.charts.RoundedCombinedChart;
 import com.conzumex.charts.data.ChartData;
@@ -119,6 +120,8 @@ public class RoundedCombinedChartRenderer extends DataRenderer {
 
             if (renderer instanceof BarChartRenderer)
                 data = ((BarChartRenderer)renderer).mChart.getBarData();
+            else if (renderer instanceof RoundedBarChart.RoundedBarChartRenderer)
+                data = ((RoundedBarChart.RoundedBarChartRenderer)renderer).mChart.getBarData();
             else if (renderer instanceof LineChartRenderer)
                 data = ((LineChartRenderer)renderer).mChart.getLineData();
             else if (renderer instanceof CandleStickChartRenderer)
