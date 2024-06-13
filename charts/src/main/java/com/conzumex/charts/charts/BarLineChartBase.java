@@ -117,6 +117,12 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
      */
     protected OnDrawListener mDrawListener;
 
+
+    /**
+     * to make graph highlighter behind the data. Default is false.
+     */
+    protected boolean mHighlighterBehindData = false;
+
     /**
      * the object representing the labels on the left y-axis
      */
@@ -239,6 +245,10 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
             canvas.clipRect(mViewPortHandler.getContentRect());
         }
 
+        // if highlighting is enabled and draw on below of data
+        if (valuesToHighlight() && mHighlighterBehindData)
+            mRenderer.drawHighlighted(canvas, mIndicesToHighlight);
+
         mRenderer.drawData(canvas);
 
         if (!mXAxis.isDrawGridLinesBehindDataEnabled())
@@ -250,8 +260,8 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
         if (!mAxisRight.isDrawGridLinesBehindDataEnabled())
             mAxisRendererRight.renderGridLines(canvas);
 
-        // if highlighting is enabled
-        if (valuesToHighlight())
+        // if highlighting is enabled and draw on top of data
+        if (valuesToHighlight() && !mHighlighterBehindData)
             mRenderer.drawHighlighted(canvas, mIndicesToHighlight);
 
         // Removes clipping rectangle
@@ -1201,6 +1211,15 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
      */
     public void setDrawGridBackground(boolean enabled) {
         mDrawGridBackground = enabled;
+    }
+
+    /**
+     * set this to true to draw the highlighter behind the data, false if not
+     *
+     * @param behind
+     */
+    public void setDrawHighlighterBehind(boolean behind) {
+        mHighlighterBehindData = behind;
     }
 
     /**

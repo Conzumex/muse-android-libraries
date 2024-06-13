@@ -92,14 +92,14 @@ public class MainActivity extends AppCompatActivity {
 //        progressBar2 = findViewById(R.id.pb_120);
         meter = findViewById(R.id.meter);
         btn = findViewById(R.id.button);
-        barChart = findViewById(R.id.barchart);
+//        barChart = findViewById(R.id.barchart);
         pbBarchart = findViewById(R.id.pb_barchart);
         pbRoundchart = findViewById(R.id.pb_roundchart);
         lineChart = findViewById(R.id.line_chart);
         circleSeekBar = findViewById(R.id.circular);
 //        rbVertical = findViewById(R.id.roundedProgressBarVertical);
 
-//        roundCandle = findViewById(R.id.chart_progress_2);
+        roundCandle = findViewById(R.id.barchart);
         sleepGraph = findViewById(R.id.sleep_graph);
         RoundedProgress rpBar = findViewById(R.id.pb_outer);
         rpBar.setValueFormatter(progress -> {
@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
 //            progressBar2.setProgressPercentage(val,true);
 //        });
 
-        loadChart();
+//        loadChart();
 
         List<SleepEntry> sleepEntries = new ArrayList<>();
         sleepEntries.add(new SleepEntry(0,2));
@@ -243,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
 //        sleepGraph.setMaxXvalue(20);
 
 
-//        loadCandleData();
+        loadCandleData();
         List<Integer> entries = new ArrayList<>();
         entries.add(54);
         entries.add(75);
@@ -455,8 +455,8 @@ public class MainActivity extends AppCompatActivity {
         dataSet.setIncreasingPaintStyle(Paint.Style.FILL);
         dataSet.setHighlightEnabled(true);
         dataSet.setDrawHorizontalHighlightIndicator(false);
-        dataSet.enableDashedHighlightLine(10f, 5f, 0f);
-        dataSet.setHighLightColor(Color.parseColor("#cecece"));
+//        dataSet.enableDashedHighlightLine(10f, 5f, 0f);
+        dataSet.setHighLightColor(Color.parseColor("#bb99cc"));
         dataSet.setHighlightLineWidth(1);
         dataSet.setValueTextColor(Color.parseColor("#9c9c9c"));
 //        dataSet.setValueTypeface(ResourcesCompat.getFont(this, R.font.nunito_semi_bold));
@@ -498,6 +498,7 @@ public class MainActivity extends AppCompatActivity {
         roundCandle.setData(dataCombined);
         roundCandle.getLegend().setEnabled(false);
         roundCandle.setScaleEnabled(false);
+        roundCandle.setDrawHighlighterBehind(true);
         roundCandle.getDescription().setEnabled(false);
         roundCandle.setHighlightPerDragEnabled(true);
         roundCandle.getAxisLeft().setEnabled(false);
