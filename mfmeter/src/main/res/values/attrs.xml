@@ -23,4 +23,8 @@
         <attr name="rFontFamily" format="reference" />
         <attr name="rTextShow" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="SleepStageGraph">
+        <attr name="graphBackgroundColor" format="reference|color" />
+    </declare-styleable>
 </resources>

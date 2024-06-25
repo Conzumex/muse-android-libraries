@@ -130,6 +130,13 @@ public class SleepStageGraph extends View {
 
         gridXEffect = new DashPathEffect(new float[]{10,10}, 0);
 
+        if (attrs == null) return;
+        TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.SleepStageGraph);
+
+        // Set background color via xml (If exists and isn't the default value)
+        @ColorInt int newTextColor = attributes.getColor(R.styleable.SleepStageGraph_graphBackgroundColor, colorBackground);
+        if (newTextColor != colorBackground) colorBackground = newTextColor;
+
         if(isInEditMode())
             loadDummyData();
     }
@@ -161,7 +168,7 @@ public class SleepStageGraph extends View {
         paint2.setStyle(Paint.Style.FILL);
         canvas.drawPaint(paint2);
         Rect viewRect = new Rect(0,0,parentViewWidth,parentViewHeight);
-        mPaint.setColor(Color.BLACK);
+        mPaint.setColor(colorBackground);
         mPaint.setStrokeWidth(10);
         canvas.drawRect(viewRect,mPaint);
 
