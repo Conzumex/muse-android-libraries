@@ -137,8 +137,8 @@ public class SleepStageGraph extends View {
         @ColorInt int newTextColor = attributes.getColor(R.styleable.SleepStageGraph_graphBackgroundColor, colorBackground);
         if (newTextColor != colorBackground) colorBackground = newTextColor;
 
-        if(isInEditMode())
-            loadDummyData();
+//        if(isInEditMode())
+//            loadDummyData();
     }
 
 
@@ -192,20 +192,21 @@ public class SleepStageGraph extends View {
 //        canvas.drawRoundRect(itemRect2,10,10,mPaint);
 
         calculateDotValues();
-        drawLabels(canvas);
-//        if(entries.size()>20)
-        if(entries!=null && !entries.isEmpty())
-            drawValues(canvas);
-        else
+        if(entries==null || entries.isEmpty()){
             drawEmptyData(canvas);
-        drawAxis(canvas);
-        if(entries!=null && !entries.isEmpty()) {
-//        if(entries.size()>20) {
-            if (highlightEdges)
-                drawGraphEdges(canvas);
-            if (touchX != -1)
-                drawMarker(canvas);
+            return;
         }
+        drawLabels(canvas);
+//      if(entries.size()>20)
+
+        drawValues(canvas);
+        drawAxis(canvas);
+//       if(entries.size()>20) {
+        if (highlightEdges)
+            drawGraphEdges(canvas);
+        if (touchX != -1)
+            drawMarker(canvas);
+
     }
 
     @Override
@@ -601,6 +602,10 @@ public class SleepStageGraph extends View {
     /** set font family for the texts*/
     public void setFontFace(Typeface fontFace){
         this.fontFace = fontFace;
+    }
+    /** set font size for the texts*/
+    public void setTextSize(float textSize){
+        this.textSize = textSize;
     }
     @Override
     public void invalidate() {
