@@ -60,7 +60,7 @@ public class SleepStageGraph extends View {
     float textSize = 25;
     Typeface fontFace = Typeface.DEFAULT;
     String emptyText = "No Data";
-    int emptyTextColor = R.color.white;
+    int emptyTextColor = Color.parseColor("#ffffff");
     int labelCount = 4;
     float granularity = 100f;
     float prevBarLineY = -1,prevBarLineX = -1;
@@ -277,7 +277,7 @@ public class SleepStageGraph extends View {
     }
 
     void drawEmptyData(Canvas canvas){
-        noDataPaint.setColor(getResources().getColor(emptyTextColor));
+        noDataPaint.setColor(emptyTextColor);
         noDataPaint.setTextSize(textSize);
         noDataPaint.setTypeface(fontFace);
         canvas.drawText(emptyText,chartGraphWidth/2,chartGraphHeight/2,noDataPaint);
