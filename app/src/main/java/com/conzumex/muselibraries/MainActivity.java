@@ -8,6 +8,7 @@ import androidx.core.content.res.ResourcesCompat;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -128,15 +129,7 @@ public class MainActivity extends AppCompatActivity {
         meter.setSnapEnabled(false);
 
         btn.setOnClickListener(vew->{
-            meter.scrollToSnapPos(3);
-            if(circleSeekBar.getShowThumb()){
-                circleSeekBar.setShowThumb(false);
-            }else{
-                circleSeekBar.setShowThumb(true);
-            }
-
-            int progress = circleSeekBar.getProgressDisplay();
-            circleSeekBar.setProgressDisplay(progress+10);
+            startActivity(new Intent(this, SecondActivity.class));
         });
 
         DropletSeekBar dropletSeekBar = findViewById(R.id.seekbar_drops);

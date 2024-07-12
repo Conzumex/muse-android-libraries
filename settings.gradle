@@ -10,6 +10,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url "https://jitpack.io" }
     }
 }
 rootProject.name = "Muse Libraries"
@@ -21,3 +22,4 @@ include ':progressbar'
 include ':seekbar'
 include ':mfmeter'
 include ':circleseekbar'
+include ':stickeyscrollview'
