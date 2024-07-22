@@ -213,6 +213,10 @@ public class MainActivity extends AppCompatActivity {
 
         sleepGraph.loadData(sleepEntries);
         sleepGraph.setLabelXFormatter(value -> ((int)value)+" am");
+        sleepGraph.setOffsetTop(100);
+        sleepGraph.setAxisLabelPadding(10);
+        sleepGraph.setDrawViewTopBorder(false);
+        sleepGraph.setYAxisDirection(SleepStageGraph.Direction.LEFT);
         sleepGraph.setLabelYFormatter(value -> {
             if(value==0)
                 return "Deep";
@@ -233,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
         });
         sleepGraph.setFontFace(ResourcesCompat.getFont(this, R.font.rb_medium));
         sleepGraph.setEmptyText("Nothing entered");
-//        sleepGraph.setMaxXvalue(20);
+        sleepGraph.setMaxXvalue(10);
 
 
         loadCandleData();

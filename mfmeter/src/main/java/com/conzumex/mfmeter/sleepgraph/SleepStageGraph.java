@@ -43,10 +43,11 @@ public class SleepStageGraph extends View {
     int chartWidth,chartHeight;
     int axisSpace = 100;
     int chartOffsetV = 0,chartOffsetH = 20;
-    int chartOffsetTop = 100;
+    int chartOffsetTop = 0;
     int viewBorderOffsetTop = 0;
     int viewBorderOffsetLeft = 10;
     int axisLabelPadding = 25;
+    int markerTopPadding = 10;
     float chartGraphWidth,chartGraphHeight;
     float chartGraphStartX,chartGraphStartY;
     float chartGraphEndX,chartGraphEndY;
@@ -98,6 +99,7 @@ public class SleepStageGraph extends View {
     boolean drawTopBorder = true;
     boolean drawViewTopBorder = true;
     boolean drawViewEndBorder = true;
+    boolean setMarkerTop = true;
     int markerLayout = R.layout.marker_default;
     MarkerFormatter markerFormatter;
     ChartListener mClickListener;
@@ -115,8 +117,8 @@ public class SleepStageGraph extends View {
 
     enum XPos {YAXIS, YAXIS_LABEL, XAXIS_START,XAXIS_END,GRID_X_START,GRID_X_END,
         EDGE_LABEL_START,EDGE_LABEL_END,GRID_X_POS,VALUE_X_POS,X_GRID_X_START,X_GRID_X_END,
-        TOP_BORDER_START,TOP_BORDER_END, GRAPH_EDGE_START, GRAPH_EDGE_END,END_BORDER_X}
-    enum Direction {LEFT, RIGHT}
+        TOP_BORDER_START,TOP_BORDER_END, GRAPH_EDGE_START, GRAPH_EDGE_END,END_BORDER_X, TOUCH_END_X}
+    public enum Direction {LEFT, RIGHT}
 
     Direction yAXisDirection = Direction.LEFT;
 
@@ -239,7 +241,7 @@ public class SleepStageGraph extends View {
 
             case MotionEvent.ACTION_MOVE:
                 eventX = event.getRawX();
-                if(eventX>=chartGraphStartX && eventX<=chartGraphEndX) {
+                if(eventX>=chartGraphStartX && eventX<=getXPos(XPos.TOUCH_END_X)) {
                     touchX = event.getRawX();
                     touchY = event.getRawY();
                     touchedArea = true;
@@ -265,7 +267,7 @@ public class SleepStageGraph extends View {
         entries.add(new SleepEntry(6,2));
         entries.add(new SleepEntry(7,0));
         entries.add(new SleepEntry(8,2,9));
-        touchX = 600;
+        touchX = 400;
     }
 
     void drawGraphEdges(Canvas canvas){
@@ -360,7 +362,7 @@ public class SleepStageGraph extends View {
             canvas.drawLine(getXPos(XPos.TOP_BORDER_START),viewBorderOffsetTop,getXPos(XPos.TOP_BORDER_END),viewBorderOffsetTop,gridPaint); //Grid lines
 
         if(drawViewEndBorder)
-            canvas.drawLine(getXPos(XPos.END_BORDER_X),chartOffsetTop,getXPos(XPos.END_BORDER_X),chartGraphHeight,gridPaint); //Grid lines
+            canvas.drawLine(getXPos(XPos.END_BORDER_X),chartOffsetTop,getXPos(XPos.END_BORDER_X),chartGraphHeight+chartOffsetTop,gridPaint); //Grid lines
 
     }
 
@@ -454,7 +456,11 @@ public class SleepStageGraph extends View {
             float chartTopSpace = yPos - ((float) barHeight /2);
 //            printDebug(yPos+"y, barH"+barHeight+", marH "+markerHeight+" yDOt "+yDotValue+" yN"+chartTopSpace,canvas);
             yPos = chartTopSpace < markerHeight ? (barHeight * 3) - (barHeight - yPos) : yPos;
-            markerTest.draw(canvas, touchX, yPos - barHeight, chartGraphStartX, chartGraphEndX);
+            float markerY = yPos - barHeight;
+            if(setMarkerTop){
+                markerY = markerTopPadding + (markerHeight/2);
+            }
+            markerTest.draw(canvas, touchX, markerY, chartGraphStartX, getXPos(XPos.TOUCH_END_X));
         }
     }
 
@@ -593,6 +599,8 @@ public class SleepStageGraph extends View {
                 return (chartGraphEndX+chartPaddingH/2+(chartOffsetH/2)+insideAxisWidth );
             } else if (type==XPos.GRAPH_EDGE_START) {
                 return chartGraphStartX - (lineWidth/2) - (edgeLineWidth/2);
+            } else if (type==XPos.TOUCH_END_X) {
+                return chartGraphEndX;
             } else if (type==XPos.END_BORDER_X) {
                 return 0;
             }
@@ -600,11 +608,11 @@ public class SleepStageGraph extends View {
             if (type == XPos.YAXIS) {
                 return axisSpace;
             } else if (type==XPos.YAXIS_LABEL) {
-                return axisSpace - (chartPaddingH/2)- axisLabelPadding;
+                return 0 + axisLabelPadding;
             } else if (type==XPos.XAXIS_START) {
                 return axisSpace - insideAxisWidth;
             } else if (type==XPos.XAXIS_END) {
-                return chartWidth+axisSpace;
+                return chartWidth+axisSpace - (chartOffsetH/2);
             } else if (type==XPos.GRID_X_START) {
                 return chartGraphStartX - (lineWidth/2);
             } else if (type==XPos.GRID_X_END) {
@@ -616,15 +624,18 @@ public class SleepStageGraph extends View {
             } else if (type==XPos.X_GRID_X_START) {
                 return (chartGraphStartX-(chartPaddingH/2)-(chartOffsetH/2)) - insideAxisWidth;
             } else if (type==XPos.X_GRID_X_END) {
-                return (chartGraphEndX+chartPaddingH/2+(chartOffsetH/2)+axisSpace);
+                return (chartGraphEndX+chartPaddingH/2+axisSpace);
             } else if (type==XPos.TOP_BORDER_START) {
                 return (chartGraphStartX-(chartPaddingH/2)-(chartOffsetH/2));
             } else if (type==XPos.TOP_BORDER_END) {
-                return (chartGraphEndX+chartPaddingH/2+(chartOffsetH/2)+axisSpace);
+                return (chartGraphEndX+chartPaddingH/2+axisSpace);
             } else if (type==XPos.GRAPH_EDGE_START) {
                 return chartGraphStartX - (lineWidth/2) - (edgeLineWidth/2);
             } else if (type==XPos.END_BORDER_X) {
-                return (chartGraphEndX+chartPaddingH/2+(chartOffsetH/2)+axisSpace);
+//                return chartGraphEndX+chartPaddingH/2+axisSpace+(chartOffsetH/2)-1;
+                return (chartGraphEndX+(chartPaddingH/2)+axisSpace);
+            } else if (type==XPos.TOUCH_END_X) {
+                return chartGraphEndX+axisSpace;
             }
         }
         return 0;
@@ -727,6 +738,26 @@ public class SleepStageGraph extends View {
     /** set direction of YAxis*/
     public void setYAxisDirection(Direction direction){
         this.yAXisDirection = direction;
+    }
+    /** set axis start margin*/
+    public void setAxisLabelPadding(int padding){
+        this.axisLabelPadding = padding;
+    }
+    /** set marker on top*/
+    public void setMarkerOnTop(boolean isSet){
+        this.setMarkerTop = isSet;
+    }
+    /** set marker margin on top, if set the marker always on top*/
+    public void setMarkerTopPadding(int topMarkerPadding){
+        this.markerTopPadding = topMarkerPadding;
+    }
+    /** draw view border on top */
+    public void setDrawViewTopBorder(boolean draw){
+        this.drawViewTopBorder = draw;
+    }
+    /** draw view border on graph end */
+    public void setDrawViewEndBorder(boolean draw){
+        this.drawViewEndBorder = draw;
     }
     @Override
     public void invalidate() {

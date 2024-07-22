@@ -126,7 +126,7 @@
         android:layout_marginTop="10dp"
         android:layout_height="280dp"
         app:radius="10dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
