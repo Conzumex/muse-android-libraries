@@ -107,6 +107,7 @@ public class SleepStageGraph extends View {
     SleepEntry selectedGraphEntry = null;
     float edgeLineWidth = 2f;
     float markerLineWidth = 2f;
+    SleepMarker markerTest;
 
     DashPathEffect gridXEffect;
     DashPathEffect gridYEffect;
@@ -445,11 +446,13 @@ public class SleepStageGraph extends View {
 
         //drawing marker views
         if(drawMarkers) {
-            SleepMarker markerTest = new SleepMarker(getContext(),markerLayout);
-            if(markerFormatter==null)
-                markerTest.setContent(selectedX+"");
-            else
-                markerTest.setContent(markerFormatter.onContent(selectedX,selectedEntry));
+            if(markerTest==null)
+                markerTest = new SleepMarker(getContext(),markerLayout);
+//            if(markerFormatter==null)
+//                markerTest.setContent(selectedX+"");
+//            else
+//                markerTest.setContent(markerFormatter.onContent(selectedX,selectedEntry));
+            markerTest.refreshContent(selectedEntry,selectedX);
 
             float yPos = getYPosOfEntry(selectedEntry);
             int markerHeight = markerTest.getHeight();
@@ -668,6 +671,10 @@ public class SleepStageGraph extends View {
     public interface MarkerFormatter{
         @SuppressWarnings("ConstantConditions")
         CharSequence onContent(float x,@Nullable SleepEntry entry);
+    }
+    /** set markerView*/
+    public void setMarkerView(SleepMarker mMarker){
+        this.markerTest = mMarker;
     }
     /** Listener for the chart item clicks*/
     public void setChartClickListener(ChartListener mClickListener){

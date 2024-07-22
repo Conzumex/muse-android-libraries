@@ -227,7 +227,9 @@ public class MainActivity extends AppCompatActivity {
             else
                 return "Awake";
         });
-        sleepGraph.setMarkerFormatter((x, entry) -> Html.fromHtml("<font color='yellow'>Val : </font>"+x));
+        CustomMarker tempSleepMarker = new CustomMarker(getApplicationContext(), R.layout.custom_marker);
+        sleepGraph.setMarkerView(tempSleepMarker);
+//        sleepGraph.setMarkerFormatter((x, entry) -> Html.fromHtml("<font color='yellow'>Val : </font>"+x));
         sleepGraph.setChartClickListener((x, entry) -> {
 //            Log.d("Clicked",entry.xValue+"");
             Log.d("Clicked",entry!=null?entry.xValue+"":"null");

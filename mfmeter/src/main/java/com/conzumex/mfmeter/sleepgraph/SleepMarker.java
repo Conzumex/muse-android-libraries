@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 public class SleepMarker extends RelativeLayout {
-    TextView tvValue;
+//    TextView tvValue;
     public SleepMarker(Context context,int layoutId) {
         super(context);
         setupLayoutResource(layoutId);
@@ -38,7 +38,7 @@ public class SleepMarker extends RelativeLayout {
     private void setupLayoutResource(int layoutResource) {
 
         View inflated = LayoutInflater.from(getContext()).inflate(layoutResource, this);
-        tvValue = inflated.findViewById(R.id.textView);
+//        tvValue = inflated.findViewById(R.id.textView);
         inflated.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
         inflated.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED), MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
 
@@ -47,7 +47,15 @@ public class SleepMarker extends RelativeLayout {
     }
 
     public void setContent(CharSequence content){
-        tvValue.setText(content);
+//        tvValue.setText(content);
+        measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
+                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+        layout(0, 0, getMeasuredWidth(), getMeasuredHeight());
+        invalidate();
+    }
+
+    public void refreshContent(SleepEntry selectedEntry,float selectedX){
+//        tvValue.setText(selectedX+"");
         measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
                 MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
         layout(0, 0, getMeasuredWidth(), getMeasuredHeight());
