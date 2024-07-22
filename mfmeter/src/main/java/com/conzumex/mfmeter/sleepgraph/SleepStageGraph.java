@@ -100,6 +100,7 @@ public class SleepStageGraph extends View {
     boolean drawViewTopBorder = true;
     boolean drawViewEndBorder = true;
     boolean setMarkerTop = true;
+    boolean showMarkerAlways = true;
     int markerLayout = R.layout.marker_default;
     MarkerFormatter markerFormatter;
     ChartListener mClickListener;
@@ -463,7 +464,8 @@ public class SleepStageGraph extends View {
             if(setMarkerTop){
                 markerY = markerTopPadding + (markerHeight/2);
             }
-            markerTest.draw(canvas, touchX, markerY, chartGraphStartX, getXPos(XPos.TOUCH_END_X));
+            if(showMarkerAlways || selectedEntry!=null)
+                markerTest.draw(canvas, touchX, markerY, chartGraphStartX, getXPos(XPos.TOUCH_END_X));
         }
     }
 
@@ -753,6 +755,10 @@ public class SleepStageGraph extends View {
     /** set marker on top*/
     public void setMarkerOnTop(boolean isSet){
         this.setMarkerTop = isSet;
+    }
+    /** set marker always draw if there is no entries for the clicked pos*/
+    public void setShowMarkerAlways(boolean isSet){
+        this.showMarkerAlways = isSet;
     }
     /** set marker margin on top, if set the marker always on top*/
     public void setMarkerTopPadding(int topMarkerPadding){
