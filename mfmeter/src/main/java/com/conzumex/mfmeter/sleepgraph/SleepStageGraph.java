@@ -41,7 +41,11 @@ import java.util.Set;
 public class SleepStageGraph extends View {
     int parentViewWidth,parentViewHeight;
     int chartWidth,chartHeight;
+    int axisSpace = 100;
     int chartOffsetV = 0,chartOffsetH = 20;
+    int chartOffsetTop = 0;
+    int viewBorderOffsetTop = 0;
+    int viewBorderOffsetLeft = 10;
     float chartGraphWidth,chartGraphHeight;
     float chartGraphStartX,chartGraphStartY;
     float chartGraphEndX,chartGraphEndY;
@@ -85,11 +89,13 @@ public class SleepStageGraph extends View {
     labelFormatY labelYFormatter;
     DecimalFormat dc2Point = new DecimalFormat("0.##");
     float chartPaddingH = 50,chartPaddingV = 50;
-    boolean drawXAxis = true,drawYAxis = false;
+    boolean drawXAxis = true,drawYAxis = true;
     float insideAxisWidth = 50;
     boolean highlightEdges = true;
     boolean highlightClick = true;
     boolean drawMarkers = true;
+    boolean drawTopBorder = true;
+    boolean drawViewTopBorder = true;
     int markerLayout = R.layout.marker_default;
     MarkerFormatter markerFormatter;
     ChartListener mClickListener;
@@ -104,6 +110,11 @@ public class SleepStageGraph extends View {
     boolean changeLabelColors = true;
 
     float touchX=-1, touchY=-1;
+
+    enum XPos {YAXIS, XAXIS_START,XAXIS_END}
+    enum Direction {LEFT, RIGHT}
+
+    Direction yAXisDirection = Direction.RIGHT;
 
     public SleepStageGraph(Context context) {
         this(context, null, 0);
@@ -137,8 +148,8 @@ public class SleepStageGraph extends View {
         @ColorInt int newTextColor = attributes.getColor(R.styleable.SleepStageGraph_graphBackgroundColor, colorBackground);
         if (newTextColor != colorBackground) colorBackground = newTextColor;
 
-//        if(isInEditMode())
-//            loadDummyData();
+        if(isInEditMode())
+            loadDummyData();
     }
 
 
@@ -149,19 +160,19 @@ public class SleepStageGraph extends View {
         canvas.save();
         parentViewWidth = getWidth();
         parentViewHeight = getHeight();
-        chartWidth = parentViewWidth-100;
-        chartHeight = parentViewHeight-100;
+        chartWidth = parentViewWidth-axisSpace;
+        chartHeight = parentViewHeight-axisSpace;
 
-//        if(isInEditMode()) {
-//            int tempHeight = 700;
-//            chartHeight = tempHeight - 100;
-//        }
-        chartGraphHeight = chartHeight - chartOffsetV;
+        if(isInEditMode()) {
+            int tempHeight = 700;
+            chartHeight = tempHeight - 100;
+        }
+        chartGraphHeight = chartHeight - chartOffsetTop;
         chartGraphWidth = chartWidth - chartOffsetH - chartPaddingH;
         chartGraphStartX = 0 + (chartOffsetH/2) + (chartPaddingH/2);
-        chartGraphStartY = 0 + (chartOffsetV/2);
+        chartGraphStartY = 0 + chartOffsetTop;
         chartGraphEndX = chartWidth-(chartOffsetH/2) - (chartPaddingH/2);
-        chartGraphEndY = chartHeight-(chartOffsetV/2);
+        chartGraphEndY = chartHeight+ chartOffsetTop;
 
         Paint paint2 = new Paint();
         paint2.setColor(Color.DKGRAY);
@@ -260,20 +271,20 @@ public class SleepStageGraph extends View {
         edgeGridPaint.setPathEffect(new DashPathEffect(new float[]{10,10}, 0));
         // (lineWidth/2) for the grgh bsar connecting line width
         float xPos = chartGraphStartX - (lineWidth/2) - (edgeLineWidth/2);
-        canvas.drawLine(xPos,chartHeight,xPos,0,edgeGridPaint); //Grid lines
+        canvas.drawLine(xPos,chartHeight,xPos,chartOffsetTop,edgeGridPaint); //Grid lines
         float endXPos = (labelCount*xLabelInterval)+chartGraphStartX + (lineWidth/2) + (edgeLineWidth/2);
-        canvas.drawLine(endXPos,chartHeight,endXPos,0,edgeGridPaint); //Grid lines
+        canvas.drawLine(endXPos,chartHeight,endXPos,chartOffsetTop,edgeGridPaint); //Grid lines
     }
 
     void drawAxis(Canvas canvas){
         mPaint.setStrokeWidth(axisWidth);
         mPaint.setColor(colorYAxis);
         if(drawYAxis)
-            canvas.drawLine(chartWidth,0,chartWidth,chartHeight,mPaint);    //yAxis
+            canvas.drawLine(getXPos(XPos.YAXIS),0,getXPos(XPos.YAXIS),chartHeight,mPaint);    //yAxis
 
         mPaint.setColor(colorXAxis);
         if(drawXAxis)
-            canvas.drawLine(0,chartHeight,chartWidth+insideAxisWidth,chartHeight,mPaint);   //xAxis
+            canvas.drawLine(getXPos(XPos.XAXIS_START),chartHeight,getXPos(XPos.XAXIS_END),chartHeight,mPaint);   //xAxis
     }
 
     void drawEmptyData(Canvas canvas){
@@ -309,7 +320,7 @@ public class SleepStageGraph extends View {
             yPos = yPos - (yDotValue/2);
 //            canvas.drawLine(startX,yPos,endX,yPos,mPaint);
 
-            yPos = chartHeight - yPos;
+            yPos = chartHeight - yPos +chartOffsetTop;
             if(!yValues.contains(yPos))
                 yValues.add(yPos);
 
@@ -329,7 +340,7 @@ public class SleepStageGraph extends View {
                 tempDeb = tempDeb+" {x:"+startX+" - end "+prevBarLineX+"} ";
                 float lineX = startX + (lineWidth/2);
                 //TODO make dynamic gradient
-                mLinePaint.setShader(new LinearGradient(prevBarLineX,(chartGraphEndY-(yDotValue/2)),startX,(chartGraphStartY+(yDotValue/2)), colorRanges,null,  Shader.TileMode.CLAMP));
+                mLinePaint.setShader(new LinearGradient(prevBarLineX,(chartGraphEndY-(yDotValue/2) -chartOffsetTop),startX,(chartGraphStartY+(yDotValue/2) ), colorRanges,null,  Shader.TileMode.CLAMP));
                 canvas.drawLine(lineX,prevBarLineY,lineX,yPos,mLinePaint);
             }
 
@@ -337,6 +348,13 @@ public class SleepStageGraph extends View {
             prevBarLineX = endX;
             prevBarColor = barColor;
         }
+
+        if(drawTopBorder)
+            canvas.drawLine((chartGraphStartX-(chartPaddingH/2)-(chartOffsetH/2)),chartOffsetTop,(chartGraphEndX+chartPaddingH/2+(chartOffsetH/2)+insideAxisWidth ),chartOffsetTop,gridPaint); //Grid lines
+
+        if(drawViewTopBorder)
+            canvas.drawLine((chartGraphStartX-(chartPaddingH/2)-(chartOffsetH/2)),viewBorderOffsetTop,(chartGraphEndX+chartPaddingH/2+(chartOffsetH/2)+insideAxisWidth ),viewBorderOffsetTop,gridPaint); //Grid lines
+
     }
 
     void drawLabels(Canvas canvas){
@@ -347,7 +365,7 @@ public class SleepStageGraph extends View {
         labelPaint.setColor(colorYLabel);
         for(Float yVal : yVals){
             float yPos = (yVal + 1) * yDotValue;
-            yPos = yPos +chartGraphStartY;
+            yPos = yPos +chartGraphStartY - chartOffsetTop;
             float labelVal = (yPos/yDotValue)-1;
             yPos = yPos - (yDotValue/2);
             yPos = chartHeight - yPos;
@@ -365,22 +383,22 @@ public class SleepStageGraph extends View {
         float endGridXpos = chartGraphWidth + (lineWidth/2)+chartGraphStartX;
         if(gridXEffect!=null)
             gridPaint.setPathEffect(gridXEffect);
-        canvas.drawLine(startGridXpos,chartHeight,startGridXpos,0,gridPaint);
-        canvas.drawLine(endGridXpos,chartHeight,endGridXpos,0,gridPaint);
+        canvas.drawLine(startGridXpos,chartHeight,startGridXpos,chartOffsetTop,gridPaint);
+        canvas.drawLine(endGridXpos,chartHeight,endGridXpos,chartOffsetTop,gridPaint);
         labelPaint.setTextAlign(Paint.Align.LEFT);
         if(highlightEdgeValues) {
             labelPaint.setTypeface(Typeface.create(fontFace, Typeface.BOLD));
             labelPaint.setColor(colorEdgeHighlight);
         }
         float xValueStart = 0;
-        canvas.drawText(labelXFormatter.getLabel(xValueStart),chartGraphStartX,chartGraphEndY + 50,labelPaint);
+        canvas.drawText(labelXFormatter.getLabel(xValueStart),chartGraphStartX,chartGraphEndY-chartOffsetTop + 50,labelPaint);
         labelPaint.setTextAlign(Paint.Align.RIGHT);
         if(highlightEdgeValues) {
             labelPaint.setTypeface(Typeface.create(fontFace, Typeface.BOLD));
             labelPaint.setColor(colorEdgeHighlight);
         }
         float xValueEnd = chartGraphWidth/xDotValue;
-        canvas.drawText(labelXFormatter.getLabel(xValueEnd),chartGraphWidth+chartGraphStartX,chartGraphEndY + 50,labelPaint);
+        canvas.drawText(labelXFormatter.getLabel(xValueEnd),chartGraphWidth+chartGraphStartX,chartGraphEndY-chartOffsetTop + 50,labelPaint);
 
         //lessing by 1 for count the labels for inside the last and first labels
         float xLabelCountsInside = (chartGraphWidth/xDotValue)-1;
@@ -394,8 +412,8 @@ public class SleepStageGraph extends View {
             int roundPos = Math.round(indexAvg);
             if(roundPos == 1 || roundPos == xLabelCountsInside)   continue;
             float gridXpos = (roundPos*xDotValue)+chartGraphStartX;
-            canvas.drawLine(gridXpos,chartHeight,gridXpos,0,gridPaint);
-            canvas.drawText(labelXFormatter.getLabel(roundPos),gridXpos,chartGraphEndY + 50,labelPaint);
+            canvas.drawLine(gridXpos,chartHeight,gridXpos,0+chartOffsetTop,gridPaint);
+            canvas.drawText(labelXFormatter.getLabel(roundPos),gridXpos,chartGraphEndY -chartOffsetTop+ 50,labelPaint);
         }
 
         gridPaint.setPathEffect(null);
@@ -540,6 +558,18 @@ public class SleepStageGraph extends View {
         if(pos==-1) return -1;
         return xValues.get(pos);
     }
+    private float getXPos(XPos type){
+        if(yAXisDirection == Direction.RIGHT) {
+            if (type == XPos.YAXIS) {
+                return chartWidth;
+            } else if (type==XPos.XAXIS_START) {
+                return 0;
+            } else if (type==XPos.XAXIS_END) {
+                return chartWidth+insideAxisWidth;
+            }
+        }
+        return 0;
+    }
 
     /** Format the marker text as String */
     public void setMarkerFormatter(MarkerFormatter mFormatter){
@@ -606,6 +636,10 @@ public class SleepStageGraph extends View {
     /** set font size for the texts*/
     public void setTextSize(float textSize){
         this.textSize = textSize;
+    }
+    /** set chart top offset for bigger markers*/
+    public void setOffsetTop(int offsetTop){
+        this.chartOffsetTop = offsetTop;
     }
     @Override
     public void invalidate() {
