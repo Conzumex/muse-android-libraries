@@ -566,6 +566,8 @@ public class SleepStageGraph extends View {
     private float getYPosOfEntry(SleepEntry entry){
         if(entry==null||entries==null||entries.isEmpty())
             return -1;
+        if(yValues.size()==1)
+            return yValues.get(0);
         Collections.sort(yValues);
         return yValues.get((int) ((maxYvalue - minYvalue)-((int) entry.yValue)));
     }

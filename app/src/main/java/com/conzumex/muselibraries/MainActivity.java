@@ -202,15 +202,11 @@ public class MainActivity extends AppCompatActivity {
 //        loadChart();
 
         List<SleepEntry> sleepEntries = new ArrayList<>();
-        sleepEntries.add(new SleepEntry(0,2));
-        sleepEntries.add(new SleepEntry(1,3));
-        sleepEntries.add(new SleepEntry(2,2));
-        sleepEntries.add(new SleepEntry(3,1));
-        sleepEntries.add(new SleepEntry(4,3));
-        sleepEntries.add(new SleepEntry(6,2));
-        sleepEntries.add(new SleepEntry(7,0));
-        sleepEntries.add(new SleepEntry(8,2,10));
-
+        sleepEntries.add(new SleepEntry(0,3));
+//        sleepEntries.add(new SleepEntry(1,3));
+//        sleepEntries.add(new SleepEntry(2,2));
+//        sleepEntries.add(new SleepEntry(3,1));
+//        sleepEntries.add(new SleepEntry(4,3));
         sleepGraph.loadData(sleepEntries);
         sleepGraph.setLabelXFormatter(value -> ((int)value)+" am");
         sleepGraph.setOffsetTop(100);
@@ -229,6 +225,7 @@ public class MainActivity extends AppCompatActivity {
         });
         CustomMarker tempSleepMarker = new CustomMarker(getApplicationContext(), R.layout.custom_marker);
         sleepGraph.setMarkerView(tempSleepMarker);
+        sleepGraph.setShowMarkerAlways(false);
 //        sleepGraph.setMarkerFormatter((x, entry) -> Html.fromHtml("<font color='yellow'>Val : </font>"+x));
         sleepGraph.setChartClickListener((x, entry) -> {
 //            Log.d("Clicked",entry.xValue+"");
@@ -277,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
         animt.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(@NonNull ValueAnimator animation) {
-                Log.d("Change"," to "+(float)animation.getAnimatedValue());
+//                Log.d("Change"," to "+(float)animation.getAnimatedValue());
                 dropBar.setProgress((float)animation.getAnimatedValue());
             }
         });
