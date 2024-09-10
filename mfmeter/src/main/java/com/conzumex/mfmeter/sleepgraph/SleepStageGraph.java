@@ -41,12 +41,12 @@ import java.util.Set;
 public class SleepStageGraph extends View {
     int parentViewWidth,parentViewHeight;
     int chartWidth,chartHeight;
-    int axisSpace = 100;
+    int axisSpace = 170;
     int chartOffsetV = 0,chartOffsetH = 20;
     int chartOffsetTop = 0;
     int viewBorderOffsetTop = 0;
     int viewBorderOffsetLeft = 10;
-    int axisLabelPadding = 25;
+    int axisLabelPadding = 15;
     int markerTopPadding = 10;
     float chartGraphWidth,chartGraphHeight;
     float chartGraphStartX,chartGraphStartY;
@@ -148,7 +148,7 @@ public class SleepStageGraph extends View {
         labelPaint = new Paint();
 
         labelXFormatter = value -> dc2Point.format(value)+"";
-        labelYFormatter = value -> dc2Point.format(value)+"";
+        labelYFormatter = value -> value==2?"Awake Sleep":dc2Point.format(value)+" Sleep";
 
 //        gridXEffect = new DashPathEffect(new float[]{10,10}, 0);
 
@@ -374,7 +374,10 @@ public class SleepStageGraph extends View {
 
     void drawLabels(Canvas canvas){
         labelPaint.setColor(colorTemp);
-        labelPaint.setTextAlign(Paint.Align.LEFT);
+        if(yAXisDirection == Direction.RIGHT)
+            labelPaint.setTextAlign(Paint.Align.LEFT);
+        else
+            labelPaint.setTextAlign(Paint.Align.RIGHT);
         labelPaint.setTextSize(textSize);
         Set<Float> yVals = SleepEntry.yValsUnique(entries);
         labelPaint.setColor(colorYLabel);
@@ -622,7 +625,7 @@ public class SleepStageGraph extends View {
             if (type == XPos.YAXIS) {
                 return axisSpace;
             } else if (type==XPos.YAXIS_LABEL) {
-                return 0 + axisLabelPadding;
+                return 0 + axisSpace - axisLabelPadding;
             } else if (type==XPos.XAXIS_START) {
                 return axisSpace - insideAxisWidth;
             } else if (type==XPos.XAXIS_END) {
@@ -797,6 +800,16 @@ public class SleepStageGraph extends View {
     /** enable endge value highlighting*/
     public void enbleEdgeValuesHighlighted(boolean draw){
         this.highlightEdgeValues = draw;
+    }
+    /** set color ranges*/
+    public void setColorRanges(int[] colors){
+        this.colorRanges = colors;
+    }
+    /** set Xaxis label space.
+     *
+     * default is 100*/
+    public void setAxisSpace(int width){
+        this.axisSpace = width;
     }
     @Override
     public void invalidate() {
