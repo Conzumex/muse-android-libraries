@@ -93,7 +93,7 @@ public class SleepStageGraph extends View {
     float chartPaddingH = 50,chartPaddingV = 50;
     boolean drawXAxis = true,drawYAxis = true;
     float insideAxisWidth = 0;
-    boolean highlightEdges = true;
+    boolean highlightEdges = false;
     boolean highlightClick = true;
     boolean drawMarkers = true;
     boolean drawTopBorder = true;
@@ -112,8 +112,11 @@ public class SleepStageGraph extends View {
 
     DashPathEffect gridXEffect;
     DashPathEffect gridYEffect;
-    boolean highlightEdgeValues = true;
+    boolean highlightEdgeValues = false;
     boolean changeLabelColors = true;
+    boolean enableGridX = true;
+    boolean enableGridY = false;
+    boolean drawYEdges = false;
 
     float touchX=-1, touchY=-1;
 
@@ -147,7 +150,7 @@ public class SleepStageGraph extends View {
         labelXFormatter = value -> dc2Point.format(value)+"";
         labelYFormatter = value -> dc2Point.format(value)+"";
 
-        gridXEffect = new DashPathEffect(new float[]{10,10}, 0);
+//        gridXEffect = new DashPathEffect(new float[]{10,10}, 0);
 
         if (attrs == null) return;
         TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.SleepStageGraph);
@@ -324,7 +327,8 @@ public class SleepStageGraph extends View {
             float yPos = (entries.get(i).yValue + 1) * yDotValue;
             yPos = yPos +chartGraphStartY;
 //            canvas.drawLine((chartGraphStartX),yPos,(chartGraphEndX),yPos,gridPaint); //Grid lines
-            canvas.drawLine(getXPos(XPos.X_GRID_X_START),yPos,getXPos(XPos.X_GRID_X_END),yPos,gridPaint); //Grid lines
+            if(enableGridX)
+                canvas.drawLine(getXPos(XPos.X_GRID_X_START),yPos,getXPos(XPos.X_GRID_X_END),yPos,gridPaint); //Grid lines
             yPos = yPos - (yDotValue/2);
 //            canvas.drawLine(startX,yPos,endX,yPos,mPaint);
 
@@ -394,8 +398,10 @@ public class SleepStageGraph extends View {
         float endGridXpos = getXPos(XPos.GRID_X_END);
         if(gridXEffect!=null)
             gridPaint.setPathEffect(gridXEffect);
-        canvas.drawLine(startGridXpos,chartHeight,startGridXpos,chartOffsetTop,gridPaint);
-        canvas.drawLine(endGridXpos,chartHeight,endGridXpos,chartOffsetTop,gridPaint);
+        if(drawYEdges) {
+            canvas.drawLine(startGridXpos, chartHeight, startGridXpos, chartOffsetTop, gridPaint);
+            canvas.drawLine(endGridXpos, chartHeight, endGridXpos, chartOffsetTop, gridPaint);
+        }
         labelPaint.setTextAlign(Paint.Align.LEFT);
         if(highlightEdgeValues) {
             labelPaint.setTypeface(Typeface.create(fontFace, Typeface.BOLD));
@@ -423,7 +429,8 @@ public class SleepStageGraph extends View {
             int roundPos = Math.round(indexAvg);
             if(roundPos == 1 || roundPos == xLabelCountsInside)   continue;
             float gridXpos = getXPos(XPos.GRID_X_POS,roundPos);
-            canvas.drawLine(gridXpos,chartHeight,gridXpos,0+chartOffsetTop,gridPaint);
+            if(enableGridY)
+                canvas.drawLine(gridXpos,chartHeight,gridXpos,0+chartOffsetTop,gridPaint);
             canvas.drawText(labelXFormatter.getLabel(roundPos),gridXpos,chartGraphEndY -chartOffsetTop+ 50,labelPaint);
         }
 
@@ -773,6 +780,23 @@ public class SleepStageGraph extends View {
     /** draw view border on graph end */
     public void setDrawViewEndBorder(boolean draw){
         this.drawViewEndBorder = draw;
+    }
+    /** enable grid lines*/
+    public void enbleGridLines(boolean draw){
+        this.enableGridX = draw;
+        this.enableGridY = draw;
+    }
+    /** enable gridX line*/
+    public void enbleXGridLine(boolean draw){
+        this.enableGridX = draw;
+    }
+    /** enable gridY line*/
+    public void enbleYGridLine(boolean draw){
+        this.enableGridY = draw;
+    }
+    /** enable endge value highlighting*/
+    public void enbleEdgeValuesHighlighted(boolean draw){
+        this.highlightEdgeValues = draw;
     }
     @Override
     public void invalidate() {

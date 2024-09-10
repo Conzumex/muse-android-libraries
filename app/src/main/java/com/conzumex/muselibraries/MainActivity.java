@@ -142,6 +142,10 @@ public class MainActivity extends AppCompatActivity {
 
         loadStress(dropletSeekBar);
 
+        circleSeekBar.setProgressDisplay(60);
+//        circleSeekBar.setSecondaryProgressDisplay(0);
+        circleSeekBar.setShowThumb(false);
+
 //        rbVertical.setProgressTextFormatter(new ProgressTextFormatter() {
 //            @NonNull
 //            @Override
@@ -276,6 +280,7 @@ public class MainActivity extends AppCompatActivity {
             public void onAnimationUpdate(@NonNull ValueAnimator animation) {
 //                Log.d("Change"," to "+(float)animation.getAnimatedValue());
                 dropBar.setProgress((float)animation.getAnimatedValue());
+//                circleSeekBar.setProgressDisplay((float)animation.getAnimatedValue());
             }
         });
         animt.addListener(new Animator.AnimatorListener() {
