@@ -34,6 +34,7 @@ import com.conzumex.mfmeter.R;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -85,7 +86,8 @@ public class SleepStageGraph extends View {
 
     int[] colorRanges = new int[]{Color.parseColor("#144da7"),Color.parseColor("#6b58b9"),Color.parseColor("#a658b9"),Color.parseColor("#23b8be")};
     List<SleepEntry> entries;
-    List<Float> xValues,yValues;
+//    List<Float> xValues,yValues;
+    Map<Float,Float> xValues,yValues;
 
     labelFormatX labelXFormatter;
     labelFormatY labelYFormatter;
@@ -99,7 +101,7 @@ public class SleepStageGraph extends View {
     boolean drawTopBorder = true;
     boolean drawViewTopBorder = true;
     boolean drawViewEndBorder = true;
-    boolean setMarkerTop = true;
+    boolean setMarkerTop = false;
     boolean showMarkerAlways = true;
     int markerLayout = R.layout.marker_default;
     MarkerFormatter markerFormatter;
@@ -312,17 +314,17 @@ public class SleepStageGraph extends View {
         gridPaint.setColor(gridXColor);
         int barColor;
         String tempDeb = "";
-        xValues = new ArrayList<>();
-        yValues = new ArrayList<>();
+        xValues = new HashMap<>();
+        yValues = new HashMap<>();
         prevBarLineY = -1;
         prevBarColor = -1;
         for(int i=0;i<entries.size();i++){
             float startX = getXPos(XPos.VALUE_X_POS,entries.get(i).xValue * xDotValue);
             float endX = entries.get(i).xValueClose!=-1?(entries.get(i).xValueClose * xDotValue)+chartGraphStartX:chartGraphEndX;
 //            endX = (8*xDotValue)+chartGraphStartX;
-            xValues.add(startX);
+            xValues.put(entries.get(i).xValue,startX);
             if(i!=entries.size()-1) endX = getXPos(XPos.VALUE_X_POS,entries.get(i+1).xValue*xDotValue);
-            if(i!=entries.size()-1) xValues.add(endX);
+            if(i!=entries.size()-1) xValues.put(entries.get(i).xValue,endX);
             mPaint.setColor(colorTemp);
             float yPos = (entries.get(i).yValue + 1) * yDotValue;
             yPos = yPos +chartGraphStartY;
@@ -333,8 +335,8 @@ public class SleepStageGraph extends View {
 //            canvas.drawLine(startX,yPos,endX,yPos,mPaint);
 
             yPos = chartHeight - yPos +chartOffsetTop;
-            if(!yValues.contains(yPos))
-                yValues.add(yPos);
+            if(!yValues.containsValue(yPos))
+                yValues.put(entries.get(i).yValue,yPos);
 
             float rectTop = yPos - (barHeight/2);
             //todo make line included
@@ -465,7 +467,12 @@ public class SleepStageGraph extends View {
 //                markerTest.setContent(markerFormatter.onContent(selectedX,selectedEntry));
             markerTest.refreshContent(selectedEntry,selectedX);
 
-            float yPos = getYPosOfEntry(selectedEntry);
+            float yPos = 100;
+            try {
+                yPos = getYPosOfEntry(selectedEntry);
+            }catch (Exception e){
+                Log.e("SLeepYPos",e.toString());
+            }
             int markerHeight = markerTest.getHeight();
             float chartTopSpace = yPos - ((float) barHeight /2);
 //            printDebug(yPos+"y, barH"+barHeight+", marH "+markerHeight+" yDOt "+yDotValue+" yN"+chartTopSpace,canvas);
@@ -578,8 +585,9 @@ public class SleepStageGraph extends View {
             return -1;
         if(yValues.size()==1)
             return yValues.get(0);
-        Collections.sort(yValues);
-        return yValues.get((int) ((maxYvalue - minYvalue)-((int) entry.yValue)));
+//        return yValues.get(entries.indexOf(entry));
+        int graphMax = (int) (maxYvalue - minYvalue);
+        return yValues.get(entry.yValue);
     }
     private float getXPosOfEntry(SleepEntry entry){
         if(entry==null||entries==null||entries.isEmpty())

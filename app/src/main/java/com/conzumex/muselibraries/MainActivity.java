@@ -206,11 +206,16 @@ public class MainActivity extends AppCompatActivity {
 //        loadChart();
 
         List<SleepEntry> sleepEntries = new ArrayList<>();
-        sleepEntries.add(new SleepEntry(0,3));
+        sleepEntries.add(new SleepEntry(0,0));
+        sleepEntries.add(new SleepEntry(120,3,240));
 //        sleepEntries.add(new SleepEntry(1,3));
 //        sleepEntries.add(new SleepEntry(2,2));
 //        sleepEntries.add(new SleepEntry(3,1));
 //        sleepEntries.add(new SleepEntry(4,3));
+//        sleepEntries.add(new SleepEntry(5,0));
+//        sleepEntries.add(new SleepEntry(6,2));
+//        sleepEntries.add(new SleepEntry(7,1));
+//        sleepEntries.add(new SleepEntry(8,3));
         sleepGraph.loadData(sleepEntries);
         sleepGraph.setLabelXFormatter(value -> ((int)value)+" am");
         sleepGraph.setOffsetTop(100);
@@ -240,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
         });
         sleepGraph.setFontFace(ResourcesCompat.getFont(this, R.font.rb_medium));
         sleepGraph.setEmptyText("Nothing entered");
-        sleepGraph.setMaxXvalue(10);
+        sleepGraph.setMaxXvalue(240);
 
 
         loadCandleData();
