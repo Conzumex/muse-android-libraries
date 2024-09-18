@@ -24,18 +24,11 @@ public class SleepEntry implements Comparable<SleepEntry> {
         return (int) (this.xValue - o.xValue);
     }
 
-    public static Set<Float> yValsUnique(final List<SleepEntry> entries) {
+    public static Set<Float> yValsUnique(float min, float max, float granularity) {
         Set<Float> uniqueYs = new HashSet<>();
         //to add dummy values when no entries is loaded
-        if(entries==null){
-            uniqueYs.add(0f);
-            uniqueYs.add(1f);
-            uniqueYs.add(2f);
-            uniqueYs.add(3f);
-            return uniqueYs;
-        }
-        for(final SleepEntry item: entries) {
-            uniqueYs.add(item.yValue);
+        for(float i = min;i <= max; i=i+granularity){
+            uniqueYs.add(i);
         }
         return uniqueYs;
     }

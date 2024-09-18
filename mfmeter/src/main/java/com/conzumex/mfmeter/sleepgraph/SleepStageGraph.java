@@ -59,6 +59,7 @@ public class SleepStageGraph extends View {
     float maxXvalue=8f;
     float minXvalue=0;
     float maxYvalue=3;
+    float yGranularity=1;
     float minYvalue=0;
     Paint mPaint,gridPaint,mBarPaint,mLinePaint,labelPaint,edgeGridPaint,markerPaint,noDataPaint;
     int barHeight = 75;
@@ -224,6 +225,9 @@ public class SleepStageGraph extends View {
 //      if(entries.size()>20)
 
         drawValues(canvas);
+        if(enableGridX){
+            drawGridX(canvas);
+        }
         drawAxis(canvas);
 //       if(entries.size()>20) {
         if (highlightEdges)
@@ -242,7 +246,8 @@ public class SleepStageGraph extends View {
                 if(eventX>=chartGraphStartX && eventX<=chartGraphEndX) {
                     touchX = event.getRawX();
                     touchY = event.getRawY();
-                    touchedArea = true;
+                    if(touchX<chartGraphEndX && touchX>chartGraphStartX && touchY > chartGraphStartY && touchY<chartGraphEndY)
+                        touchedArea = true;
                 }
                 break;
 
@@ -251,7 +256,8 @@ public class SleepStageGraph extends View {
                 if(eventX>=chartGraphStartX && eventX<=getXPos(XPos.TOUCH_END_X)) {
                     touchX = event.getRawX();
                     touchY = event.getRawY();
-                    touchedArea = true;
+                    if(touchX<chartGraphEndX && touchX>chartGraphStartX && touchY > chartGraphStartY && touchY<chartGraphEndY)
+                        touchedArea = true;
                 }
                 break;
             default:
@@ -269,7 +275,7 @@ public class SleepStageGraph extends View {
     void loadDummyData(){
         entries = new ArrayList<>();
         entries.add(new SleepEntry(0,2));
-        entries.add(new SleepEntry(3,1));
+//        entries.add(new SleepEntry(3,1));
         entries.add(new SleepEntry(4,3));
         entries.add(new SleepEntry(6,2));
         entries.add(new SleepEntry(7,0));
@@ -307,6 +313,15 @@ public class SleepStageGraph extends View {
         canvas.drawText(emptyText,chartGraphWidth/2,chartGraphHeight/2,noDataPaint);
     }
 
+    void drawGridX(Canvas canvas){
+        Set<Float> yVals = SleepEntry.yValsUnique(minYvalue,maxYvalue,yGranularity);
+        for(Float yVal : yVals){
+            float yPos = yVal * yDotValue;
+            yPos = yPos +chartGraphStartY;
+            canvas.drawLine(getXPos(XPos.X_GRID_X_START), yPos, getXPos(XPos.X_GRID_X_END), yPos, gridPaint); //Grid lines
+        }
+    }
+
     void drawValues(Canvas canvas){
         Collections.sort(entries);
         mLinePaint.setStrokeWidth(lineWidth);
@@ -329,8 +344,8 @@ public class SleepStageGraph extends View {
             float yPos = (entries.get(i).yValue + 1) * yDotValue;
             yPos = yPos +chartGraphStartY;
 //            canvas.drawLine((chartGraphStartX),yPos,(chartGraphEndX),yPos,gridPaint); //Grid lines
-            if(enableGridX)
-                canvas.drawLine(getXPos(XPos.X_GRID_X_START),yPos,getXPos(XPos.X_GRID_X_END),yPos,gridPaint); //Grid lines
+//            if(enableGridX)
+//                canvas.drawLine(getXPos(XPos.X_GRID_X_START),yPos,getXPos(XPos.X_GRID_X_END),yPos,gridPaint); //Grid lines
             yPos = yPos - (yDotValue/2);
 //            canvas.drawLine(startX,yPos,endX,yPos,mPaint);
 
@@ -381,7 +396,7 @@ public class SleepStageGraph extends View {
         else
             labelPaint.setTextAlign(Paint.Align.RIGHT);
         labelPaint.setTextSize(textSize);
-        Set<Float> yVals = SleepEntry.yValsUnique(entries);
+        Set<Float> yVals = SleepEntry.yValsUnique(minYvalue,maxYvalue,yGranularity);
         labelPaint.setColor(colorYLabel);
         for(Float yVal : yVals){
             float yPos = (yVal + 1) * yDotValue;
@@ -551,6 +566,10 @@ public class SleepStageGraph extends View {
     /** set max Y Value*/
     public void setMaxYvalue(float maxYvalue) {
         this.maxYvalue = maxYvalue;
+    }
+    /** set label Granularity for Y Value*/
+    public void setyGranularity(float granularity) {
+        this.yGranularity = granularity;
     }
 
     public SleepEntry getEntry(float xValue){
