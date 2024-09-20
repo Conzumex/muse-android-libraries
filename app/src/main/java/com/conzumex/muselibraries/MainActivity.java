@@ -43,6 +43,7 @@ import com.conzumex.charts.highlight.Highlight;
 import com.conzumex.charts.listener.OnChartValueSelectedListener;
 import com.conzumex.circleseekbar.CircleSeekBar;
 import com.conzumex.circleseekbar.DropletSeekBar;
+import com.conzumex.circleseekbar.marker.Marker;
 import com.conzumex.mfmeter.FuelIcon;
 import com.conzumex.mfmeter.FuelLog;
 import com.conzumex.mfmeter.FuelSession;
@@ -144,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
 
         circleSeekBar.setProgressDisplay(60);
 //        circleSeekBar.setSecondaryProgressDisplay(0);
-        circleSeekBar.setShowThumb(false);
+        circleSeekBar.setShowThumb(true);
 
 //        rbVertical.setProgressTextFormatter(new ProgressTextFormatter() {
 //            @NonNull
@@ -260,6 +261,15 @@ public class MainActivity extends AppCompatActivity {
         pbBarchart.setProgressData(entries);
         pbBarchart.disablePercentage("9");
         pbRoundchart.setProgressData(entries);
+
+        CustomRingSleepStageMarkerView markerPb = new CustomRingSleepStageMarkerView(getApplicationContext(),R.layout.custom_graph_marker_ring);
+        circleSeekBar.setMarkerView(markerPb);
+        markerPb.setSupplier(new CustomRingSleepStageMarkerView.supplier() {
+            @Override
+            public String[] onValueSupply(float e, float xVal) {
+                return new String[]{"Hellow","X :"+xVal};
+            }
+        });
 
 //        pbOuter.setProgressTextFormatter(new ProgressTextFormatter() {
 //            @NonNull

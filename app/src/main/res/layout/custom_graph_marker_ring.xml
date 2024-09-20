@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:id="@+id/ll_root"
+    android:background="#757575" >
+
+        <TextView
+            android:id="@+id/tvContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="12 Dec"
+            android:minEms="2"
+            android:ellipsize="end"
+            android:singleLine="true" />
+        <TextView
+            android:id="@+id/tvContent2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1396 steps"
+            android:minEms="1"
+            android:textColor="@color/white"
+            android:ellipsize="end"
+            android:singleLine="true" />
+
+</LinearLayout>

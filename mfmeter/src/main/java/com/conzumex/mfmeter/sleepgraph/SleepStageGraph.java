@@ -243,20 +243,25 @@ public class SleepStageGraph extends View {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 float eventX = event.getRawX();
-                if(eventX>=chartGraphStartX && eventX<=chartGraphEndX) {
+                float eventY = event.getY();
+                if(eventX>=getXPos(XPos.GRAPH_EDGE_START) && eventX<=getXPos(XPos.TOUCH_END_X)&& eventY >= chartGraphStartY && eventY <= chartGraphEndY) {
                     touchX = event.getRawX();
                     touchY = event.getRawY();
-                    if(touchX<chartGraphEndX && touchX>chartGraphStartX && touchY > chartGraphStartY && touchY<chartGraphEndY)
+                    Log.d("Toching"," touchX: "+touchX +" chartGraphEndX: "+ chartGraphEndX +" chartGraphStartX: "+chartGraphStartX+" touchY: "+ eventY +"chartGraphStartY :"+ chartGraphStartY +"chartGraphEndY: "+chartGraphEndY);
+//                    if(touchX<chartGraphEndX && touchX>chartGraphStartX && touchY > chartGraphStartY && touchY<chartGraphEndY)
+//                    if(touchX<getXPos(XPos.GRAPH_EDGE_END) && touchX>getXPos(XPos.GRAPH_EDGE_START))
                         touchedArea = true;
                 }
                 break;
 
             case MotionEvent.ACTION_MOVE:
                 eventX = event.getRawX();
-                if(eventX>=chartGraphStartX && eventX<=getXPos(XPos.TOUCH_END_X)) {
+                eventY = event.getY();
+                if(eventX>=getXPos(XPos.GRAPH_EDGE_START) && eventX<=getXPos(XPos.TOUCH_END_X) && eventY >= chartGraphStartY && eventY <= chartGraphEndY) {
                     touchX = event.getRawX();
                     touchY = event.getRawY();
-                    if(touchX<chartGraphEndX && touchX>chartGraphStartX && touchY > chartGraphStartY && touchY<chartGraphEndY)
+//                    if(touchX<chartGraphEndX && touchX>chartGraphStartX && touchY > chartGraphStartY && touchY<chartGraphEndY)
+//                    if(touchX<getXPos(XPos.GRAPH_EDGE_END) && touchX>getXPos(XPos.GRAPH_EDGE_START))
                         touchedArea = true;
                 }
                 break;

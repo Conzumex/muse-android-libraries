@@ -17,6 +17,7 @@ import android.view.View;
 import androidx.core.content.ContextCompat;
 
 import com.conzumex.cicleseekbar.R;
+import com.conzumex.circleseekbar.marker.Marker;
 
 
 public class CircleSeekBar extends View {
@@ -32,7 +33,7 @@ public class CircleSeekBar extends View {
      * Current point value.
      */
     private int mProgressDisplay = MIN;
-    int defProgress = 25;
+    int defProgress = 10;
     private int mSecondaryProgressDisplay = MIN;
     /**
      * The min value of progress value.
@@ -81,6 +82,7 @@ public class CircleSeekBar extends View {
     private Paint mProgressPaint;
     private Paint mSecondaryProgressPaint;
     private Paint mDashPaint;
+    private Paint mMarkerPaint;
     private float mProgressSweep;
     private float mSecondaryProgressSweep;
 
@@ -90,6 +92,8 @@ public class CircleSeekBar extends View {
     private Rect mTextRect = new Rect();
     private boolean mIsShowText = false;
     private boolean mIsShowThumb = true;
+    private boolean mDrawMarker = true;
+    private boolean showMarker = false;
 
     private int mCenterX;
     private int mCenterY;
@@ -110,10 +114,13 @@ public class CircleSeekBar extends View {
     private double mAngle;
     private double mSecondaryAngle;
     private boolean mIsThumbSelected = false;
+    private boolean mIsMarkerShown = false;
     private boolean mIsClickEnabled = true;
     private OnSeekBarChangedListener mOnSeekBarChangeListener;
 
-
+    //for marker
+    int markerLayout = R.layout.marker_default;
+    Marker markerView;
     public CircleSeekBar(Context context) {
         super(context);
         init(context, null);
@@ -215,6 +222,7 @@ public class CircleSeekBar extends View {
         int arcColor = ContextCompat.getColor(context, R.color.color_arc);
         int dashColor = ContextCompat.getColor(context, R.color.color_arc);
         int textColor = ContextCompat.getColor(context, R.color.color_text);
+        int markerColor = Color.parseColor("#ff0073");
         mProgressWidth = (int) (density * mProgressWidth);
         mArcWidth = (int) (density * mArcWidth);
         mTextSize = (int) (density * mTextSize);
@@ -302,6 +310,11 @@ public class CircleSeekBar extends View {
         mTextPaint.setAntiAlias(true);
         mTextPaint.setStyle(Paint.Style.FILL);
         mTextPaint.setTextSize(mTextSize);
+
+        mMarkerPaint = new Paint();
+        mMarkerPaint.setColor(markerColor);
+        mMarkerPaint.setStyle(Paint.Style.STROKE);
+        mMarkerPaint.setStrokeWidth(5);
     }
 
     @Override
@@ -342,8 +355,10 @@ public class CircleSeekBar extends View {
             canvas.drawText(String.valueOf(mProgressDisplay), xPos, yPos, mTextPaint);
         }
 
-//        if(isInEditMode())
-//            canvas.drawPaint(new Paint());
+        if(isInEditMode()) {
+            canvas.drawPaint(new Paint());
+            mThumbSize = 50;
+        }
 
         // draw the arc and progress
         canvas.drawCircle(mCenterX, mCenterY, mCircleRadius, mArcPaint);
@@ -380,6 +395,30 @@ public class CircleSeekBar extends View {
                     mOuterThumbX + mThumbSize / 2, mOuterThumbY + mThumbSize / 2);
             mThumbDrawable.draw(canvas);
         }
+
+        if(mDrawMarker && showMarker) {
+            drawMarker(tempAngle, canvas);
+        }
+    }
+
+    void drawMarker(double tempAngle,Canvas canvas){
+//        canvas.drawLine(x,y+20,x,y,mMarkerPaint);
+        if(markerView==null)
+            markerView = new Marker(getContext(),markerLayout);
+        markerView.refreshContent(mProgressDisplay,mSecondaryProgressDisplay);
+
+        int markerHeight = markerView.getHeight();
+        int markerWidth = markerView.getWidth();
+
+//        canvas.save(); // first save the state of the canvas
+//        canvas.rotate(45); // rotate it
+        // find marker position
+        int x = (int) (mCenterX + (mCircleRadius - (markerWidth / 2.9)) * Math.cos(tempAngle));
+        int y = (int) (mCenterY - (mCircleRadius - (markerHeight / 2.9)) * Math.sin(tempAngle));
+//        printDebug(markerHeight+" "+markerWidth+" thumbx "+mThumbX+" : "+mThumbY+" mT "+x+": "+y+" w "+getWidth(),canvas);
+
+        markerView.draw(canvas, x, y,0,getWidth());
+//        canvas.restore();
     }
 
     void printDebug(String text,Canvas canvas){
@@ -414,6 +453,53 @@ public class CircleSeekBar extends View {
         updateProgress(progress, true);
     }
 
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        //to check the click is enabled or not
+//        if(!mIsClickEnabled){
+//            return false;
+//        }
+//        switch (event.getAction()) {
+//            case MotionEvent.ACTION_DOWN: {
+//                // start moving the thumb (this is the first touch)
+//                int x = (int) event.getX();
+//                int y = (int) event.getY();
+//                if (x < mThumbX + mThumbSize && x > mThumbX - mThumbSize && y < mThumbY + mThumbSize
+//                        && y > mThumbY - mThumbSize) {
+//                    getParent().requestDisallowInterceptTouchEvent(true);
+//                    mIsThumbSelected = true;
+//                    updateProgressState(x, y);
+//                    if(mOnSeekBarChangeListener != null) {
+//                        mOnSeekBarChangeListener.onStartTrackingTouch(this);
+//                    }
+//                }
+//                break;
+//            }
+//
+//            case MotionEvent.ACTION_MOVE: {
+//                // still moving the thumb (this is not the first touch)
+//                if (mIsThumbSelected) {
+//                    int x = (int) event.getX();
+//                    int y = (int) event.getY();
+//                    updateProgressState(x, y);
+//                }
+//                break;
+//            }
+//
+//            case MotionEvent.ACTION_UP: {
+//                // finished moving (this is the last touch)
+//                getParent().requestDisallowInterceptTouchEvent(false);
+//                mIsThumbSelected = false;
+//                if(mOnSeekBarChangeListener != null)
+//                    mOnSeekBarChangeListener.onStopTrackingTouch(this);
+//                break;
+//            }
+//        }
+//
+//        // redraw the whole component
+//        return true;
+//    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         //to check the click is enabled or not
@@ -428,33 +514,30 @@ public class CircleSeekBar extends View {
                 if (x < mThumbX + mThumbSize && x > mThumbX - mThumbSize && y < mThumbY + mThumbSize
                         && y > mThumbY - mThumbSize) {
                     getParent().requestDisallowInterceptTouchEvent(true);
-                    mIsThumbSelected = true;
-                    updateProgressState(x, y);
-                    if(mOnSeekBarChangeListener != null) {
-                        mOnSeekBarChangeListener.onStartTrackingTouch(this);
-                    }
+                    showMarker = !showMarker;
+                    invalidate();
                 }
                 break;
             }
 
-            case MotionEvent.ACTION_MOVE: {
-                // still moving the thumb (this is not the first touch)
-                if (mIsThumbSelected) {
-                    int x = (int) event.getX();
-                    int y = (int) event.getY();
-                    updateProgressState(x, y);
-                }
-                break;
-            }
+//            case MotionEvent.ACTION_MOVE: {
+//                // still moving the thumb (this is not the first touch)
+//                if (mIsThumbSelected) {
+//                    int x = (int) event.getX();
+//                    int y = (int) event.getY();
+//                    updateProgressState(x, y);
+//                }
+//                break;
+//            }
 
-            case MotionEvent.ACTION_UP: {
-                // finished moving (this is the last touch)
-                getParent().requestDisallowInterceptTouchEvent(false);
-                mIsThumbSelected = false;
-                if(mOnSeekBarChangeListener != null)
-                    mOnSeekBarChangeListener.onStopTrackingTouch(this);
-                break;
-            }
+//            case MotionEvent.ACTION_UP: {
+//                // finished moving (this is the last touch)
+//                getParent().requestDisallowInterceptTouchEvent(false);
+////                mIsThumbSelected = false;
+////                if(mOnSeekBarChangeListener != null)
+////                    mOnSeekBarChangeListener.onStopTrackingTouch(this);
+//                break;
+//            }
         }
 
         // redraw the whole component
@@ -567,5 +650,10 @@ public class CircleSeekBar extends View {
         void onStopTrackingTouch(CircleSeekBar circleSeekBar);
     }
 
+
+    /** set markerView*/
+    public void setMarkerView(Marker mMarker){
+        this.markerView = mMarker;
+    }
 
 }
