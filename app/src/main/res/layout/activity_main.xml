@@ -110,6 +110,7 @@
         app:csb_isClickable="true"
         app:csb_progress="10"
         app:csb_isShowThumb="true"
+        app:csb_rangeColor="@color/white"
         app:csb_progressColor="#00aad4"
         app:csb_dash_line_color="#A600D4"
         app:csb_progressWidth="5dp"

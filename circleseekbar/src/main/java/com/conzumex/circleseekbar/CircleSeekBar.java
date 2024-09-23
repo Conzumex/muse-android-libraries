@@ -2,10 +2,14 @@ package com.conzumex.circleseekbar;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
@@ -24,6 +28,8 @@ public class CircleSeekBar extends View {
 
     public static final int MIN = 0;
     public static final int MAX = 100;
+    public static final int RANGE_MIN = 0;
+    public static final int RANGE_MAX = 100;
 
     private static final int ANGLE_OFFSET = -90;
     private static final float INVALID_VALUE = -1;
@@ -33,8 +39,10 @@ public class CircleSeekBar extends View {
      * Current point value.
      */
     private int mProgressDisplay = MIN;
-    int defProgress = 10;
+    int defProgress = 60;
     private int mSecondaryProgressDisplay = MIN;
+    private int mRangeMin = RANGE_MIN;
+    private int mRangeMax = RANGE_MAX;
     /**
      * The min value of progress value.
      */
@@ -51,7 +59,10 @@ public class CircleSeekBar extends View {
     private int mStep = 1;
 
     private int mArcWidth = 12;
+    private int mRangeArcWidth = 2;
     private int mProgressWidth = 12;
+    private int mRangeDistance = 50;
+    private float mRangeEraseOffset = 3.35f;
 
     //
     // internal variables
@@ -76,22 +87,31 @@ public class CircleSeekBar extends View {
     // For Arc
     private RectF mArcRect = new RectF();
     private RectF mSecondaryArcRect = new RectF();
+    private RectF mRangeArcRect = new RectF();
+    private RectF mRangeArcTextRect = new RectF();
     private Paint mArcPaint;
+    private Paint mArcRangePaint;
+    private Paint mRangeCirclePaint;
 
     // For Progress
     private Paint mProgressPaint;
     private Paint mSecondaryProgressPaint;
-    private Paint mDashPaint;
+    private Paint mFlagLinePaint;
     private Paint mMarkerPaint;
     private float mProgressSweep;
     private float mSecondaryProgressSweep;
+    private float mRangeStartSweep;
+    private float mRangeEndSweep;
 
     //For Text progress
     private Paint mTextPaint;
+    private Paint mRangeTextPaint;
+    private Paint mRangeTextEraserPaint;
     private int mTextSize = TEXT_SIZE_DEFAULT;
     private Rect mTextRect = new Rect();
     private boolean mIsShowText = false;
     private boolean mIsShowThumb = true;
+    private boolean mIsShowRange = true;
     private boolean mDrawMarker = true;
     private boolean showMarker = false;
 
@@ -99,6 +119,7 @@ public class CircleSeekBar extends View {
     private int mCenterY;
     private int mCircleRadius;
     private int capAdjustment=0;
+    String rangeText = "OPTIMAL";
 
     /**
      * The drawable for circle indicator of Seekbar
@@ -108,19 +129,31 @@ public class CircleSeekBar extends View {
     // Coordinator (X, Y) of Indicator icon
     private int mThumbX;
     private int mThumbY;
+    private int mOuterThumbX;
+    private int mOuterThumbY;
     private int mThumbSize;
+    private int mRangeCircleSize = 15;
 
     private int mPadding;
     private double mAngle;
     private double mSecondaryAngle;
+    private double mRangeStartAngle;
+    private double mRangeEndAngle;
     private boolean mIsThumbSelected = false;
     private boolean mIsMarkerShown = false;
     private boolean mIsClickEnabled = true;
     private OnSeekBarChangedListener mOnSeekBarChangeListener;
+    private onThumbClicked mThumbClickListener;
 
     //for marker
     int markerLayout = R.layout.marker_default;
     Marker markerView;
+
+    private Canvas bitMapCanvas;
+    private Bitmap frameBitmap;
+    private Paint paint;
+    private PorterDuffXfermode porterDuffXfermode;
+
     public CircleSeekBar(Context context) {
         super(context);
         init(context, null);
@@ -142,6 +175,9 @@ public class CircleSeekBar extends View {
 
     public void setArcWidth(int mArcWidth) {
         this.mArcWidth = mArcWidth;
+    }
+    public void setRangeArcWidth(int mArcWidth) {
+        this.mRangeArcWidth = mArcWidth;
     }
 
     public void setProgressWidth(int mProgressWidth) {
@@ -171,6 +207,23 @@ public class CircleSeekBar extends View {
         mSecondaryProgressDisplay = (mSecondaryProgressDisplay < mMin) ? mMin : mSecondaryProgressDisplay;
         mSecondaryProgressSweep = (float) mSecondaryProgressDisplay / valuePerDegree();
         mSecondaryAngle = Math.PI / 2 - (mSecondaryProgressSweep * Math.PI) / 180;
+        invalidate();
+    }
+
+    public void setRange(int minRange, int maxRange) {
+        mRangeMin = minRange;
+        mRangeMax = maxRange;
+
+        mRangeMin = (mRangeMin > RANGE_MAX) ? RANGE_MAX : mRangeMin;
+        mRangeMin = (mRangeMin < RANGE_MIN) ? RANGE_MIN : mRangeMin;
+        mRangeStartSweep = (float) mRangeMin / valuePerDegree();
+        mRangeStartAngle = Math.PI / 2 - (mRangeStartSweep * Math.PI) / 180;
+
+        mRangeMax = (mRangeMax > RANGE_MAX) ? RANGE_MAX : mRangeMax;
+        mRangeMax = (mRangeMax < RANGE_MIN) ? RANGE_MIN : mRangeMax;
+        mRangeEndSweep = (float) mRangeMax / valuePerDegree();
+        mRangeEndAngle = Math.PI / 2 - (mRangeEndSweep * Math.PI) / 180;
+
         invalidate();
     }
 
@@ -220,11 +273,13 @@ public class CircleSeekBar extends View {
         int progressColor = ContextCompat.getColor(context, R.color.color_progress);
         int secondaryprogressColor = ContextCompat.getColor(context, R.color.color_secondary_progress);
         int arcColor = ContextCompat.getColor(context, R.color.color_arc);
+        int rangeColor = ContextCompat.getColor(context, R.color.color_range);
         int dashColor = ContextCompat.getColor(context, R.color.color_arc);
         int textColor = ContextCompat.getColor(context, R.color.color_text);
         int markerColor = Color.parseColor("#ff0073");
         mProgressWidth = (int) (density * mProgressWidth);
         mArcWidth = (int) (density * mArcWidth);
+        mRangeArcWidth = (int) (density * mRangeArcWidth);
         mTextSize = (int) (density * mTextSize);
 
         mThumbDrawable = ContextCompat.getDrawable(context, R.drawable.ic_ring_strain_goal_flag);
@@ -240,6 +295,7 @@ public class CircleSeekBar extends View {
             mMin = typedArray.getInteger(R.styleable.CircleSeekBar_csb_min, mMin);
             mMax = typedArray.getInteger(R.styleable.CircleSeekBar_csb_max, mMax);
             mStep = typedArray.getInteger(R.styleable.CircleSeekBar_csb_step, mStep);
+            mRangeDistance = typedArray.getInteger(R.styleable.CircleSeekBar_csb_range_distance, mRangeDistance);
             capAdjustment = typedArray.getInteger(R.styleable.CircleSeekBar_csb_cap_adjustment, capAdjustment);
 
 
@@ -247,6 +303,7 @@ public class CircleSeekBar extends View {
             textColor = typedArray.getColor(R.styleable.CircleSeekBar_csb_textColor, textColor);
             mIsShowText = typedArray.getBoolean(R.styleable.CircleSeekBar_csb_isShowText, mIsShowText);
             mIsShowThumb = typedArray.getBoolean(R.styleable.CircleSeekBar_csb_isShowThumb, mIsShowThumb);
+            mIsShowRange = typedArray.getBoolean(R.styleable.CircleSeekBar_csb_isShowRange, mIsShowRange);
             mIsClickEnabled = typedArray.getBoolean(R.styleable.CircleSeekBar_csb_isClickable, mIsClickEnabled);
 
             mProgressWidth = (int) typedArray.getDimension(R.styleable.CircleSeekBar_csb_progressWidth, mProgressWidth);
@@ -255,7 +312,9 @@ public class CircleSeekBar extends View {
             dashColor = typedArray.getColor(R.styleable.CircleSeekBar_csb_dash_line_color, dashColor);
 
             mArcWidth = (int) typedArray.getDimension(R.styleable.CircleSeekBar_csb_arcWidth, mArcWidth);
+            mRangeArcWidth = (int) typedArray.getDimension(R.styleable.CircleSeekBar_csb_rangeWidth, mRangeArcWidth);
             arcColor = typedArray.getColor(R.styleable.CircleSeekBar_csb_arcColor, arcColor);
+            rangeColor = typedArray.getColor(R.styleable.CircleSeekBar_csb_rangeColor, rangeColor);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 int all = getPaddingLeft() + getPaddingRight() + getPaddingBottom() + getPaddingTop() + getPaddingEnd() + getPaddingStart();
@@ -280,13 +339,34 @@ public class CircleSeekBar extends View {
 
         mSecondaryProgressSweep = (float) mSecondaryProgressDisplay / valuePerDegree();
         mSecondaryAngle = Math.PI / 2 - (mSecondaryProgressSweep * Math.PI) / 180;
-//        mCurrentProgress = Math.round(mSecondaryProgressSweep * valuePerDegree());
+
+        //for outsideRange
+        mRangeMin = (mRangeMin > RANGE_MAX) ? RANGE_MAX : mRangeMin;
+        mRangeMin = (mRangeMin < RANGE_MIN) ? RANGE_MIN : mRangeMin;
+        mRangeStartSweep = (float) mRangeMin / valuePerDegree();
+        mRangeStartAngle = Math.PI / 2 - (mRangeStartSweep * Math.PI) / 180;
+
+        mRangeMax = (mRangeMax > RANGE_MAX) ? RANGE_MAX : mRangeMax;
+        mRangeMax = (mRangeMax < RANGE_MIN) ? RANGE_MIN : mRangeMax;
+        mRangeEndSweep = (float) mRangeMax / valuePerDegree();
+        mRangeEndAngle = Math.PI / 2 - (mRangeEndSweep * Math.PI) / 180;
 
         mArcPaint = new Paint();
         mArcPaint.setColor(arcColor);
         mArcPaint.setAntiAlias(true);
         mArcPaint.setStyle(Paint.Style.STROKE);
         mArcPaint.setStrokeWidth(mArcWidth);
+
+        mArcRangePaint = new Paint();
+        mArcRangePaint.setColor(rangeColor);
+        mArcRangePaint.setAntiAlias(true);
+        mArcRangePaint.setStyle(Paint.Style.STROKE);
+        mArcRangePaint.setStrokeWidth(mRangeArcWidth);
+        mArcRangePaint.setPathEffect(new DashPathEffect(new float[]{10,10},1));
+
+        mRangeCirclePaint = new Paint();
+        mRangeCirclePaint.setColor(rangeColor);
+        mRangeCirclePaint.setStyle(Paint.Style.FILL);
 
         mProgressPaint = new Paint();
         mProgressPaint.setColor(progressColor);
@@ -300,16 +380,28 @@ public class CircleSeekBar extends View {
         mSecondaryProgressPaint.setStyle(Paint.Style.STROKE);
         mSecondaryProgressPaint.setStrokeWidth(mProgressWidth);
 
-        mDashPaint = new Paint();
-        mDashPaint.setColor(dashColor);
-        mDashPaint.setStrokeWidth(3);
-        mDashPaint.setPathEffect(new DashPathEffect(new float[]{10,10},1));
+        mFlagLinePaint = new Paint();
+        mFlagLinePaint.setColor(dashColor);
+        mFlagLinePaint.setStrokeWidth(5);
 
         mTextPaint = new Paint();
         mTextPaint.setColor(textColor);
         mTextPaint.setAntiAlias(true);
         mTextPaint.setStyle(Paint.Style.FILL);
         mTextPaint.setTextSize(mTextSize);
+
+        mRangeTextPaint = new Paint();
+        mRangeTextPaint.setColor(rangeColor);
+        mRangeTextPaint.setAntiAlias(true);
+        mRangeTextPaint.setStyle(Paint.Style.FILL);
+        mRangeTextPaint.setTextSize(50);
+
+        mRangeTextEraserPaint = new Paint();
+        mRangeTextEraserPaint.setColor(rangeColor);
+        mRangeTextEraserPaint.setAntiAlias(true);
+        mRangeTextEraserPaint.setStyle(Paint.Style.STROKE);
+        mRangeTextEraserPaint.setTextSize(55);
+        mRangeTextEraserPaint.setStrokeWidth(mRangeArcWidth*2f);
 
         mMarkerPaint = new Paint();
         mMarkerPaint.setColor(markerColor);
@@ -338,6 +430,15 @@ public class CircleSeekBar extends View {
         float left = w / 2 - (progressDiameter / 2);
         mArcRect.set(left, top, left + progressDiameter, top + progressDiameter);
         mSecondaryArcRect.set(left, top, left + progressDiameter, top + progressDiameter);
+        mRangeArcRect.set(left-mRangeDistance, top-mRangeDistance, left + progressDiameter+mRangeDistance, top + progressDiameter+mRangeDistance);
+        mRangeArcTextRect.set(left-(mRangeDistance/1.5f), top-(mRangeDistance/1.5f), left + progressDiameter+(mRangeDistance/1.5f), top + progressDiameter+(mRangeDistance/1.5f));
+
+        if (bitMapCanvas == null) {
+            bitMapCanvas = new Canvas();
+            frameBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+            bitMapCanvas.setBitmap(frameBitmap);
+            porterDuffXfermode = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
+        }
 
         super.onSizeChanged(w, h, oldw, oldh);
     }
@@ -355,10 +456,10 @@ public class CircleSeekBar extends View {
             canvas.drawText(String.valueOf(mProgressDisplay), xPos, yPos, mTextPaint);
         }
 
-        if(isInEditMode()) {
-            canvas.drawPaint(new Paint());
-            mThumbSize = 50;
-        }
+//        if(isInEditMode()) {
+//            canvas.drawPaint(new Paint());
+//            mThumbSize = 50;
+//        }
 
         // draw the arc and progress
         canvas.drawCircle(mCenterX, mCenterY, mCircleRadius, mArcPaint);
@@ -378,17 +479,51 @@ public class CircleSeekBar extends View {
 
 //        printDebug("radius "+mCircleRadius+",    arcwidth    "+mProgressWidth+" : "+tempMThumbY+" sweep "+mProgressSweep,canvas);
 
-        int mOuterThumbX = (int) (mCenterX + (mCircleRadius+mThumbSize*1.5) * Math.cos(tempAngle));
-        int mOuterThumbY = (int) (mCenterY - (mCircleRadius+mThumbSize*1.5) * Math.sin(tempAngle));
+        mOuterThumbX = (int) (mCenterX + (mCircleRadius - mThumbSize*1.5) * Math.cos(tempAngle));
+        mOuterThumbY = (int) (mCenterY - (mCircleRadius - mThumbSize*1.5) * Math.sin(tempAngle));
 
-        int mOuterLineX = (int) (mCenterX + (mCircleRadius+mThumbSize) * Math.cos(tempAngle));
-        int mOuterLineY = (int) (mCenterY - (mCircleRadius+mThumbSize) * Math.sin(tempAngle));
+        int mOuterLineX = (int) (mCenterX + (mCircleRadius - mThumbSize) * Math.cos(tempAngle));
+        int mOuterLineY = (int) (mCenterY - (mCircleRadius - mThumbSize) * Math.sin(tempAngle));
 
         if(mIsShowThumb)
-            canvas.drawLine(tempMThumbX,tempMThumbY,mOuterLineX,mOuterLineY,mDashPaint);
+            canvas.drawLine(tempMThumbX,tempMThumbY,mOuterLineX,mOuterLineY,mFlagLinePaint);
 
         canvas.drawArc(mArcRect, ANGLE_OFFSET, mProgressSweep, false, mProgressPaint);
         canvas.drawArc(mSecondaryArcRect, ANGLE_OFFSET, mSecondaryProgressSweep, false, mSecondaryProgressPaint);
+
+        //for range
+        if(mIsShowRange) {
+            float endAngle = mRangeEndSweep - mRangeStartSweep;
+            float startAngle = ANGLE_OFFSET + mRangeStartSweep;
+            bitMapCanvas.drawArc(mRangeArcRect, startAngle, endAngle, false, mArcRangePaint);
+
+            int mRangeStartX = (int) (mCenterX + (mCircleRadius + mRangeDistance) * Math.cos(mRangeStartAngle));
+            int mRangeStartY = (int) (mCenterY - (mCircleRadius + mRangeDistance) * Math.sin(mRangeStartAngle));
+            canvas.drawCircle(mRangeStartX, mRangeStartY, mRangeCircleSize, mRangeCirclePaint);
+
+            int mRangeEndX = (int) (mCenterX + (mCircleRadius + mRangeDistance) * Math.cos(mRangeEndAngle));
+            int mRangeEndY = (int) (mCenterY - (mCircleRadius + mRangeDistance) * Math.sin(mRangeEndAngle));
+            canvas.drawCircle(mRangeEndX, mRangeEndY, mRangeCircleSize, mRangeCirclePaint);
+
+            Path circlePath = new Path();
+            circlePath.addArc(mRangeArcTextRect, startAngle, endAngle);
+
+            mRangeTextPaint.setTextAlign(Paint.Align.CENTER);
+            mRangeTextEraserPaint.setTextAlign(Paint.Align.CENTER);
+            mRangeTextEraserPaint.setXfermode(porterDuffXfermode);
+            mRangeTextEraserPaint.setColor(Color.GREEN);
+            canvas.drawTextOnPath(rangeText, circlePath,  0, 0, mRangeTextPaint);
+
+            int rangeMid = (mRangeMax+mRangeMin)/2;
+            float endEraseAngle = getSweepValue(rangeMid-mRangeEraseOffset) - getSweepValue(rangeMid+mRangeEraseOffset);
+            float startEraseAngle = ANGLE_OFFSET + getSweepValue(rangeMid+mRangeEraseOffset);
+            mRangeTextEraserPaint.setColor(Color.GREEN);
+            bitMapCanvas.drawArc(mRangeArcRect, startEraseAngle, endEraseAngle, false, mRangeTextEraserPaint);
+
+//            printDebug("startAngle "+startAngle +" -:- "+endAngle+" :erase "+startEraseAngle+" -:- "+endEraseAngle+" :  sweep : "+mRangeStartSweep+" -:- "+mRangeEndSweep,canvas);
+//            bitMapCanvas.drawTextOnPath("_______", circleErasePath,  0, 0, mRangeTextEraserPaint);
+            canvas.drawBitmap(frameBitmap, 0, 0, null);
+        }
 
         if(mIsShowThumb) {
             mThumbDrawable.setBounds(mOuterThumbX - mThumbSize / 2, mOuterThumbY - mThumbSize / 2,
@@ -413,8 +548,8 @@ public class CircleSeekBar extends View {
 //        canvas.save(); // first save the state of the canvas
 //        canvas.rotate(45); // rotate it
         // find marker position
-        int x = (int) (mCenterX + (mCircleRadius - (markerWidth / 2.9)) * Math.cos(tempAngle));
-        int y = (int) (mCenterY - (mCircleRadius - (markerHeight / 2.9)) * Math.sin(tempAngle));
+        int x = (int) (mCenterX + (mCircleRadius + (markerWidth / 2.9)) * Math.cos(tempAngle));
+        int y = (int) (mCenterY - (mCircleRadius + (markerHeight / 2.9)) * Math.sin(tempAngle));
 //        printDebug(markerHeight+" "+markerWidth+" thumbx "+mThumbX+" : "+mThumbY+" mT "+x+": "+y+" w "+getWidth(),canvas);
 
         markerView.draw(canvas, x, y,0,getWidth());
@@ -511,10 +646,12 @@ public class CircleSeekBar extends View {
                 // start moving the thumb (this is the first touch)
                 int x = (int) event.getX();
                 int y = (int) event.getY();
-                if (x < mThumbX + mThumbSize && x > mThumbX - mThumbSize && y < mThumbY + mThumbSize
-                        && y > mThumbY - mThumbSize) {
+                if (x < mOuterThumbX + mThumbSize && x > mOuterThumbX - mThumbSize && y < mOuterThumbY + mThumbSize
+                        && y > mOuterThumbY - mThumbSize) {
                     getParent().requestDisallowInterceptTouchEvent(true);
                     showMarker = !showMarker;
+                    if(mThumbClickListener != null)
+                        mThumbClickListener.onMarkerVisible(showMarker);
                     invalidate();
                 }
                 break;
@@ -634,6 +771,10 @@ public class CircleSeekBar extends View {
         this.mOnSeekBarChangeListener = seekBarChangeListener;
     }
 
+    public void setThumbClickListener(onThumbClicked thumbClickListener) {
+        this.mThumbClickListener = thumbClickListener;
+    }
+
 
     public interface OnSeekBarChangedListener {
         /**
@@ -650,10 +791,17 @@ public class CircleSeekBar extends View {
         void onStopTrackingTouch(CircleSeekBar circleSeekBar);
     }
 
+    public interface onThumbClicked{
+        void onMarkerVisible(boolean isShowing);
+    }
+
 
     /** set markerView*/
     public void setMarkerView(Marker mMarker){
         this.markerView = mMarker;
     }
 
+    private float getSweepValue(float sweep){
+        return (float) sweep / valuePerDegree();
+    }
 }

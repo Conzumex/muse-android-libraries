@@ -7,6 +7,7 @@
         <attr name="csb_min" format="integer"/>
         <attr name="csb_max" format="integer"/>
         <attr name="csb_step" format="integer"/>
+        <attr name="csb_range_distance" format="integer"/>
         <attr name="csb_cap_adjustment" format="integer"/>
 
         <attr name="csb_thumbDrawable" format="reference"/>
@@ -18,13 +19,16 @@
         <attr name="csb_progressWidth" format="dimension"/>
 
         <attr name="csb_arcColor" format="color"/>
+        <attr name="csb_rangeColor" format="color"/>
         <attr name="csb_arcWidth" format="dimension"/>
+        <attr name="csb_rangeWidth" format="dimension"/>
 
         <attr name="csb_textSize" format="dimension"/>
         <attr name="csb_textColor" format="color"/>
 
         <attr name="csb_isShowText" format="boolean" />
         <attr name="csb_isShowThumb" format="boolean" />
+        <attr name="csb_isShowRange" format="boolean" />
         <attr name="csb_isClickable" format="boolean" />
 
     </declare-styleable>
