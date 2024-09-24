@@ -580,13 +580,13 @@ public class CircleSeekBar extends View {
 //        printDebug(markerHeight+" "+markerWidth+" thumbx "+mThumbX+" : "+mThumbY+" mT "+x+": "+y+" w "+getWidth(),canvas);
 
         //to check it is going out of boundary
-            x = Math.max(x, 0);
+            x = Math.max(x, (markerWidth / 2));
             x = Math.min(x, (getWidth() - (markerWidth/2)));
 
-            y = Math.max(y, 0);
-            y = Math.min(y, getHeight());
+            y = Math.max(y, (markerHeight/2));
+            y = Math.min(y, getHeight() - (markerHeight/2));
 
-        markerView.draw(canvas, x, y,0,(getHeight() - (markerHeight/2)));
+        markerView.draw(canvas, x, y,0,getWidth());
 //        canvas.restore();
     }
 
