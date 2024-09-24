@@ -242,11 +242,11 @@ public class SleepStageGraph extends View {
         boolean touchedArea = false;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                float eventX = event.getRawX();
+                float eventX = event.getX();
                 float eventY = event.getY();
                 if(eventX>=getXPos(XPos.GRAPH_EDGE_START) && eventX<=getXPos(XPos.TOUCH_END_X)&& eventY >= chartGraphStartY && eventY <= chartGraphEndY) {
-                    touchX = event.getRawX();
-                    touchY = event.getRawY();
+                    touchX = event.getX();
+                    touchY = event.getY();
                     Log.d("Toching"," touchX: "+touchX +" chartGraphEndX: "+ chartGraphEndX +" chartGraphStartX: "+chartGraphStartX+" touchY: "+ eventY +"chartGraphStartY :"+ chartGraphStartY +"chartGraphEndY: "+chartGraphEndY);
 //                    if(touchX<chartGraphEndX && touchX>chartGraphStartX && touchY > chartGraphStartY && touchY<chartGraphEndY)
 //                    if(touchX<getXPos(XPos.GRAPH_EDGE_END) && touchX>getXPos(XPos.GRAPH_EDGE_START))
@@ -255,11 +255,11 @@ public class SleepStageGraph extends View {
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                eventX = event.getRawX();
+                eventX = event.getX();
                 eventY = event.getY();
                 if(eventX>=getXPos(XPos.GRAPH_EDGE_START) && eventX<=getXPos(XPos.TOUCH_END_X) && eventY >= chartGraphStartY && eventY <= chartGraphEndY) {
-                    touchX = event.getRawX();
-                    touchY = event.getRawY();
+                    touchX = event.getX();
+                    touchY = event.getY();
 //                    if(touchX<chartGraphEndX && touchX>chartGraphStartX && touchY > chartGraphStartY && touchY<chartGraphEndY)
 //                    if(touchX<getXPos(XPos.GRAPH_EDGE_END) && touchX>getXPos(XPos.GRAPH_EDGE_START))
                         touchedArea = true;

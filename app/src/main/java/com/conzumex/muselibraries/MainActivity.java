@@ -220,6 +220,7 @@ public class MainActivity extends AppCompatActivity {
         sleepGraph.loadData(sleepEntries);
         sleepGraph.setLabelXFormatter(value -> ((int)value)+" am");
         sleepGraph.setOffsetTop(100);
+        sleepGraph.setAxisSpace(110);
         sleepGraph.setAxisLabelPadding(10);
         sleepGraph.setDrawViewTopBorder(false);
         sleepGraph.setYAxisDirection(SleepStageGraph.Direction.LEFT);
