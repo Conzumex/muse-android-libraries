@@ -116,7 +116,7 @@
         app:csb_rangeCircleSize="2.5dp"
         app:csb_rangeColor="@color/white"
         app:csb_progressColor="#00aad4"
-        app:csb_rangeEraseOffset="1.8"
+        app:csb_rangeEraseOffset="1.8dp"
         app:csb_dash_line_color="#A600D4"
         app:csb_progressWidth="5dp"
         app:csb_textColor="@color/color_text"
