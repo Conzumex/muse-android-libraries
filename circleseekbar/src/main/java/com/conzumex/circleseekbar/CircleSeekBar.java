@@ -41,8 +41,8 @@ public class CircleSeekBar extends View {
     private int mProgressDisplay = MIN;
     int defProgress = 60;
     private int mSecondaryProgressDisplay = MIN;
-    private int mRangeMin = RANGE_MIN;
-    private int mRangeMax = RANGE_MAX;
+    private int mRangeMin = 10;
+    private int mRangeMax = 60;
     /**
      * The min value of progress value.
      */
@@ -62,7 +62,8 @@ public class CircleSeekBar extends View {
     private int mRangeArcWidth = 2;
     private int mProgressWidth = 12;
     private int mRangeDistance = 50;
-    private float mRangeEraseOffset = 3.35f;
+    private float mRangeEraseOffset = 4f;
+    private float mRangeValueOffset = 10f;
 
     //
     // internal variables
@@ -108,10 +109,12 @@ public class CircleSeekBar extends View {
     private Paint mRangeTextPaint;
     private Paint mRangeTextEraserPaint;
     private int mTextSize = TEXT_SIZE_DEFAULT;
+    private int mRangeTextSize = 50;
     private Rect mTextRect = new Rect();
     private boolean mIsShowText = false;
     private boolean mIsShowThumb = true;
     private boolean mIsShowRange = true;
+    private boolean mIsShowRangeTexts = true;
     private boolean mDrawMarker = true;
     private boolean showMarker = false;
 
@@ -291,19 +294,26 @@ public class CircleSeekBar extends View {
             mProgressDisplay = typedArray.getInteger(R.styleable.CircleSeekBar_csb_progress, defProgress);
             mSecondaryProgressDisplay = typedArray.getInteger(R.styleable.CircleSeekBar_csb_secondary_progress, 20);
             mThumbSize = typedArray.getDimensionPixelSize(R.styleable.CircleSeekBar_csb_thumbSize, 50);
+            mRangeCircleSize = typedArray.getDimensionPixelSize(R.styleable.CircleSeekBar_csb_rangeCircleSize, mRangeCircleSize);
+            mRangeEraseOffset = typedArray.getDimension(R.styleable.CircleSeekBar_csb_rangeEraseOffset, mRangeEraseOffset);
+            mRangeValueOffset = typedArray.getDimension(R.styleable.CircleSeekBar_csb_rangeValueOffset, mRangeValueOffset);
 
             mMin = typedArray.getInteger(R.styleable.CircleSeekBar_csb_min, mMin);
             mMax = typedArray.getInteger(R.styleable.CircleSeekBar_csb_max, mMax);
             mStep = typedArray.getInteger(R.styleable.CircleSeekBar_csb_step, mStep);
             mRangeDistance = typedArray.getInteger(R.styleable.CircleSeekBar_csb_range_distance, mRangeDistance);
             capAdjustment = typedArray.getInteger(R.styleable.CircleSeekBar_csb_cap_adjustment, capAdjustment);
+            mRangeMin = typedArray.getInteger(R.styleable.CircleSeekBar_csb_rangeStart, mRangeMin);
+            mRangeMax = typedArray.getInteger(R.styleable.CircleSeekBar_csb_rangeEnd, mRangeMax);
 
 
+            mRangeTextSize = (int) typedArray.getDimension(R.styleable.CircleSeekBar_csb_rangeTextSize, mRangeTextSize);
             mTextSize = (int) typedArray.getDimension(R.styleable.CircleSeekBar_csb_textSize, mTextSize);
             textColor = typedArray.getColor(R.styleable.CircleSeekBar_csb_textColor, textColor);
             mIsShowText = typedArray.getBoolean(R.styleable.CircleSeekBar_csb_isShowText, mIsShowText);
             mIsShowThumb = typedArray.getBoolean(R.styleable.CircleSeekBar_csb_isShowThumb, mIsShowThumb);
             mIsShowRange = typedArray.getBoolean(R.styleable.CircleSeekBar_csb_isShowRange, mIsShowRange);
+            mIsShowRangeTexts = typedArray.getBoolean(R.styleable.CircleSeekBar_csb_isShowRangeText, mIsShowRangeTexts);
             mIsClickEnabled = typedArray.getBoolean(R.styleable.CircleSeekBar_csb_isClickable, mIsClickEnabled);
 
             mProgressWidth = (int) typedArray.getDimension(R.styleable.CircleSeekBar_csb_progressWidth, mProgressWidth);
@@ -394,7 +404,7 @@ public class CircleSeekBar extends View {
         mRangeTextPaint.setColor(rangeColor);
         mRangeTextPaint.setAntiAlias(true);
         mRangeTextPaint.setStyle(Paint.Style.FILL);
-        mRangeTextPaint.setTextSize(50);
+        mRangeTextPaint.setTextSize(mRangeTextSize);
 
         mRangeTextEraserPaint = new Paint();
         mRangeTextEraserPaint.setColor(rangeColor);
@@ -424,7 +434,7 @@ public class CircleSeekBar extends View {
         mCenterY = alignBottom / 2 + (h - alignBottom) / 2;
 
 
-        float progressDiameter = min - mPadding - (mThumbSize*4);
+        float progressDiameter = min - mPadding - (mRangeDistance*2) - Math.max(mRangeCircleSize,mRangeTextSize) - mRangeArcWidth;
         mCircleRadius = (int) (progressDiameter / 2);
         float top = h / 2 - (progressDiameter / 2);
         float left = w / 2 - (progressDiameter / 2);
@@ -456,10 +466,10 @@ public class CircleSeekBar extends View {
             canvas.drawText(String.valueOf(mProgressDisplay), xPos, yPos, mTextPaint);
         }
 
-//        if(isInEditMode()) {
-//            canvas.drawPaint(new Paint());
-//            mThumbSize = 50;
-//        }
+        if(isInEditMode()) {
+            canvas.drawPaint(new Paint());
+            mThumbSize = 50;
+        }
 
         // draw the arc and progress
         canvas.drawCircle(mCenterX, mCenterY, mCircleRadius, mArcPaint);
@@ -514,6 +524,18 @@ public class CircleSeekBar extends View {
             mRangeTextEraserPaint.setColor(Color.GREEN);
             canvas.drawTextOnPath(rangeText, circlePath,  0, 0, mRangeTextPaint);
 
+            //for range texts
+            if(mIsShowRangeTexts) {
+                float endRangeTextAngle = getSweepValue(mRangeMin) - getSweepValue(mRangeMax);
+                float startRangeTextAngle = ANGLE_OFFSET + getSweepValue(mRangeMax);
+                Path circleRangeTextPath = new Path();
+                circleRangeTextPath.addArc(mRangeArcTextRect, startAngle - mRangeValueOffset, endAngle + (mRangeValueOffset * 2));
+
+                mRangeTextPaint.setTextAlign(Paint.Align.LEFT);
+                canvas.drawTextOnPath(mRangeMin + "", circleRangeTextPath, 0, 0, mRangeTextPaint);
+                mRangeTextPaint.setTextAlign(Paint.Align.RIGHT);
+                canvas.drawTextOnPath(mRangeMax + "", circleRangeTextPath, 0, 0, mRangeTextPaint);
+            }
             int rangeMid = (mRangeMax+mRangeMin)/2;
             float endEraseAngle = getSweepValue(rangeMid-mRangeEraseOffset) - getSweepValue(rangeMid+mRangeEraseOffset);
             float startEraseAngle = ANGLE_OFFSET + getSweepValue(rangeMid+mRangeEraseOffset);
