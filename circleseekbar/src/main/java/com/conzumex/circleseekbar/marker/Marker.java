@@ -39,7 +39,8 @@ public class Marker extends RelativeLayout {
     }
 
     public void refreshContent(float progress,float progressSecondary){
-        tvValue.setText(progress+" : "+progressSecondary);
+        if(tvValue!=null)
+            tvValue.setText(progress+" : "+progressSecondary);
         measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
                 MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
         layout(0, 0, getMeasuredWidth(), getMeasuredHeight());

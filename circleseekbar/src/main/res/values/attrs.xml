@@ -17,11 +17,13 @@
         <attr name="csb_rangeCircleSize" format="dimension" />
         <attr name="csb_rangeEraseOffset" format="dimension" />
         <attr name="csb_rangeValueOffset" format="dimension" />
+        <attr name="csb_flagOffset" format="dimension" />
 
         <attr name="csb_progressColor" format="color"/>
         <attr name="csb_secondaryprogressColor" format="color"/>
         <attr name="csb_dash_line_color" format="color"/>
         <attr name="csb_progressWidth" format="dimension"/>
+        <attr name="csb_flagLineWidth" format="dimension"/>
 
         <attr name="csb_arcColor" format="color"/>
         <attr name="csb_rangeColor" format="color"/>
