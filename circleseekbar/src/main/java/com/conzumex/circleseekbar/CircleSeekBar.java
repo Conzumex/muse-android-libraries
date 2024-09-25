@@ -589,8 +589,8 @@ public class CircleSeekBar extends View {
 //        int y = (int) (mCenterY - (mCircleRadius - (mMarkerOffset- yAdjust)) * Math.sin(tempAngle));
 
 
-        int x = (int) (mCenterX + (mCircleRadius - (mFlagOffset*2) - mMarkerOffset) * Math.cos(tempAngle));
-        int y = (int) (mCenterY - (mCircleRadius - (mFlagOffset*2) - mMarkerOffset) * Math.sin(tempAngle));
+        int x = (int) (mCenterX + (mCircleRadius - (mFlagOffset*2) - mThumbSize - mMarkerOffset) * Math.cos(tempAngle));
+        int y = (int) (mCenterY - (mCircleRadius - (mFlagOffset*2) - mThumbSize - mMarkerOffset) * Math.sin(tempAngle));
 
 //        printDebug("y:"+y+" thu"+mThumbY+" x:"+x+" thumbx :"+mThumbX,canvas);
         if(mThumbX>x){
