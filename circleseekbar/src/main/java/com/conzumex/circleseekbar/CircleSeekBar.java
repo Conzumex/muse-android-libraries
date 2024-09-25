@@ -711,6 +711,11 @@ public class CircleSeekBar extends View {
                     if(mThumbClickListener != null)
                         mThumbClickListener.onMarkerVisible(showMarker);
                     invalidate();
+                }else if(showMarker){
+                    showMarker = !showMarker;
+                    if(mThumbClickListener != null)
+                        mThumbClickListener.onMarkerVisible(showMarker);
+                    invalidate();
                 }
                 break;
             }
