@@ -851,4 +851,37 @@ public class CircleSeekBar extends View {
     private float getSweepValue(float sweep){
         return (float) sweep / valuePerDegree();
     }
+
+    public void setShowRange(boolean mIsShowRange) {
+        this.mIsShowRange = mIsShowRange;
+        invalidate();
+    }
+
+    public void setShowMarker(boolean mIsShowRange) {
+        this.mDrawMarker = mIsShowRange;
+        invalidate();
+    }
+
+    public void setRangeStart(int rangeStart) {
+        this.mRangeMin = rangeStart;
+        invalidate();
+    }
+
+    public void setRangeEnd(int rangeStart) {
+        this.mRangeMax = rangeStart;
+        invalidate();
+    }
+
+    //for databinding setters
+    public void setmRangeMin(int mRangeMin) {
+        this.mRangeMin = mRangeMin;
+    }
+
+    public void setmRangeMax(int mRangeMax) {
+        this.mRangeMax = mRangeMax;
+    }
+
+    public void setmIsShowRange(boolean mIsShowRange) {
+        this.mIsShowRange = mIsShowRange;
+    }
 }
