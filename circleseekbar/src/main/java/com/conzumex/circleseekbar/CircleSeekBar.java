@@ -222,13 +222,13 @@ public class CircleSeekBar extends View {
         mRangeMin = minRange;
         mRangeMax = maxRange;
 
-        mRangeMin = Math.min(mRangeMin, MAX);
-        mRangeMin = Math.max(mRangeMin, MIN);
+        mRangeMin = Math.min(mRangeMin, mMax);
+        mRangeMin = Math.max(mRangeMin, mMin);
         mRangeStartSweep = (float) mRangeMin / valuePerDegree();
         mRangeStartAngle = Math.PI / 2 - (mRangeStartSweep * Math.PI) / 180;
 
-        mRangeMax = Math.min(mRangeMax, MAX);
-        mRangeMax = Math.max(mRangeMax, MIN);
+        mRangeMax = Math.min(mRangeMax, mMax);
+        mRangeMax = Math.max(mRangeMax, mMin);
         mRangeEndSweep = (float) mRangeMax / valuePerDegree();
         mRangeEndAngle = Math.PI / 2 - (mRangeEndSweep * Math.PI) / 180;
 
@@ -358,13 +358,13 @@ public class CircleSeekBar extends View {
         mSecondaryAngle = Math.PI / 2 - (mSecondaryProgressSweep * Math.PI) / 180;
 
         //for outsideRange
-        mRangeMin = Math.min(mRangeMin, MAX);
-        mRangeMin = Math.max(mRangeMin, MIN);
+        mRangeMin = Math.min(mRangeMin, mMax);
+        mRangeMin = Math.max(mRangeMin, mMin);
         mRangeStartSweep = (float) mRangeMin / valuePerDegree();
         mRangeStartAngle = Math.PI / 2 - (mRangeStartSweep * Math.PI) / 180;
 
-        mRangeMax = Math.min(mRangeMax, MAX);
-        mRangeMax = Math.max(mRangeMax, MIN);
+        mRangeMax = Math.min(mRangeMax, mMax);
+        mRangeMax = Math.max(mRangeMax, mMin);
         mRangeEndSweep = (float) mRangeMax / valuePerDegree();
         mRangeEndAngle = Math.PI / 2 - (mRangeEndSweep * Math.PI) / 180;
 
@@ -890,8 +890,8 @@ public class CircleSeekBar extends View {
 
     public void setRangeStart(int rangeStart) {
         this.mRangeMin = rangeStart;
-        mRangeMin = Math.min(mRangeMin, MAX);
-        mRangeMin = Math.max(mRangeMin, MIN);
+        mRangeMin = Math.min(mRangeMin, mMax);
+        mRangeMin = Math.max(mRangeMin, mMin);
         mRangeStartSweep = (float) mRangeMin / valuePerDegree();
         mRangeStartAngle = Math.PI / 2 - (mRangeStartSweep * Math.PI) / 180;
         invalidate();
@@ -899,8 +899,8 @@ public class CircleSeekBar extends View {
 
     public void setRangeEnd(int rangeStart) {
         this.mRangeMax = rangeStart;
-        mRangeMax = Math.min(mRangeMax, MAX);
-        mRangeMax = Math.max(mRangeMax, MIN);
+        mRangeMax = Math.min(mRangeMax, mMax);
+        mRangeMax = Math.max(mRangeMax, mMin);
         mRangeEndSweep = (float) mRangeMax / valuePerDegree();
         mRangeEndAngle = Math.PI / 2 - (mRangeEndSweep * Math.PI) / 180;
         invalidate();
