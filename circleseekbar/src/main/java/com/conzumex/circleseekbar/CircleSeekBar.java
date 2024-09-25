@@ -41,7 +41,7 @@ public class CircleSeekBar extends View {
     int defProgress = 75;
     private int mSecondaryProgressDisplay = MIN;
     private int mRangeMin = 50;
-    private int mRangeMax = 600;
+    private int mRangeMax = 70;
     /**
      * The min value of progress value.
      */
@@ -512,7 +512,8 @@ public class CircleSeekBar extends View {
         if(mIsShowRange) {
             float endAngle = mRangeEndSweep - mRangeStartSweep;
             float startAngle = ANGLE_OFFSET + mRangeStartSweep;
-            bitMapCanvas.drawArc(mRangeArcRect, startAngle, endAngle, false, mArcRangePaint);
+            //todo draw on bitmap canvas to make it erasable
+            canvas.drawArc(mRangeArcRect, startAngle, endAngle, false, mArcRangePaint);
 
             int mRangeStartX = (int) (mCenterX + (mCircleRadius + mRangeDistance) * Math.cos(mRangeStartAngle));
             int mRangeStartY = (int) (mCenterY - (mCircleRadius + mRangeDistance) * Math.sin(mRangeStartAngle));
