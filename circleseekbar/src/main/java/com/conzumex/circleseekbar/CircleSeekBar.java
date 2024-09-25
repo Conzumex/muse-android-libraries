@@ -38,7 +38,7 @@ public class CircleSeekBar extends View {
      * Current point value.
      */
     private int mProgressDisplay = MIN;
-    int defProgress = 75;
+    int defProgress = 50;
     private int mSecondaryProgressDisplay = MIN;
     private int mRangeMin = 50;
     private int mRangeMax = 70;
@@ -65,6 +65,7 @@ public class CircleSeekBar extends View {
     private float mRangeEraseOffset = 4f;
     private float mRangeValueOffset = 10f;
     private float mFlagOffset = 50f;
+    private float mMarkerOffset = 20f;
 
     //
     // internal variables
@@ -92,6 +93,7 @@ public class CircleSeekBar extends View {
     private RectF mRangeArcRect = new RectF();
     private RectF mRangeArcTextRect = new RectF();
     private RectF mRangeArcTextEndRect = new RectF();
+    private RectF mMarkerArcRect = new RectF();
     private Paint mArcPaint;
     private Paint mArcRangePaint;
     private Paint mRangeCirclePaint;
@@ -448,6 +450,7 @@ public class CircleSeekBar extends View {
         mRangeArcRect.set(left-mRangeDistance, top-mRangeDistance, left + progressDiameter+mRangeDistance, top + progressDiameter+mRangeDistance);
         mRangeArcTextRect.set(left-(mRangeDistance*1.4f), top-(mRangeDistance*1.4f), left + progressDiameter+(mRangeDistance*1.4f), top + progressDiameter+(mRangeDistance*1.4f));
         mRangeArcTextEndRect.set(left-(mRangeDistance/1.5f), top-(mRangeDistance/1.5f), left + progressDiameter+(mRangeDistance/1.5f), top + progressDiameter+(mRangeDistance/1.5f));
+        mMarkerArcRect.set(left-(mMarkerOffset), top-(mMarkerOffset), left + progressDiameter+(mMarkerOffset), top + progressDiameter+(mMarkerOffset));
 
         if (bitMapCanvas == null) {
             bitMapCanvas = new Canvas();
@@ -576,12 +579,31 @@ public class CircleSeekBar extends View {
         int markerHeight = markerView.getHeight();
         int markerWidth = markerView.getWidth();
 
+        int yAdjust = markerWidth>markerHeight?markerWidth-markerHeight:0;
+        int xAdjust = markerHeight>markerWidth?markerHeight-markerWidth:0;
+
 //        canvas.save(); // first save the state of the canvas
 //        canvas.rotate(45); // rotate it
         // find marker position
-        int x = (int) (mCenterX + (mCircleRadius + (markerWidth / 2.9)) * Math.cos(tempAngle));
-        int y = (int) (mCenterY - (mCircleRadius + (markerHeight / 2.9)) * Math.sin(tempAngle));
-//        printDebug(markerHeight+" "+markerWidth+" thumbx "+mThumbX+" : "+mThumbY+" mT "+x+": "+y+" w "+getWidth(),canvas);
+//        int x = (int) (mCenterX + (mCircleRadius - (mMarkerOffset- xAdjust)) * Math.cos(tempAngle));
+//        int y = (int) (mCenterY - (mCircleRadius - (mMarkerOffset- yAdjust)) * Math.sin(tempAngle));
+
+
+        int x = (int) (mCenterX + (mCircleRadius - (mFlagOffset*2) - mMarkerOffset) * Math.cos(tempAngle));
+        int y = (int) (mCenterY - (mCircleRadius - (mFlagOffset*2) - mMarkerOffset) * Math.sin(tempAngle));
+
+        printDebug("y:"+y+" thu"+mThumbY+" x:"+x+" thumbx :"+mThumbX,canvas);
+        if(mThumbX>x){
+            x = x - (markerWidth/2);
+        }else if(mThumbX<x){
+            x = x + (markerWidth/2);
+        }else if(mThumbY<y){
+            y = y + (markerHeight/2);
+        }else if(mThumbY>y){
+            printDebug("y:"+y+" thu"+mThumbY,canvas);
+            y = y - (markerHeight/2);
+        }
+
 
         //to check it is going out of boundary
             x = Math.max(x, (markerWidth / 2));
