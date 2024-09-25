@@ -91,6 +91,7 @@ public class CircleSeekBar extends View {
     private RectF mSecondaryArcRect = new RectF();
     private RectF mRangeArcRect = new RectF();
     private RectF mRangeArcTextRect = new RectF();
+    private RectF mRangeArcTextEndRect = new RectF();
     private Paint mArcPaint;
     private Paint mArcRangePaint;
     private Paint mRangeCirclePaint;
@@ -219,13 +220,13 @@ public class CircleSeekBar extends View {
         mRangeMin = minRange;
         mRangeMax = maxRange;
 
-        mRangeMin = (mRangeMin > MAX) ? MAX : mRangeMin;
-        mRangeMin = (mRangeMin < MIN) ? MIN : mRangeMin;
+        mRangeMin = Math.min(mRangeMin, MAX);
+        mRangeMin = Math.max(mRangeMin, MIN);
         mRangeStartSweep = (float) mRangeMin / valuePerDegree();
         mRangeStartAngle = Math.PI / 2 - (mRangeStartSweep * Math.PI) / 180;
 
-        mRangeMax = (mRangeMax > MAX) ? MAX : mRangeMax;
-        mRangeMax = (mRangeMax < MIN) ? MIN : mRangeMax;
+        mRangeMax = Math.min(mRangeMax, MAX);
+        mRangeMax = Math.max(mRangeMax, MIN);
         mRangeEndSweep = (float) mRangeMax / valuePerDegree();
         mRangeEndAngle = Math.PI / 2 - (mRangeEndSweep * Math.PI) / 180;
 
@@ -355,13 +356,13 @@ public class CircleSeekBar extends View {
         mSecondaryAngle = Math.PI / 2 - (mSecondaryProgressSweep * Math.PI) / 180;
 
         //for outsideRange
-        mRangeMin = (mRangeMin > MAX) ? MAX : mRangeMin;
-        mRangeMin = (mRangeMin < MIN) ? MIN : mRangeMin;
+        mRangeMin = Math.min(mRangeMin, MAX);
+        mRangeMin = Math.max(mRangeMin, MIN);
         mRangeStartSweep = (float) mRangeMin / valuePerDegree();
         mRangeStartAngle = Math.PI / 2 - (mRangeStartSweep * Math.PI) / 180;
 
-        mRangeMax = (mRangeMax > MAX) ? MAX : mRangeMax;
-        mRangeMax = (mRangeMax < MIN) ? MIN : mRangeMax;
+        mRangeMax = Math.min(mRangeMax, MAX);
+        mRangeMax = Math.max(mRangeMax, MIN);
         mRangeEndSweep = (float) mRangeMax / valuePerDegree();
         mRangeEndAngle = Math.PI / 2 - (mRangeEndSweep * Math.PI) / 180;
 
@@ -438,14 +439,15 @@ public class CircleSeekBar extends View {
         mCenterY = alignBottom / 2 + (h - alignBottom) / 2;
 
 
-        float progressDiameter = min - mPadding - (mRangeDistance*2) - Math.max(mRangeCircleSize,mRangeTextSize) - mRangeArcWidth;
+        float progressDiameter = min - mPadding - (mRangeDistance*2) - Math.max(mRangeCircleSize,mRangeTextSize) - (mRangeDistance*1.4f) - mRangeArcWidth;
         mCircleRadius = (int) (progressDiameter / 2);
         float top = h / 2 - (progressDiameter / 2);
         float left = w / 2 - (progressDiameter / 2);
         mArcRect.set(left, top, left + progressDiameter, top + progressDiameter);
         mSecondaryArcRect.set(left, top, left + progressDiameter, top + progressDiameter);
         mRangeArcRect.set(left-mRangeDistance, top-mRangeDistance, left + progressDiameter+mRangeDistance, top + progressDiameter+mRangeDistance);
-        mRangeArcTextRect.set(left-(mRangeDistance/1.5f), top-(mRangeDistance/1.5f), left + progressDiameter+(mRangeDistance/1.5f), top + progressDiameter+(mRangeDistance/1.5f));
+        mRangeArcTextRect.set(left-(mRangeDistance*1.4f), top-(mRangeDistance*1.4f), left + progressDiameter+(mRangeDistance*1.4f), top + progressDiameter+(mRangeDistance*1.4f));
+        mRangeArcTextEndRect.set(left-(mRangeDistance/1.5f), top-(mRangeDistance/1.5f), left + progressDiameter+(mRangeDistance/1.5f), top + progressDiameter+(mRangeDistance/1.5f));
 
         if (bitMapCanvas == null) {
             bitMapCanvas = new Canvas();
@@ -470,11 +472,11 @@ public class CircleSeekBar extends View {
             canvas.drawText(String.valueOf(mProgressDisplay), xPos, yPos, mTextPaint);
         }
 
-        if(isInEditMode()) {
-            canvas.drawPaint(new Paint());
-            mThumbSize = 50;
-            mMax = 1000;
-        }
+//        if(isInEditMode()) {
+//            canvas.drawPaint(new Paint());
+//            mThumbSize = 50;
+//            mMax = 1000;
+//        }
 
         // draw the arc and progress
         canvas.drawCircle(mCenterX, mCenterY, mCircleRadius, mArcPaint);
@@ -534,7 +536,7 @@ public class CircleSeekBar extends View {
                 float endRangeTextAngle = getSweepValue(mRangeMin) - getSweepValue(mRangeMax);
                 float startRangeTextAngle = ANGLE_OFFSET + getSweepValue(mRangeMax);
                 Path circleRangeTextPath = new Path();
-                circleRangeTextPath.addArc(mRangeArcTextRect, startAngle - mRangeValueOffset, endAngle + (mRangeValueOffset * 2));
+                circleRangeTextPath.addArc(mRangeArcTextEndRect, startAngle - mRangeValueOffset, endAngle + (mRangeValueOffset * 2));
 
                 mRangeTextPaint.setTextAlign(Paint.Align.LEFT);
                 canvas.drawTextOnPath(getRangeText(mRangeMin), circleRangeTextPath, 0, 0, mRangeTextPaint);
@@ -545,7 +547,8 @@ public class CircleSeekBar extends View {
             float endEraseAngle = getSweepValue(rangeMid-mRangeEraseOffset) - getSweepValue(rangeMid+mRangeEraseOffset);
             float startEraseAngle = ANGLE_OFFSET + getSweepValue(rangeMid+mRangeEraseOffset);
             mRangeTextEraserPaint.setColor(Color.GREEN);
-            bitMapCanvas.drawArc(mRangeArcRect, startEraseAngle, endEraseAngle, false, mRangeTextEraserPaint);
+            //todo for erase the line with this range
+//            bitMapCanvas.drawArc(mRangeArcRect, startEraseAngle, endEraseAngle, false, mRangeTextEraserPaint);
 
 //            printDebug("startAngle "+startAngle +" -:- "+endAngle+" :erase "+startEraseAngle+" -:- "+endEraseAngle+" :  sweep : "+mRangeStartSweep+" -:- "+mRangeEndSweep,canvas);
 //            bitMapCanvas.drawTextOnPath("_______", circleErasePath,  0, 0, mRangeTextEraserPaint);
@@ -864,24 +867,19 @@ public class CircleSeekBar extends View {
 
     public void setRangeStart(int rangeStart) {
         this.mRangeMin = rangeStart;
+        mRangeMin = Math.min(mRangeMin, MAX);
+        mRangeMin = Math.max(mRangeMin, MIN);
+        mRangeStartSweep = (float) mRangeMin / valuePerDegree();
+        mRangeStartAngle = Math.PI / 2 - (mRangeStartSweep * Math.PI) / 180;
         invalidate();
     }
 
     public void setRangeEnd(int rangeStart) {
         this.mRangeMax = rangeStart;
+        mRangeMax = Math.min(mRangeMax, MAX);
+        mRangeMax = Math.max(mRangeMax, MIN);
+        mRangeEndSweep = (float) mRangeMax / valuePerDegree();
+        mRangeEndAngle = Math.PI / 2 - (mRangeEndSweep * Math.PI) / 180;
         invalidate();
-    }
-
-    //for databinding setters
-    public void setmRangeMin(int mRangeMin) {
-        this.mRangeMin = mRangeMin;
-    }
-
-    public void setmRangeMax(int mRangeMax) {
-        this.mRangeMax = mRangeMax;
-    }
-
-    public void setmIsShowRange(boolean mIsShowRange) {
-        this.mIsShowRange = mIsShowRange;
     }
 }
