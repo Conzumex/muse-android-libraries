@@ -146,8 +146,6 @@ public class CircleSeekBar extends View {
     private double mSecondaryAngle;
     private double mRangeStartAngle;
     private double mRangeEndAngle;
-    private boolean mIsThumbSelected = false;
-    private boolean mIsMarkerShown = false;
     private boolean mIsClickEnabled = true;
     private OnSeekBarChangedListener mOnSeekBarChangeListener;
     private onThumbClicked mThumbClickListener;
@@ -903,6 +901,11 @@ public class CircleSeekBar extends View {
         mRangeMax = Math.max(mRangeMax, mMin);
         mRangeEndSweep = (float) mRangeMax / valuePerDegree();
         mRangeEndAngle = Math.PI / 2 - (mRangeEndSweep * Math.PI) / 180;
+        invalidate();
+    }
+
+    public void clearMarkers(){
+        showMarker = false;
         invalidate();
     }
 }
