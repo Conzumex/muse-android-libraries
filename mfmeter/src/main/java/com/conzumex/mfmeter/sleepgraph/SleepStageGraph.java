@@ -112,6 +112,7 @@ public class SleepStageGraph extends View {
     SleepEntry selectedGraphEntry = null;
     float edgeLineWidth = 2f;
     float markerLineWidth = 2f;
+    float edgeLabelOffset = 2f;
     SleepMarker markerTest;
 
     DashPathEffect gridXEffect;
@@ -123,6 +124,7 @@ public class SleepStageGraph extends View {
     boolean drawYEdges = false;
     boolean setMarkerValueOnly = true;
     boolean showLastMarker = true;
+    boolean setEdgeLabelAligned = false;
 
     float touchX=-1, touchY=-1;
     float lastMarkerX=-1;
@@ -439,14 +441,15 @@ public class SleepStageGraph extends View {
             canvas.drawLine(startGridXpos, chartHeight, startGridXpos, chartOffsetTop, gridPaint);
             canvas.drawLine(endGridXpos, chartHeight, endGridXpos, chartOffsetTop, gridPaint);
         }
-        labelPaint.setTextAlign(Paint.Align.LEFT);
+        labelPaint.setTextAlign(setEdgeLabelAligned?Paint.Align.LEFT:Paint.Align.CENTER);
         if(highlightEdgeValues) {
             labelPaint.setTypeface(Typeface.create(fontFace, Typeface.BOLD));
             labelPaint.setColor(colorEdgeHighlight);
         }
         float xValueStart = 0;
         canvas.drawText(labelXFormatter.getLabel(xValueStart),getXPos(XPos.EDGE_LABEL_START),chartGraphEndY-chartOffsetTop + 50,labelPaint);
-        labelPaint.setTextAlign(Paint.Align.RIGHT);
+
+        labelPaint.setTextAlign(setEdgeLabelAligned?Paint.Align.RIGHT:Paint.Align.CENTER);
         if(highlightEdgeValues) {
             labelPaint.setTypeface(Typeface.create(fontFace, Typeface.BOLD));
             labelPaint.setColor(colorEdgeHighlight);
@@ -454,8 +457,15 @@ public class SleepStageGraph extends View {
         float xValueEnd = chartGraphWidth/xDotValue;
         canvas.drawText(labelXFormatter.getLabel(xValueEnd),getXPos(XPos.EDGE_LABEL_END),chartGraphEndY-chartOffsetTop + 50,labelPaint);
 
+        Rect endTextBounds = new Rect();
+        labelPaint.getTextBounds(labelXFormatter.getLabel(xValueEnd), 0, labelXFormatter.getLabel(xValueEnd).length(), endTextBounds);
+        Rect startTextBounds = new Rect();
+        labelPaint.getTextBounds(labelXFormatter.getLabel(xValueStart), 0, labelXFormatter.getLabel(xValueStart).length(), startTextBounds);
+
+        float labelAvailableSpace = chartGraphWidth - (endTextBounds.width()*edgeLabelOffset) - (startTextBounds.width()*edgeLabelOffset);
+
         //lessing by 1 for count the labels for inside the last and first labels
-        float xLabelCountsInside = (chartGraphWidth/xDotValue);
+        float xLabelCountsInside = (labelAvailableSpace/xDotValue)-1;
         labelPaint.setTextAlign(Paint.Align.CENTER);
         labelPaint.setColor(colorXLabel);
         labelPaint.setTypeface(Typeface.create(fontFace, Typeface.NORMAL));
@@ -464,8 +474,10 @@ public class SleepStageGraph extends View {
         for(int i=0;i<labelCount;i++){
             float indexAvg = pointValLabel * (i+1);
             int roundPos = Math.round(indexAvg);
+            float indexBal = indexAvg - roundPos;
             if(roundPos == 1 || roundPos == xLabelCountsInside)   continue;
             float gridXpos = getXPos(XPos.GRID_X_POS,roundPos);
+            gridXpos = gridXpos - getXAdjust(indexBal);
             if(enableGridY)
                 canvas.drawLine(gridXpos,chartHeight,gridXpos,0+chartOffsetTop,gridPaint);
             canvas.drawText(labelXFormatter.getLabel(roundPos),gridXpos,chartGraphEndY -chartOffsetTop+ 50,labelPaint);
@@ -484,7 +496,10 @@ public class SleepStageGraph extends View {
         }
         markerPaint.setStrokeWidth(markerLineWidth);
         markerPaint.setColor(colorMarkerLine);
-        float selectedX = (touchX - chartGraphStartX) / xDotValue;
+
+        //valueTouchX for finding the entries with including linewidth
+        float valueTouchX = touchX<(chartValueMinx+lineWidth/2)?touchX+(lineWidth/2):(touchX>(chartValueMaxX-lineWidth/2)?touchX-(lineWidth/2):touchX);
+        float selectedX = (valueTouchX - chartGraphStartX) / xDotValue;
         DecimalFormat df = new DecimalFormat("#.#");
         selectedX = Float.valueOf(df.format(selectedX));
         SleepEntry selectedEntry = getEntry(selectedX);
@@ -536,7 +551,7 @@ public class SleepStageGraph extends View {
         Paint paint = new Paint();
         paint.setColor(Color.YELLOW);
         paint.setTextSize(25);
-        canvas.drawText(text,10,chartGraphHeight - 50,paint);
+        canvas.drawText(text,10,chartGraphHeight + 150,paint);
     }
 
     public interface labelFormatX{
@@ -731,6 +746,10 @@ public class SleepStageGraph extends View {
         return 0;
     }
 
+    private float getXAdjust(float value){
+        return value*xDotValue;
+    }
+
     /** Format the marker text as String */
     public void setMarkerFormatter(MarkerFormatter mFormatter){
         markerFormatter = mFormatter;
@@ -881,6 +900,19 @@ public class SleepStageGraph extends View {
      * default is : it don't show marker outside the range*/
     public void setShowLastMarker(boolean show){
         this.showLastMarker = show;
+    }
+    /** set edge label offset to prevent label overlapping
+     *
+     * default is : 2f*/
+    public void setEdgeLabelOffset(float offset){
+        this.edgeLabelOffset = offset;
+    }
+
+    /** set edge label alignment to left and right
+     *
+     * default is : false*/
+    public void setEdgeLabelAligned(boolean isAligned){
+        this.setEdgeLabelAligned = isAligned;
     }
     @Override
     public void invalidate() {
