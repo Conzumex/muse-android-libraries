@@ -1,5 +1,7 @@
 package com.conzumex.mfmeter.sleepgraph;
 
+import androidx.annotation.NonNull;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,5 +33,11 @@ public class SleepEntry implements Comparable<SleepEntry> {
             uniqueYs.add(i);
         }
         return uniqueYs;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "x: "+xValue+", y: "+yValue+(xValueClose==-1?"":", xClose: "+xValueClose);
     }
 }

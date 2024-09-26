@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
         });
         sleepGraph.setFontFace(ResourcesCompat.getFont(this, R.font.rb_medium));
         sleepGraph.setEmptyText("Nothing entered");
-        sleepGraph.setMaxXvalue(240);
+        sleepGraph.setMaxXvalue(300);
 
 
         loadCandleData();

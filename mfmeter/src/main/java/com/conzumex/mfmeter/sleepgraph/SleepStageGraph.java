@@ -42,6 +42,7 @@ import java.util.Set;
 public class SleepStageGraph extends View {
     int parentViewWidth,parentViewHeight;
     int chartWidth,chartHeight;
+    float chartValueMinx, chartValueMaxX;
     int axisSpace = 170;
     int chartOffsetV = 0,chartOffsetH = 20;
     int chartOffsetTop = 0;
@@ -56,7 +57,7 @@ public class SleepStageGraph extends View {
     int axisWidth = 1;
     /** This maxValue will  be draw the last bar till here
      * */
-    float maxXvalue=8f;
+    float maxXvalue=18f;
     float minXvalue=0;
     float maxYvalue=3;
     float yGranularity=1;
@@ -120,8 +121,11 @@ public class SleepStageGraph extends View {
     boolean enableGridX = true;
     boolean enableGridY = false;
     boolean drawYEdges = false;
+    boolean setMarkerValueOnly = true;
+    boolean showLastMarker = true;
 
     float touchX=-1, touchY=-1;
+    float lastMarkerX=-1;
 
     enum XPos {YAXIS, YAXIS_LABEL, XAXIS_START,XAXIS_END,GRID_X_START,GRID_X_END,
         EDGE_LABEL_START,EDGE_LABEL_END,GRID_X_POS,VALUE_X_POS,X_GRID_X_START,X_GRID_X_END,
@@ -187,6 +191,9 @@ public class SleepStageGraph extends View {
         chartGraphStartY = 0 + chartOffsetTop;
         chartGraphEndX = chartWidth-(chartOffsetH/2) - (chartPaddingH/2);
         chartGraphEndY = chartHeight+ chartOffsetTop;
+
+        chartValueMinx = chartGraphStartX;
+        chartValueMaxX = chartGraphEndX;
 
         Paint paint2 = new Paint();
         paint2.setColor(Color.DKGRAY);
@@ -285,7 +292,7 @@ public class SleepStageGraph extends View {
         entries.add(new SleepEntry(6,2));
         entries.add(new SleepEntry(7,0));
         entries.add(new SleepEntry(8,2,9));
-        touchX = 400;
+        touchX = 300;
     }
 
     void drawGraphEdges(Canvas canvas){
@@ -362,6 +369,11 @@ public class SleepStageGraph extends View {
             //todo make line included
             startX = startX - (lineWidth/2);
             endX = endX + (lineWidth/2);
+            if(i==0)
+                chartValueMinx = startX;
+            if(i==entries.size()-1)
+                chartValueMaxX = endX;
+
             RectF tempRect = new RectF(startX,rectTop,endX,rectTop+barHeight);
             float itemYVal = entries.get(i).yValue;
             //todo set colors temporary
@@ -443,7 +455,7 @@ public class SleepStageGraph extends View {
         canvas.drawText(labelXFormatter.getLabel(xValueEnd),getXPos(XPos.EDGE_LABEL_END),chartGraphEndY-chartOffsetTop + 50,labelPaint);
 
         //lessing by 1 for count the labels for inside the last and first labels
-        float xLabelCountsInside = (chartGraphWidth/xDotValue)-1;
+        float xLabelCountsInside = (chartGraphWidth/xDotValue);
         labelPaint.setTextAlign(Paint.Align.CENTER);
         labelPaint.setColor(colorXLabel);
         labelPaint.setTypeface(Typeface.create(fontFace, Typeface.NORMAL));
@@ -463,6 +475,13 @@ public class SleepStageGraph extends View {
     }
 
     void drawMarker(Canvas canvas){
+        if(setMarkerValueOnly && (touchX<chartValueMinx || touchX>chartValueMaxX)) {
+            if(!showLastMarker)
+                return;
+            else{
+                touchX = lastMarkerX;
+            }
+        }
         markerPaint.setStrokeWidth(markerLineWidth);
         markerPaint.setColor(colorMarkerLine);
         float selectedX = (touchX - chartGraphStartX) / xDotValue;
@@ -476,6 +495,8 @@ public class SleepStageGraph extends View {
             mClickListener.onClick(selectedX,selectedEntry);
         if(highlightClick)
             canvas.drawLine(touchX,chartHeight,touchX,0,markerPaint); //Grid lines
+
+        lastMarkerX = touchX;
 
         //drawing marker views
         if(drawMarkers) {
@@ -842,6 +863,24 @@ public class SleepStageGraph extends View {
      * default is 100*/
     public void setAxisSpace(int width){
         this.axisSpace = width;
+    }
+    /** set Xaxis label count.
+     *
+     * default is 4*/
+    public void setLabelCount(int count){
+        this.labelCount = count;
+    }
+    /** set Highlighter allow outside chart x values range
+     *
+     * default is : it don't show marker outside the range*/
+    public void setShowMarkerOutsideX(boolean show){
+        this.setMarkerValueOnly = !show;
+    }
+    /** set show last marker when touch outside x range
+     *
+     * default is : it don't show marker outside the range*/
+    public void setShowLastMarker(boolean show){
+        this.showLastMarker = show;
     }
     @Override
     public void invalidate() {
