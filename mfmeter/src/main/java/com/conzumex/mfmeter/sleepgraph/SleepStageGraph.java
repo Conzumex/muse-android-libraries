@@ -914,6 +914,21 @@ public class SleepStageGraph extends View {
     public void setEdgeLabelAligned(boolean isAligned){
         this.setEdgeLabelAligned = isAligned;
     }
+
+    /** set chart horizontal offset
+     *
+     * default is : 20*/
+    public void setChartOffsetH(int chartOffsetH) {
+        this.chartOffsetH = chartOffsetH;
+    }
+
+    /** set chart horizontal padding
+     *
+     * default is : 50*/
+    public void setChartPaddingH(int padding) {
+        this.chartPaddingH = padding;
+    }
+
     @Override
     public void invalidate() {
         super.invalidate();
