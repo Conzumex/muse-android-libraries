@@ -44,6 +44,7 @@ dependencies {
     implementation project(':mfmeter')
     implementation project(':circleseekbar')
     implementation project(':stickeyscrollview')
+    implementation project(':bpprogressbar')
 
     implementation 'com.github.amarjain07:StickyScrollView:1.0.3'
 }

@@ -891,6 +891,11 @@ public class CircleSeekBar extends View {
         invalidate();
     }
 
+    public void setRangeText(String text) {
+        this.rangeText = text;
+        invalidate();
+    }
+
     public void setRangeStart(int rangeStart) {
         this.mRangeMin = rangeStart;
         mRangeMin = Math.min(mRangeMin, mMax);

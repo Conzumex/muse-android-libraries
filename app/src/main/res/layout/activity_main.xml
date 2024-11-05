@@ -4,230 +4,255 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1B1B1B">
+    android:background="@color/black">
 
-<!--    <com.conzumex.progressbar.RoundedProgressBar-->
-<!--        android:id="@+id/prog_test"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="32dp"-->
-<!--        android:layout_marginTop="20dp"-->
-<!--        android:layout_marginHorizontal="30dp"-->
-<!--        android:layout_weight="1"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:rpbBackgroundColor="#2E5C2C"-->
-<!--        app:rpbBackgroundTextColor="#FFFFFF"-->
-<!--        app:rpbCornerRadius="6dp"-->
-<!--        app:rpbFontFamily="@font/rb_medium"-->
-<!--        app:rpbProgress="60"-->
-<!--        app:rpbRelativeMax="120"-->
-<!--        app:rpbProgressColor="#FF5555"-->
-<!--        app:rpbProgressTextColor="#FFFFFF"-->
-<!--        app:rpbTextPadding="12dp" />-->
-
-<!--    <com.conzumex.progressbar.RoundedProgressBar-->
-<!--        android:id="@+id/pb_120"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="25dp"-->
-<!--        android:layout_marginTop="20dp"-->
-<!--        android:layout_marginHorizontal="80dp"-->
-<!--        android:paddingStart="0dp"-->
-<!--        app:rpbRelativeMax="140"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/button"-->
-<!--        app:rpbProgressTextColor="@color/white"-->
-<!--        app:rpbBackgroundTextColor="@color/white"-->
-<!--        app:rpbFontFamily="@font/nunito_bold"-->
-<!--        app:rpbBackgroundColor="#191919"-->
-<!--        app:rpbCornerRadius="5dp"-->
-<!--        app:rpbProgressColor="#D80000"-->
-<!--        app:rpbProgress="65"-->
-<!--        android:paddingEnd="0dp"-->
-<!--        tools:rpbProgress="66.7" />-->
-
-<!--    <com.conzumex.charts.charts.LineChart-->
-<!--        android:id="@+id/line_chart"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="250dp"-->
-<!--        android:layout_marginStart="10dp"-->
-<!--        android:layout_weight="1"-->
-<!--        android:textSize="8sp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent" />-->
-
-    <com.conzumex.charts.charts.RoundedCombinedChart
-        android:id="@+id/barchart"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_weight="1"
-        android:textSize="10sp"
-        android:layout_marginTop="20dp"
-        app:radius="5dp"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <com.conzumex.charts.charts.LineChart
-        android:id="@+id/line_chart"
-        android:layout_width="match_parent"
-        android:layout_height="110dp"
-        android:layout_weight="1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pb_barchart" />
-
-
-    <com.conzumex.circleseekbar.DropletSeekBar
-        android:id="@+id/seekbar_drops"
+    <ScrollView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:elevation="4dp"
-        android:padding="64dp"
-        android:visibility="visible"
-        app:currentProgress="70"
-        app:gradientColors="@array/gradients"
-        app:thumbDrawable="@drawable/ic_circle_seekbar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line_chart" />
-
-    <com.conzumex.circleseekbar.CircleSeekBar
-        android:id="@+id/circular"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:elevation="4dp"
-        android:padding="0dp"
-        android:visibility="visible"
-        app:csb_arcColor="@color/color_arc"
-        app:csb_arcWidth="5dp"
-        app:csb_max="1000"
-        app:csb_cap_adjustment="2"
-        app:csb_min="0"
-        app:csb_isClickable="true"
-        app:csb_progress="600"
-        app:csb_isShowThumb="true"
-        app:csb_rangeWidth="1dp"
-        app:csb_rangeStart="500"
-        app:csb_rangeEnd="700"
-        app:csb_rangeCircleSize="2.5dp"
-        app:csb_rangeColor="@color/white"
-        app:csb_progressColor="#00aad4"
-        app:csb_rangeEraseOffset="1.8dp"
-        app:csb_dash_line_color="#A600D4"
-        app:csb_progressWidth="5dp"
-        app:csb_textColor="@color/color_text"
-        app:csb_textSize="36sp"
-        app:csb_rangeTextSize="10sp"
-        app:csb_thumbDrawable="@drawable/ic_circle_seekbar"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-    <com.conzumex.mfmeter.sleepgraph.SleepStageGraph
-        android:id="@+id/sleep_graph"
-        android:layout_width="0dp"
-        android:layout_marginTop="10dp"
-        android:layout_height="280dp"
-        android:layout_marginHorizontal="40dp"
-        app:radius="10dp"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <com.conzumex.progressbar.charts.ProgressBarGraphChart
-        android:id="@+id/pb_barchart"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_weight="1"
-        android:visibility="gone"
-        android:paddingStart="0dp"
-        android:paddingEnd="0dp"
-        app:selectedPos="3"
-        app:selectedFont="@font/rb_medium"
-        app:selectedProgressColor="#fff"
-        app:selectedProgressBackgroundColor="#3c4161"
-        app:selectedProgressTextColor="#000"
-        app:selectedLabelColor="#fff"
-        app:unSelectedProgressColor="#fff"
-        app:unSelectedProgressBackgroundColor="#3c4161"
-        app:unSelectedProgressTextColor="#000"
-        app:unSelectedLabelColor="#fff"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/meter" />
-
-    <com.conzumex.progressbar.charts.ProgressRoundGraphChart
-        android:id="@+id/pb_roundchart"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
-        android:layout_weight="1"
-        android:paddingStart="0dp"
-        android:paddingEnd="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/pb_barchart"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sleep_graph"
-        app:selectedLabelColor="#fff"
-        app:selectedPos="3"
-        app:selectedProgressTextSize="5sp"
-        app:unSelectedProgressTextSize="4sp"
-        app:selectedProgressColor="#fff"
-        app:selectedProgressTextColor="#FFFFFF"
-        app:unSelectedLabelColor="#fff"
-        app:unSelectedProgressBackgroundColor="#3c4161"
-        app:unSelectedProgressColor="#fff"
-        app:unSelectedProgressTextColor="#fff" />
-
-    <com.conzumex.mfmeter.MFMeter
-        android:id="@+id/meter"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:meterFontFamily="@font/nunito_bold"
-        app:meterTextSize="10sp"
-        app:meterSnapSessions="true"
-        android:visibility="gone"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
 
-    <com.conzumex.mfmeter.progressbar.RoundedProgress
-        android:id="@+id/pb_outer"
-        android:layout_width="0dp"
-        android:layout_height="20dp"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="20dp"
-        app:rProgressGradientStart="@color/green"
-        app:rProgressGradientEnd="#061C06"
-        app:rBackgroundColor="#3C3C3C"
-        app:rProgressGradientAngle="45"
-        app:rTextColor="#FFFFFF"
-        app:rFontFamily="@font/nunito_bold"
-        app:rTextSize="12sp"
-        app:rProgress="100"
-        app:rTextShow="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pb_roundchart"
-         />
+            <com.conzumex.progressbar.RoundedProgressBar
+                android:id="@+id/prog_test"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginHorizontal="30dp"
+                android:layout_weight="1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:rpbBackgroundColor="#6A0B2C"
+                app:rpbBackgroundTextColor="#FFFFFF"
+                app:rpbCornerRadius="6dp"
+                app:rpbFontFamily="@font/rb_medium"
+                app:rpbProgress="50"
+                app:rpbRelativeMax="100"
+                app:rpbProgressColor="#E91E63"
+                app:rpbProgressTextColor="#FFFFFF"
+                app:rpbTextPadding="12dp" />
 
+            <com.conzumex.progressbar.RoundedProgressBar
+                android:id="@+id/pb_120"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginHorizontal="30dp"
+                android:paddingStart="0dp"
+                app:rpbRelativeMax="140"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/button"
+                app:rpbProgressTextColor="@color/white"
+                app:rpbBackgroundTextColor="@color/white"
+                app:rpbFontFamily="@font/nunito_bold"
+                app:rpbBackgroundColor="#191919"
+                app:rpbCornerRadius="5dp"
+                app:rpbProgressColor="#009688"
+                app:rpbProgress="65"
+                android:paddingEnd="0dp" />
+
+            <com.conzumex.charts.charts.LineChart
+                android:id="@+id/line_chart_2"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:textSize="8sp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <com.conzumex.charts.charts.RoundedCombinedChart
+                android:id="@+id/barchart"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_weight="1"
+                android:textSize="10sp"
+                android:visibility="visible"
+                app:radius="10dp" />
+
+            <com.conzumex.charts.charts.LineChart
+                android:id="@+id/line_chart"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginTop="50dp"
+                android:layout_weight="1" />
+
+            <com.conzumex.circleseekbar.DropletSeekBar
+                android:id="@+id/seekbar_drops"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="4dp"
+                android:padding="64dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginHorizontal="30dp"
+                android:visibility="visible"
+                app:currentProgress="70"
+                app:gradientColors="@array/gradients"
+                app:thumbDrawable="@drawable/ic_temperature" />
+
+            <com.conzumex.circleseekbar.CircleSeekBar
+                android:id="@+id/circular"
+                android:layout_width="280dp"
+                android:layout_height="280dp"
+                android:layout_marginTop="50dp"
+                android:elevation="4dp"
+                android:padding="0dp"
+                android:layout_gravity="center"
+                android:visibility="visible"
+                app:csb_arcColor="@color/color_arc"
+                app:csb_arcWidth="8dp"
+                app:csb_cap_adjustment="2"
+                app:csb_dash_line_color="@color/money_color"
+                app:csb_isClickable="true"
+                app:csb_isShowThumb="true"
+                app:csb_max="100"
+                app:csb_min="0"
+                app:csb_progress="60"
+                app:csb_progressColor="@color/money_color_completed"
+                app:csb_secondaryprogressColor="@color/money_color"
+                app:csb_progressWidth="8dp"
+                app:csb_rangeCircleSize="2.5dp"
+                app:csb_rangeColor="@color/white"
+                app:csb_rangeEnd="70"
+                app:csb_rangeEraseOffset="1.8dp"
+                app:csb_rangeStart="50"
+                app:csb_rangeTextSize="12sp"
+                app:csb_rangeWidth="2dp"
+                app:csb_textColor="@color/color_text"
+                app:csb_textSize="36sp"
+                app:csb_thumbDrawable="@drawable/ic_money" />
+
+            <com.conzumex.mfmeter.sleepgraph.SleepStageGraph
+                android:id="@+id/sleep_graph2"
+                android:layout_width="match_parent"
+                android:layout_height="280dp"
+                android:layout_marginHorizontal="40dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:radius="10dp" />
+
+            <com.conzumex.mfmeter.sleepgraph.SleepStageGraph
+                android:id="@+id/sleep_graph"
+                android:layout_width="match_parent"
+                android:layout_height="280dp"
+                android:layout_marginHorizontal="40dp"
+                android:layout_marginTop="10dp"
+                app:graphBackgroundColor="@color/black"
+                android:visibility="visible"
+                app:radius="10dp" />
+
+            <com.conzumex.progressbar.charts.ProgressBarGraphChart
+                android:id="@+id/pb_barchart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_weight="1"
+                android:paddingStart="0dp"
+                android:paddingEnd="0dp"
+                android:visibility="gone"
+                app:selectedFont="@font/rb_medium"
+                app:selectedLabelColor="#fff"
+                app:selectedPos="3"
+                app:selectedProgressBackgroundColor="#3c4161"
+                app:selectedProgressColor="#fff"
+                app:selectedProgressTextColor="#000"
+                app:unSelectedLabelColor="#fff"
+                app:unSelectedProgressBackgroundColor="#3c4161"
+                app:unSelectedProgressColor="#fff"
+                app:unSelectedProgressTextColor="#000" />
+
+            <com.conzumex.progressbar.charts.ProgressRoundGraphChart
+                android:id="@+id/pb_roundchart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginHorizontal="30dp"
+                android:layout_weight="1"
+                android:paddingStart="0dp"
+                android:paddingEnd="0dp"
+                app:selectedLabelColor="#fff"
+                app:selectedPos="3"
+                app:selectedProgressColor="#fff"
+                app:selectedProgressTextColor="#FFFFFF"
+                app:selectedProgressTextSize="5sp"
+                app:unSelectedLabelColor="#fff"
+                app:unSelectedProgressBackgroundColor="#3c4161"
+                app:unSelectedProgressColor="#fff"
+                app:unSelectedProgressTextColor="#fff"
+                app:unSelectedProgressTextSize="4sp" />
+
+            <com.conzumex.mfmeter.MFMeter
+                android:id="@+id/meter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:layout_marginTop="30dp"
+                android:layout_marginHorizontal="30dp"
+                app:meterFontFamily="@font/nunito_bold"
+                app:meterSnapSessions="true"
+                app:meterTextSize="10sp" />
+
+            <com.conzumex.mfmeter.progressbar.RoundedProgress
+                android:id="@+id/pb_outer"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginHorizontal="30dp"
+                app:rBackgroundColor="#3C3C3C"
+                app:rFontFamily="@font/nunito_bold"
+                app:rProgress="100"
+                app:rProgressGradientAngle="45"
+                app:rProgressGradientEnd="#061C06"
+                app:rProgressGradientStart="@color/green"
+                app:rTextColor="#FFFFFF"
+                app:rTextShow="true"
+                app:rTextSize="12sp" />
+
+            <com.conzumex.bpprogressbar.BpProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:topProgress="124"
+                app:bottomProgress="70"
+                android:layout_marginTop="30dp"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginBottom="50dp"
+                app:customFont="@font/rb_regular"
+                app:gapColor="@color/black"
+                app:gapWidth="4dp"
+                app:markerColor="@color/white"
+                app:markerSize="5dp"
+                app:markerWidth="3dp"
+                app:pathColor="@color/gray"
+                app:progressColor="@color/bp_green"
+                app:progressPadding="10dp"
+                app:progressWidth="10dp"
+                app:textSize="14sp" />
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Button" />
+        </LinearLayout>
+    </ScrollView>
 
 
     <!--    <com.conzumex.seekbar.DoubleValueSeekBarView-->
@@ -285,4 +310,6 @@
     <!--        app:layout_constraintEnd_toEndOf="parent"-->
     <!--        app:layout_constraintStart_toStartOf="parent"-->
     <!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

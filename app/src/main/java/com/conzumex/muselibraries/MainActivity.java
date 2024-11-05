@@ -69,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
 //    LineData data;
 //    EditText edtText;
 //    Button btn;
-//    RoundedProgressBar progressBar,progressBar2;
-//    ProgressTextFormatter progressFormatter;
+    RoundedProgressBar progressBar,progressBar2;
+    ProgressTextFormatter progressFormatter;
     MFMeter meter;
     Button btn;
     RoundedBarChart barChart;
@@ -219,20 +219,21 @@ public class MainActivity extends AppCompatActivity {
         sleepEntries.add(new SleepEntry(8,3));
         sleepGraph.loadData(sleepEntries);
         sleepGraph.setLabelXFormatter(value -> ((int)value)+" am");
+        sleepGraph.setColorRanges(new int[]{getColor(R.color.instagram),getColor(R.color.facebook),getColor(R.color.chrome),getColor(R.color.whatsapp)});
         sleepGraph.setOffsetTop(100);
-        sleepGraph.setAxisSpace(110);
+        sleepGraph.setAxisSpace(150);
         sleepGraph.setAxisLabelPadding(10);
         sleepGraph.setDrawViewTopBorder(false);
         sleepGraph.setYAxisDirection(SleepStageGraph.Direction.LEFT);
         sleepGraph.setLabelYFormatter(value -> {
             if(value==0)
-                return "Deep";
+                return "Instagram";
             else if(value==1)
-                return "Light";
+                return "Facebook";
             else if(value==2)
-                return "REM";
+                return "Chrome";
             else
-                return "Awake";
+                return "Whatsapp";
         });
         CustomMarker tempSleepMarker = new CustomMarker(getApplicationContext(), R.layout.custom_marker);
         sleepGraph.setMarkerView(tempSleepMarker);
@@ -267,10 +268,11 @@ public class MainActivity extends AppCompatActivity {
 
         CustomRingSleepStageMarkerView markerPb = new CustomRingSleepStageMarkerView(getApplicationContext(),R.layout.custom_graph_marker_ring);
         circleSeekBar.setMarkerView(markerPb);
+        circleSeekBar.setRangeText("Monthly");
         markerPb.setSupplier(new CustomRingSleepStageMarkerView.supplier() {
             @Override
             public String[] onValueSupply(float e, float xVal) {
-                return new String[]{"Hellow","X :"+xVal};
+                return new String[]{"Target","$60"};
             }
         });
 
@@ -356,6 +358,7 @@ public class MainActivity extends AppCompatActivity {
         LineDataSet fillset = new LineDataSet(fillEntries, "fillDataSet");
         fillset.setDrawFilled(true);
         fillset.setDrawCircles(false);
+        fillset.setDrawValues(false);
         fillset.setColor(getColor(R.color.white));
         fillset.setHighlightEnabled(false);
         int[] colors = new int[]{getColor(R.color.new_graph_intensity_red_light), getColor(R.color.new_graph_intensity_orange_light), getColor(R.color.new_graph_intensity_yellow_light), getColor(R.color.new_graph_intensity_green_light),};
@@ -460,24 +463,27 @@ public class MainActivity extends AppCompatActivity {
     private void loadCandleData(){
         List<CandleEntry> canldes = new ArrayList<>();
         canldes.add(new CandleEntry(1,20,40,20,40));
-        canldes.add(new CandleEntry(2,30,55,30,55));
+        canldes.add(new CandleEntry(2,30,38,30,38));
         canldes.add(new CandleEntry(3,50,80,50,80));
         canldes.add(new CandleEntry(4,20,90,20,90));
+        canldes.add(new CandleEntry(5,60,68,60,68));
+        canldes.add(new CandleEntry(5,40,48,40,48));
+        canldes.add(new CandleEntry(5,50,58,50,58));
 
         CandleDataSet dataSet = new CandleDataSet(canldes,"candles");
         dataSet.setDrawValues(true);
         dataSet.setColor(Color.rgb(80, 80, 80));
 //        dataSet.setShadowColor(getColor(R.color.transparent));
         dataSet.setShadowWidth(0f);
-        dataSet.setBarSpace(0.4f);
-        dataSet.setIncreasingColor(Color.parseColor("#d13100"));
+        dataSet.setBarSpace(0.2f);
+        dataSet.setIncreasingColor(getColor(R.color.graph_color));
         dataSet.setIncreasingPaintStyle(Paint.Style.FILL);
         dataSet.setHighlightEnabled(true);
         dataSet.setDrawHorizontalHighlightIndicator(false);
 //        dataSet.enableDashedHighlightLine(10f, 5f, 0f);
-        dataSet.setHighLightColor(Color.parseColor("#bb99cc"));
-        dataSet.setHighlightLineWidth(1);
-        dataSet.setValueTextColor(Color.parseColor("#9c9c9c"));
+        dataSet.setHighLightColor(Color.parseColor("#ffffff"));
+        dataSet.setHighlightLineWidth(1.5f);
+        dataSet.setValueTextColor(getColor(R.color.graph_color));
 //        dataSet.setValueTypeface(ResourcesCompat.getFont(this, R.font.nunito_semi_bold));
         dataSet.setValueTextSize(6);
 //        Date finalStartDateLabels = startDate;
@@ -513,6 +519,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         CandleData cdData= new CandleData(dataSet);
+        dataCombined.setDrawValues(false);
 
         roundCandle.setData(dataCombined);
         roundCandle.getLegend().setEnabled(false);
@@ -533,8 +540,9 @@ public class MainActivity extends AppCompatActivity {
 //        yAxis.setLabelCount(hourCount+1);
 //        yAxis.setGranularityEnabled(true);
 //        yAxis.setGranularity(3600);
-        yAxis.enableGridDashedLine(10f, 10f, 0f);
-        yAxis.setGridColor(Color.parseColor("#fefefe"));
+//        yAxis.enableGridDashedLine(10f, 10f, 0f);
+        yAxis.setDrawGridLines(false);
+        yAxis.setGridColor(getColor(R.color.graph_line));
         yAxis.setTextColor(getColor(R.color.white));
 //        Date finalStartDate = new Date();
 //        yAxis.setValueFormatter((value, axis) -> {
@@ -558,8 +566,8 @@ public class MainActivity extends AppCompatActivity {
         xAxis.setDrawGridLinesBehindData(true);
         xAxis.setAxisMinimum(-1);
         xAxis.setAxisMaximum(8);
-        xAxis.enableGridDashedLine(10f, 10f, 0f);
-        xAxis.setGridColor(Color.parseColor("#fefefe"));
+//        xAxis.enableGridDashedLine(10f, 10f, 0f);
+        xAxis.setGridColor(getColor(R.color.graph_line));
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextColor(getColor(R.color.white));
 

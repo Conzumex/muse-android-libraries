@@ -12,6 +12,15 @@
     <color name="new_graph_intensity_orange_light">#40d0722d</color>
     <color name="new_graph_intensity_red_light">#40e20c2e</color>
     <color name="transparent">#00E20C2E</color>
+    <color name="graph_line">#8E8E8E</color>
+    <color name="graph_color">#E91E63</color>
+    <color name="money_color">#FFC107</color>
+    <color name="money_color_completed">#FFE9A6</color>
+    <color name="bp_green">#30CF3E</color>
+    <color name="whatsapp">#25D366</color>
+    <color name="instagram">#E4405F</color>
+    <color name="facebook">#1877F2</color>
+    <color name="chrome">#ffa700</color>
 
     <array name="gradients">
         <item>#000000</item>
