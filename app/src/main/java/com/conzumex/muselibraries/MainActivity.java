@@ -20,6 +20,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.conzumex.bpprogressbar.BpProgressBar;
 import com.conzumex.charts.charts.LineChart;
 import com.conzumex.charts.charts.RoundedBarChart;
 import com.conzumex.charts.charts.RoundedCandleChart;
@@ -59,6 +60,7 @@ import com.conzumex.progressbar.charts.ProgressRoundGraphChart;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -82,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
     SleepStageGraph sleepGraph;
     LineChart lineChart;
     CircleSeekBar circleSeekBar;
+    BpProgressBar bpBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,7 +102,13 @@ public class MainActivity extends AppCompatActivity {
         pbRoundchart = findViewById(R.id.pb_roundchart);
         lineChart = findViewById(R.id.line_chart);
         circleSeekBar = findViewById(R.id.circular);
+        bpBar= findViewById(R.id.bp_bar);
 //        rbVertical = findViewById(R.id.roundedProgressBarVertical);
+
+        bpBar.setRanges(Arrays.asList(0,140,150,160,170,190,200),Arrays.asList(0,40,60,80,100,120,150));
+        bpBar.setTopText("Height");
+        bpBar.setBottomText("Weight");
+        bpBar.setProgresses(167,63);
 
         roundCandle = findViewById(R.id.barchart);
         sleepGraph = findViewById(R.id.sleep_graph);
@@ -123,9 +132,12 @@ public class MainActivity extends AppCompatActivity {
         List<FuelLog> listLog = new ArrayList<>();
         listLog.add(new FuelLog(new Date(tempStartTime+(1000*60*50)),new Date(tempStartTime+(1000*60*70))));
         List<FuelIcon> listIcon = new ArrayList<>();
-        listIcon.add(new FuelIcon(new Date(tempStartTime+(1000*60*70)),R.drawable.ic_graph_marker));
+        listIcon.add(new FuelIcon(new Date(tempStartTime+(1000*60*70)),R.drawable.ic_charging));
         meter.loadData(list,listLog,listIcon);
 
+        meter.setColorLogText(getColor(R.color.charging));
+        meter.setColorLog(getColor(R.color.charging_light));
+        meter.setFillBackground(false);
         meter.setSnapPos(2);
         meter.setSnapEnabled(false);
 
@@ -225,22 +237,21 @@ public class MainActivity extends AppCompatActivity {
         sleepGraph.setAxisLabelPadding(10);
         sleepGraph.setDrawViewTopBorder(false);
         sleepGraph.setYAxisDirection(SleepStageGraph.Direction.LEFT);
-        sleepGraph.setLabelYFormatter(value -> {
-            if(value==0)
-                return "Instagram";
-            else if(value==1)
-                return "Facebook";
-            else if(value==2)
-                return "Chrome";
-            else
-                return "Whatsapp";
-        });
+        sleepGraph.setLabelYFormatter(value -> getAppUsageLabel((int) value));
         CustomMarker tempSleepMarker = new CustomMarker(getApplicationContext(), R.layout.custom_marker);
         sleepGraph.setMarkerView(tempSleepMarker);
         sleepGraph.setShowMarkerAlways(false);
         sleepGraph.setEdgeLabelOffset(1.3f);
         sleepGraph.setLabelCount(3);
-//        sleepGraph.setMarkerFormatter((x, entry) -> Html.fromHtml("<font color='yellow'>Val : </font>"+x));
+        tempSleepMarker.mSupply = new CustomMarker.supplier() {
+            @Override
+            public CharSequence[] getVal(SleepEntry entry, float x) {
+                CharSequence[] vals = new CharSequence[2];
+                vals[0] = Html.fromHtml("<font color='"+getAppUsageLabelColor((int) entry.yValue)+"'>"+getAppUsageLabel((int) entry.yValue)+"</font>");
+                vals[1] = Html.fromHtml((int)entry.xValue+" am");
+                return vals;
+            }
+        };
         sleepGraph.setChartClickListener((x, entry) -> {
 //            Log.d("Clicked",entry.xValue+"");
             Log.d("Clicked",entry!=null?entry.xValue+"":"null");
@@ -290,6 +301,27 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
+    }
+
+    String getAppUsageLabel(int value){
+        if(value==0)
+            return "Instagram";
+        else if(value==1)
+            return "Facebook";
+        else if(value==2)
+            return "Chrome";
+        else
+            return "Whatsapp";
+    }
+    String getAppUsageLabelColor(int value){
+        if(value==0)
+            return "#E4405F";
+        else if(value==1)
+            return "#1877F2";
+        else if(value==2)
+            return "#FFA700";
+        else
+            return "#25D366";
     }
 
     void loadStress(DropletSeekBar dropBar){

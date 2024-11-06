@@ -90,24 +90,42 @@
                 android:layout_marginTop="50dp"
                 android:layout_weight="1" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:fontFamily="@font/nunito_bold"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:layout_marginTop="50dp"
+                android:text="Temperature Change"/>
+
             <com.conzumex.circleseekbar.DropletSeekBar
                 android:id="@+id/seekbar_drops"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="4dp"
                 android:padding="64dp"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginHorizontal="30dp"
                 android:visibility="visible"
                 app:currentProgress="70"
                 app:gradientColors="@array/gradients"
                 app:thumbDrawable="@drawable/ic_temperature" />
-
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:fontFamily="@font/nunito_bold"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:layout_marginTop="50dp"
+                android:text="Money Earned this month"/>
             <com.conzumex.circleseekbar.CircleSeekBar
                 android:id="@+id/circular"
                 android:layout_width="280dp"
                 android:layout_height="280dp"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="10dp"
                 android:elevation="4dp"
                 android:padding="0dp"
                 android:layout_gravity="center"
@@ -148,6 +166,16 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:radius="10dp" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:fontFamily="@font/nunito_bold"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:layout_marginTop="50dp"
+                android:text="App Usage"/>
+
             <com.conzumex.mfmeter.sleepgraph.SleepStageGraph
                 android:id="@+id/sleep_graph"
                 android:layout_width="match_parent"
@@ -158,6 +186,15 @@
                 android:visibility="visible"
                 app:radius="10dp" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:fontFamily="@font/nunito_bold"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:layout_marginTop="50dp"
+                android:text="Target achieved"/>
             <com.conzumex.progressbar.charts.ProgressBarGraphChart
                 android:id="@+id/pb_barchart"
                 android:layout_width="match_parent"
@@ -167,7 +204,7 @@
                 android:layout_weight="1"
                 android:paddingStart="0dp"
                 android:paddingEnd="0dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:selectedFont="@font/rb_medium"
                 app:selectedLabelColor="#fff"
                 app:selectedPos="3"
@@ -199,12 +236,21 @@
                 app:unSelectedProgressTextColor="#fff"
                 app:unSelectedProgressTextSize="4sp" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:fontFamily="@font/nunito_bold"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:layout_marginTop="50dp"
+                android:text="Screen Usage"/>
             <com.conzumex.mfmeter.MFMeter
                 android:id="@+id/meter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="visible"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginHorizontal="30dp"
                 app:meterFontFamily="@font/nunito_bold"
                 app:meterSnapSessions="true"
@@ -226,22 +272,33 @@
                 app:rTextShow="true"
                 app:rTextSize="12sp" />
 
-            <com.conzumex.bpprogressbar.BpProgressBar
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:topProgress="124"
-                app:bottomProgress="70"
+                android:textColor="@color/white"
+                android:fontFamily="@font/nunito_bold"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:layout_marginTop="50dp"
+                android:text="Body measurements"/>
+
+            <com.conzumex.bpprogressbar.BpProgressBar
+                android:id="@+id/bp_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:topProgress="165"
+                app:bottomProgress="65"
                 android:layout_marginTop="30dp"
                 android:layout_marginHorizontal="30dp"
                 android:layout_marginBottom="50dp"
-                app:customFont="@font/rb_regular"
+                app:customFont="@font/nunito_bold"
                 app:gapColor="@color/black"
                 app:gapWidth="4dp"
                 app:markerColor="@color/white"
                 app:markerSize="5dp"
                 app:markerWidth="3dp"
                 app:pathColor="@color/gray"
-                app:progressColor="@color/bp_green"
+                app:progressColor="@color/chrome"
                 app:progressPadding="10dp"
                 app:progressWidth="10dp"
                 app:textSize="14sp" />

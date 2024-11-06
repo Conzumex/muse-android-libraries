@@ -177,10 +177,10 @@ public class BpProgressBar extends View {
 
         canvas.drawPaint(paintBg);
         paintText.getTextBounds(textTop,0,textTop.length(),textMeasurer);
-        paintText.getTextBounds(textBottom,0,textTop.length(),textMeasurerBottom);
+        paintText.getTextBounds(textBottom,0,textBottom.length(),textMeasurerBottom);
         textMeasurer.right = Math.max(textMeasurer.right,textMeasurerBottom.right);
         textMeasurer.bottom = Math.max(textMeasurer.bottom,textMeasurerBottom.bottom);
-        paintText.getTextBounds(maxRangeText,0,textTop.length(),textRangeMeasurer);
+        paintText.getTextBounds(maxRangeText,0,maxRangeText.length(),textRangeMeasurer);
         upperTextPosY = textMeasurer.height();
         paintText.setTextAlign(Paint.Align.LEFT);
         canvas.drawText(textTop,0,upperTextPosY,paintText);
@@ -465,6 +465,18 @@ public class BpProgressBar extends View {
      * */
     public void setShowMarker(boolean show){
         showMarker = show;
+    }
+
+    /**Set text on top progress
+     * */
+    public void setTopText(String text){
+        textTop = text;
+    }
+
+    /**Set text on bottom progress
+     * */
+    public void setBottomText(String text){
+        textBottom = text;
     }
 
 }

@@ -21,6 +21,8 @@
     <color name="instagram">#E4405F</color>
     <color name="facebook">#1877F2</color>
     <color name="chrome">#ffa700</color>
+    <color name="charging">#3FCD45</color>
+    <color name="charging_light">#3E2ED534</color>
 
     <array name="gradients">
         <item>#000000</item>

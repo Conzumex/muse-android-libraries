@@ -514,4 +514,16 @@ public class MFMeter extends View {
         paint.setTextAlign(Paint.Align.CENTER);
         return paint;
     }
+
+    public void setColorLogText(int colorLogText) {
+        this.colorLogText = colorLogText;
+    }
+
+    public void setColorLog(int colorLog) {
+        this.colorLog = colorLog;
+    }
+
+    public void setFillBackground(boolean fillBackground) {
+        isFillBackground = fillBackground;
+    }
 }
