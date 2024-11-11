@@ -45,6 +45,7 @@ dependencies {
     implementation project(':circleseekbar')
     implementation project(':stickeyscrollview')
     implementation project(':bpprogressbar')
+    implementation project(':livechart')
 
     implementation 'com.github.amarjain07:StickyScrollView:1.0.3'
 }

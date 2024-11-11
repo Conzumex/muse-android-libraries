@@ -15,6 +15,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.util.Log;
 import android.widget.Button;
@@ -45,6 +46,8 @@ import com.conzumex.charts.listener.OnChartValueSelectedListener;
 import com.conzumex.circleseekbar.CircleSeekBar;
 import com.conzumex.circleseekbar.DropletSeekBar;
 import com.conzumex.circleseekbar.marker.Marker;
+import com.conzumex.livechart.LineType;
+import com.conzumex.livechart.LiveChart;
 import com.conzumex.mfmeter.FuelIcon;
 import com.conzumex.mfmeter.FuelLog;
 import com.conzumex.mfmeter.FuelSession;
@@ -64,6 +67,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -85,6 +89,9 @@ public class MainActivity extends AppCompatActivity {
     LineChart lineChart;
     CircleSeekBar circleSeekBar;
     BpProgressBar bpBar;
+
+    int isLiveAddX = 0;
+    float addDataVal = -1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -301,6 +308,56 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
+        List<Float> yPos = new ArrayList<>();
+        yPos.add(50f);
+
+        LiveChart liveChart = findViewById(R.id.live_chart);
+        liveChart.setLineType(LineType.LINEAR);
+        liveChart.startYData(50f);
+        liveChart.setMinY(0);
+        liveChart.setMaxY(100);
+        Handler mHandler = new Handler();
+        Runnable mRunnable = new Runnable() {
+            @Override
+            public void run() {
+                float lastY= yPos.get(yPos.size()-1);
+                float lastX = yPos.size()-1;
+                if(addDataVal!=-1) {
+                    yPos.add(addDataVal);
+                    addDataVal = -1;
+                }else if(isLiveAddX==0) {
+                    float tempVal = randInt(20,50)+0f;
+                    liveChart.addYData(tempVal);
+                    yPos.add(tempVal);
+                }
+                else {
+                    liveChart.addYData(lastY);
+                    yPos.add(lastY);
+                }
+                isLiveAddX = isLiveAddX>2?0:isLiveAddX+1;
+                if(lastX>100){
+                    liveChart.scrollBy((liveChart.getWidth()/100),0);
+                }
+                mHandler.postDelayed(this,100);
+            }
+        };
+        mHandler.post(mRunnable);
+
+        Handler tempDataHandler = new Handler();
+        Runnable mDataRun = new Runnable() {
+            @Override
+            public void run() {
+                addDataVal = 75f;
+                tempDataHandler.postDelayed(this,5000);
+            }
+        };
+        tempDataHandler.post(mDataRun);
+    }
+
+    public int randInt(int min, int max) {
+        Random rand = new Random();
+        int randomNum = rand.nextInt((max - min) + 1) + min;
+        return randomNum;
     }
 
     String getAppUsageLabel(int value){
