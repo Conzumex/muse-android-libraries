@@ -197,14 +197,15 @@ public class LiveChart extends View {
         chartHeight = (int) (getHeight() - chartPaddingTop - chartPaddingBottom);
         calculateDotValues();
 
-        DataSet dataSet = new DataSet(yPos);
-        if (chartLineType == LineType.LINEAR)
-            canvas.drawPath(getLinearPath(dataSet), mLinePaint);
-        else if (chartLineType == LineType.CUBIC_BEZIER)
-            canvas.drawPath(getBezierPath(dataSet), mLinePaint);
-        else
-            canvas.drawPath(getHorizontalBezierPath(dataSet), mLinePaint);
-
+        if(yPos!=null && !yPos.isEmpty()) {
+            DataSet dataSet = new DataSet(yPos);
+            if (chartLineType == LineType.LINEAR)
+                canvas.drawPath(getLinearPath(dataSet), mLinePaint);
+            else if (chartLineType == LineType.CUBIC_BEZIER)
+                canvas.drawPath(getBezierPath(dataSet), mLinePaint);
+            else
+                canvas.drawPath(getHorizontalBezierPath(dataSet), mLinePaint);
+        }
     }
 
     void calculateDotValues(){

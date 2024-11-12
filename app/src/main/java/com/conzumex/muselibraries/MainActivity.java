@@ -313,9 +313,9 @@ public class MainActivity extends AppCompatActivity {
 
         LiveChart liveChart = findViewById(R.id.live_chart);
         liveChart.setLineType(LineType.LINEAR);
-        liveChart.startYData(50f);
-        liveChart.setMinY(0);
-        liveChart.setMaxY(100);
+//        liveChart.startYData(50f);
+//        liveChart.setMinY(0);
+//        liveChart.setMaxY(100);
         Handler mHandler = new Handler();
         Runnable mRunnable = new Runnable() {
             @Override
@@ -341,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
                 mHandler.postDelayed(this,100);
             }
         };
-        mHandler.post(mRunnable);
+//        mHandler.post(mRunnable);
 
         Handler tempDataHandler = new Handler();
         Runnable mDataRun = new Runnable() {
