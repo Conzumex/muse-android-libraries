@@ -132,15 +132,7 @@ public class LiveChart extends View {
 
     public void startFromEnd(boolean isEndStart){
         this.isEndStart = isEndStart;
-        if(yPos!=null && !yPos.isEmpty()){
-            float tempY = yPos.get(0);
-            float possibleCount = (float) getWidth() /xDot;
-            possibleCount = (possibleCount == (int)possibleCount)?possibleCount:possibleCount+1;
-            Log.d("StartEnd","ps : "+possibleCount+" width "+chartWidth+" xD "+xDot);
-            for(int i=0;i<100;i++){
-                yPos.add(tempY);
-            }
-        }
+        invalidate();
     }
 
     public void setMinY(float minY) {
@@ -202,7 +194,15 @@ public class LiveChart extends View {
         }
 
         if(isEndStart && yPos!=null && yPos.size()==1){
-            calculateSizes();
+            float possibleCount = (float) getWidth() /xDot;
+            float yVal = yPos.get(0);
+            possibleCount = (possibleCount == (int)possibleCount)?possibleCount:possibleCount+1;
+            for(int i=0;i<Math.max(100,possibleCount);i++){
+                yPos.add(yVal);
+            }
+            Log.d("LiveChart","ypos filled"+Math.max(100,possibleCount));
+        }else{
+            Log.d("LiveChart","ypos "+(yPos!=null?yPos.size():-1));
         }
 
         if(centerClipWidth>0) {
@@ -232,14 +232,6 @@ public class LiveChart extends View {
         yDot = chartHeight/range;
         if(xDot==-1)
             xDot = (getWidth() /100) * xPercentage;
-        if(isEndStart && yPos.size()==1){
-            float possibleCount = (float) getWidth() /xDot;
-            float yVal = yPos.get(0);
-            possibleCount = (possibleCount == (int)possibleCount)?possibleCount:possibleCount+1;
-            for(int i=0;i<possibleCount;i++){
-                yPos.add(yVal);
-            }
-        }
     }
 
     Path getLinearPath(DataSet set){
