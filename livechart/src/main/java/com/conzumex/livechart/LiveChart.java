@@ -59,6 +59,7 @@ public class LiveChart extends View {
     int height = 500;
     float chartPaddingTop = 20,chartPaddingBottom = 20;
     int chartHeight;
+    int chartWidth;
     float yDot;
     int xDot=-1;
     int xPercentage = 1;
@@ -126,11 +127,6 @@ public class LiveChart extends View {
     public void startYData(Float yVal){
         yPos = new ArrayList<>();
         yPos.add(yVal);
-        if(isEndStart && yPos.size()==1){
-            for(int i=0;i<100;i++){
-                yPos.add(yVal);
-            }
-        }
         invalidate();
     }
 
@@ -138,6 +134,9 @@ public class LiveChart extends View {
         this.isEndStart = isEndStart;
         if(yPos!=null && !yPos.isEmpty()){
             float tempY = yPos.get(0);
+            float possibleCount = (float) getWidth() /xDot;
+            possibleCount = (possibleCount == (int)possibleCount)?possibleCount:possibleCount+1;
+            Log.d("StartEnd","ps : "+possibleCount+" width "+chartWidth+" xD "+xDot);
             for(int i=0;i<100;i++){
                 yPos.add(tempY);
             }
@@ -225,6 +224,14 @@ public class LiveChart extends View {
         yDot = chartHeight/range;
         if(xDot==-1)
             xDot = (getWidth() /100) * xPercentage;
+        if(isEndStart && yPos.size()==1){
+            float possibleCount = (float) getWidth() /xDot;
+            float yVal = yPos.get(0);
+            possibleCount = (possibleCount == (int)possibleCount)?possibleCount:possibleCount+1;
+            for(int i=0;i<possibleCount;i++){
+                yPos.add(yVal);
+            }
+        }
     }
 
     Path getLinearPath(DataSet set){
