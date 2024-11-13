@@ -2,13 +2,18 @@ package com.conzumex.livechart;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.Region;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -31,21 +36,21 @@ import java.util.List;
  *             @Override<br>
  *             public void run() {<br>
  *                 liveChart.addYData(lastY);<br>
- *                 if(lastX>100){<br>
- *                     liveChart.scrollBy((liveChart.getWidth()/100),0);<br>
- *                 }<br>
+ *                 int difference = (int) ((liveChart.getLastX() + liveChart.getxDot()) - liveChart.getWidth());<br>
+ *                 liveChart.scrollTo(Math.max(0,difference),0);<br>
+ *
  *                 mHandler.postDelayed(this,100);<br>
  *             }<br>
  *         };<br>
  *         mHandler.post(mRunnable);<br>
  *  */
 public class LiveChart extends View {
-    Paint mPaint,mLinePaint,mTextPaint;
+    Paint mPaint,mLinePaint,mTextPaint,mHolePaint;
     List<Float> yPos;
     List<Float> xPos;
     Path tempPath;
     LineType chartLineType = LineType.LINEAR;
-    int colorLine = Color.WHITE;
+    int colorLine = Color.RED;
     int colorBackground = -1;
     float lineWidth = 5;
     float minY=9999,maxY=-1;
@@ -53,8 +58,12 @@ public class LiveChart extends View {
     int height = 500;
     float chartPaddingTop = 20,chartPaddingBottom = 20;
     int chartHeight;
-    float yDot,xDot;
+    float yDot;
+    int xDot=-1;
     int xPercentage = 1;
+    float centerClipWidth = 0;
+    float lastX = 0;
+    boolean isEndStart = true;
 
     public LiveChart(Context context) {
         super(context);
@@ -72,6 +81,7 @@ public class LiveChart extends View {
             lineWidth =  typedArray.getDimension(R.styleable.LiveChart_lineWidth, lineWidth);
             chartPaddingTop =  typedArray.getDimension(R.styleable.LiveChart_topSpacing, chartPaddingTop);
             chartPaddingBottom =  typedArray.getDimension(R.styleable.LiveChart_bottomSpacing, chartPaddingBottom);
+            centerClipWidth =  typedArray.getDimension(R.styleable.LiveChart_centerClipWidth, centerClipWidth);
         }
         mPaint = new Paint();
         mTextPaint = new Paint();
@@ -81,11 +91,12 @@ public class LiveChart extends View {
         mLinePaint.setStyle(Paint.Style.STROKE);
         mLinePaint.setStrokeCap(Paint.Cap.ROUND);
         mLinePaint.setStrokeWidth(lineWidth);
+        mHolePaint = new Paint();
 
         tempPath = new Path();
 
         if(isInEditMode()){
-            colorBackground = Color.BLACK;
+//            colorBackground = Color.BLACK;
             loadDummyData();
         }
     }
@@ -101,17 +112,106 @@ public class LiveChart extends View {
         yPos.add(25f);
         yPos.add(28f);
         yPos.add(10f);
-
-        xPos = new ArrayList<>();
-        xPos.add(0f);
-        xPos.add(1f);
-        xPos.add(2f);
-        xPos.add(3f);
-        xPos.add(4f);
-        xPos.add(5f);
-        xPos.add(6f);
-        xPos.add(7f);
-        xPos.add(8f);
+        yPos.add(24f);
+        yPos.add(20f);
+        yPos.add(22f);
+        yPos.add(30f);
+        yPos.add(25f);
+        yPos.add(28f);
+        yPos.add(10f);
+        yPos.add(24f);
+        yPos.add(20f);
+        yPos.add(22f);
+        yPos.add(30f);
+        yPos.add(25f);
+        yPos.add(28f);
+        yPos.add(10f);
+        yPos.add(24f);
+        yPos.add(20f);
+        yPos.add(22f);
+        yPos.add(30f);
+        yPos.add(25f);
+        yPos.add(28f);
+        yPos.add(10f);
+        yPos.add(30f);
+        yPos.add(25f);
+        yPos.add(28f);
+        yPos.add(10f);
+        yPos.add(24f);
+        yPos.add(20f);
+        yPos.add(22f);
+        yPos.add(30f);
+        yPos.add(25f);
+        yPos.add(28f);
+        yPos.add(10f);
+        yPos.add(24f);
+        yPos.add(20f);
+        yPos.add(22f);
+        yPos.add(30f);
+        yPos.add(25f);
+        yPos.add(28f);
+        yPos.add(10f);
+        yPos.add(24f);
+        yPos.add(20f);
+        yPos.add(22f);
+        yPos.add(30f);
+        yPos.add(25f);
+        yPos.add(28f);
+        yPos.add(10f);
+        yPos.add(30f);
+        yPos.add(24f);
+        yPos.add(20f);
+        yPos.add(22f);
+        yPos.add(30f);
+        yPos.add(25f);
+        yPos.add(28f);
+        yPos.add(10f);
+        yPos.add(24f);
+        yPos.add(20f);
+        yPos.add(22f);
+        yPos.add(30f);
+        yPos.add(25f);
+        yPos.add(28f);
+        yPos.add(10f);
+        yPos.add(24f);
+        yPos.add(20f);
+        yPos.add(22f);
+        yPos.add(30f);
+        yPos.add(25f);
+        yPos.add(28f);
+        yPos.add(10f);
+        yPos.add(24f);
+        yPos.add(20f);
+        yPos.add(22f);
+        yPos.add(30f);
+        yPos.add(25f);
+        yPos.add(28f);
+        yPos.add(10f);
+        yPos.add(30f);
+        yPos.add(25f);
+        yPos.add(28f);
+        yPos.add(10f);
+        yPos.add(24f);
+        yPos.add(20f);
+        yPos.add(22f);
+        yPos.add(30f);
+        yPos.add(25f);
+        yPos.add(28f);
+        yPos.add(10f);
+        yPos.add(24f);
+        yPos.add(20f);
+        yPos.add(22f);
+        yPos.add(30f);
+        yPos.add(25f);
+        yPos.add(28f);
+        yPos.add(10f);
+        yPos.add(24f);
+        yPos.add(20f);
+        yPos.add(22f);
+        yPos.add(30f);
+        yPos.add(25f);
+        yPos.add(28f);
+        yPos.add(10f);
 
 //        minY = 0;
 //        maxY = 40;
@@ -141,7 +241,22 @@ public class LiveChart extends View {
     public void startYData(Float yVal){
         yPos = new ArrayList<>();
         yPos.add(yVal);
+        if(isEndStart && yPos.size()==1){
+            for(int i=0;i<100;i++){
+                yPos.add(yVal);
+            }
+        }
         invalidate();
+    }
+
+    public void startFromEnd(boolean isEndStart){
+        this.isEndStart = isEndStart;
+        if(yPos!=null && !yPos.isEmpty()){
+            float tempY = yPos.get(0);
+            for(int i=0;i<100;i++){
+                yPos.add(tempY);
+            }
+        }
     }
 
     public void setMinY(float minY) {
@@ -169,21 +284,25 @@ public class LiveChart extends View {
         this.xPercentage = xPercentage;
     }
 
-    //    public void startAnimation(Canvas canvas,DataSet dataSetFull){
-//        animPos = 1;
-//        animRunnable = () -> {
-//            DataSet dataSet = dataSetFull.getDataSetSlice(animPos);
-//            if (chartLineType == LineType.LINEAR)
-//                canvas.drawPath(getLinearPath(dataSet), mLineColorPaint);
-//            else if (chartLineType == LineType.CUBIC_BEZIER)
-//                canvas.drawPath(getBezierPath(dataSet), mLineColorPaint);
-//            else
-//                canvas.drawPath(getHorizontalBezierPath(dataSet), mLineColorPaint);
-//            animPos++;
-//            animHandler.postDelayed(animRunnable,animSpeed);
-//        };
-//        animHandler.post(animRunnable);
-//    }
+    public int getxDot() {
+        return xDot;
+    }
+
+    public float getLastX() {
+        return lastX;
+    }
+
+    public void setCenterClipWidth(float centerClipWidth) {
+        this.centerClipWidth = centerClipWidth;
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+
+        chartHeight = (int) (getHeight() - chartPaddingTop - chartPaddingBottom);
+        calculateDotValues();
+    }
 
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
@@ -194,8 +313,10 @@ public class LiveChart extends View {
             canvas.drawPaint(mPaint);
         }
 
-        chartHeight = (int) (getHeight() - chartPaddingTop - chartPaddingBottom);
-        calculateDotValues();
+        if(centerClipWidth>0) {
+            float centerX = Math.max((yPos.size() - 50) * xDot, 50 * xDot);
+            canvas.clipRect(centerX - centerClipWidth, 0, centerX + centerClipWidth, getHeight(), Region.Op.DIFFERENCE);
+        }
 
         if(yPos!=null && !yPos.isEmpty()) {
             DataSet dataSet = new DataSet(yPos);
@@ -208,19 +329,21 @@ public class LiveChart extends View {
         }
     }
 
+
     void calculateDotValues(){
         float range = maxY - minY;
         yDot = chartHeight/range;
-        xDot = ((float) getWidth() /100)*xPercentage;
+        if(xDot==-1)
+            xDot = (getWidth() /100) * xPercentage;
     }
 
     Path getLinearPath(DataSet set){
         tempPath.reset();
-
         if(set.getEntryCount()>0){
-            tempPath.moveTo(0 * xDot,(maxY - set.getYForIndex(0)) * yDot + chartPaddingTop);
+            tempPath.moveTo(0,(maxY - set.getYForIndex(0)) * yDot + chartPaddingTop);
             for(int i=1;i<set.getEntryCount();i++){
                 tempPath.lineTo(i * xDot,(maxY - set.getYForIndex(i)) * yDot + chartPaddingTop);
+                lastX = i*xDot;
             }
         }
         return tempPath;

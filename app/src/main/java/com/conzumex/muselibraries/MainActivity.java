@@ -312,16 +312,17 @@ public class MainActivity extends AppCompatActivity {
         yPos.add(50f);
 
         LiveChart liveChart = findViewById(R.id.live_chart);
+        liveChart.startYData(50f);
         liveChart.setLineType(LineType.LINEAR);
-//        liveChart.startYData(50f);
-//        liveChart.setMinY(0);
-//        liveChart.setMaxY(100);
+        liveChart.setMinY(0);
+        liveChart.setMaxY(100);
         Handler mHandler = new Handler();
         Runnable mRunnable = new Runnable() {
             @Override
             public void run() {
                 float lastY= yPos.get(yPos.size()-1);
                 float lastX = yPos.size()-1;
+                float chartLastX = liveChart.getLastX();
                 if(addDataVal!=-1) {
                     yPos.add(addDataVal);
                     addDataVal = -1;
@@ -335,19 +336,21 @@ public class MainActivity extends AppCompatActivity {
                     yPos.add(lastY);
                 }
                 isLiveAddX = isLiveAddX>2?0:isLiveAddX+1;
-                if(lastX>100){
-                    liveChart.scrollBy((liveChart.getWidth()/100),0);
-                }
+                int difference = (int) ((liveChart.getLastX() + liveChart.getxDot()) - liveChart.getWidth());
+                liveChart.scrollTo(Math.max(0,difference),0);
+//                Log.d("XDo","live X "+liveChart.getxDot()+" drawn "+(lastX*liveChart.getxDot()+" width "+liveChart.getWidth())+" lastX "+chartLastX+" diffe "+difference);
+                mHandler.removeCallbacksAndMessages(null);
                 mHandler.postDelayed(this,100);
             }
         };
-//        mHandler.post(mRunnable);
+        mHandler.post(mRunnable);
 
         Handler tempDataHandler = new Handler();
         Runnable mDataRun = new Runnable() {
             @Override
             public void run() {
                 addDataVal = 75f;
+                Log.d("Add","Added 75");
                 tempDataHandler.postDelayed(this,5000);
             }
         };
