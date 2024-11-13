@@ -62,7 +62,7 @@ public class LiveChart extends View {
     float yDot;
     int xDot=-1;
     int xPercentage = 1;
-    float centerClipWidth = 0;
+    float centerClipWidth = 150;
     float lastX = 0;
     boolean isEndStart = true;
 
@@ -201,8 +201,11 @@ public class LiveChart extends View {
         if(centerClipWidth>0) {
             float width = getWidth();
             float possibleCount = width/xDot;
-            float centerXCount = (possibleCount/2)*xDot;
+            float centerXCount = (yPos.size()-(possibleCount/2))*xDot;
             canvas.clipRect(centerXCount - centerClipWidth, 0, centerXCount + centerClipWidth, getHeight(), Region.Op.DIFFERENCE);
+//            float centerX = (getWidth()/2);
+//            canvas.drawRect(centerX - centerClipWidth-1, 0, centerX + centerClipWidth+1, 500, mDebugPaint);
+//            printDebug(canvas,"cex "+centerX+" xco "+centerXCount+" s "+yPos.size());
         }
 
         if(yPos!=null && !yPos.isEmpty()) {
@@ -364,7 +367,6 @@ public class LiveChart extends View {
         yPos.add(20f);
         yPos.add(22f);
         yPos.add(30f);
-        yPos.add(25f);
         yPos.add(28f);
         yPos.add(10f);
         yPos.add(24f);
