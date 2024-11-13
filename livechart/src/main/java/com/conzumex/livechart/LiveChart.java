@@ -183,8 +183,12 @@ public class LiveChart extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        calculateSizes();
+    }
 
+    void calculateSizes(){
         chartHeight = (int) (getHeight() - chartPaddingTop - chartPaddingBottom);
+        chartWidth = getWidth();
         calculateDotValues();
     }
 
@@ -195,6 +199,10 @@ public class LiveChart extends View {
         if(colorBackground!=-1){
             mPaint.setColor(colorBackground);
             canvas.drawPaint(mPaint);
+        }
+
+        if(isEndStart && yPos!=null && yPos.size()==1){
+            calculateSizes();
         }
 
         if(centerClipWidth>0) {
