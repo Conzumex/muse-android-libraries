@@ -336,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
                     yPos.add(lastY);
                 }
                 isLiveAddX = isLiveAddX>2?0:isLiveAddX+1;
-                int difference = (int) ((liveChart.getLastX() + liveChart.getxDot()) - liveChart.getWidth());
+                int difference = (int) ((chartLastX + liveChart.getxDot()) - liveChart.getWidth());
                 liveChart.scrollTo(Math.max(0,difference),0);
 //                Log.d("XDo","live X "+liveChart.getxDot()+" drawn "+(lastX*liveChart.getxDot()+" width "+liveChart.getWidth())+" lastX "+chartLastX+" diffe "+difference);
                 mHandler.removeCallbacksAndMessages(null);
