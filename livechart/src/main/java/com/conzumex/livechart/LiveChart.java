@@ -208,7 +208,7 @@ public class LiveChart extends View {
         if(centerClipWidth>0) {
             float width = getWidth();
             float possibleCount = width/xDot;
-            float centerXCount = (yPos.size()-(possibleCount/2))*xDot;
+            float centerXCount = yPos!=null?(yPos.size()-(possibleCount/2))*xDot:width/2;
             canvas.clipRect(centerXCount - centerClipWidth, 0, centerXCount + centerClipWidth, getHeight(), Region.Op.DIFFERENCE);
 //            float centerX = (getWidth()/2);
 //            canvas.drawRect(centerX - centerClipWidth-1, 0, centerX + centerClipWidth+1, 500, mDebugPaint);
