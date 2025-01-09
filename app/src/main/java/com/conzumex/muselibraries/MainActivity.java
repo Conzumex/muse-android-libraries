@@ -154,10 +154,10 @@ public class MainActivity extends AppCompatActivity {
 
         DropletSeekBar dropletSeekBar = findViewById(R.id.seekbar_drops);
         dropletSeekBar.setProgressColor(Color.RED);
-        dropletSeekBar.setProgressGradient(new int[]{Color.parseColor("#F45B4D"),
-                Color.parseColor("#F2FFBE"),
-                Color.parseColor("#50C399")
-        });
+//        dropletSeekBar.setProgressGradient(new int[]{Color.parseColor("#F45B4D"),
+//                Color.parseColor("#F2FFBE"),
+//                Color.parseColor("#50C399")
+//        });
         dropletSeekBar.setProgress(0);
 
         loadStress(dropletSeekBar);

@@ -25,8 +25,8 @@
     <color name="charging_light">#3E2ED534</color>
 
     <array name="gradients">
-        <item>#000000</item>
-        <item>#E65100</item>
-        <item>@color/colorPrimary</item>
+        <item>#FF2828</item>
+<!--        <item>#FFE646</item>-->
+        <item>#09C6FF</item>
     </array>
 </resources>

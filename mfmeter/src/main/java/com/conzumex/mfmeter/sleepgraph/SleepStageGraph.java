@@ -75,7 +75,7 @@ public class SleepStageGraph extends View {
     float prevBarLineY = -1,prevBarLineX = -1;
     int prevBarColor = -1;
     RectF rectSquare;
-    int colorBackground = Color.parseColor("#000000");
+    int colorBackground = Color.parseColor("#00000000");
     int colorXAxis = Color.parseColor("#ffffff");
     int colorXLabel = Color.parseColor("#707070");
     int colorYLabel = Color.parseColor("#707070");
@@ -183,10 +183,10 @@ public class SleepStageGraph extends View {
         chartWidth = parentViewWidth-axisSpace;
         chartHeight = parentViewHeight-axisSpace;
 
-        if(isInEditMode()) {
-            int tempHeight = 700;
-            chartHeight = tempHeight - 100;
-        }
+//        if(isInEditMode()) {
+//            int tempHeight = 700;
+//            chartHeight = tempHeight - 100;
+//        }
         chartGraphHeight = chartHeight - chartOffsetTop;
         chartGraphWidth = chartWidth - chartOffsetH - chartPaddingH;
         chartGraphStartX = (yAXisDirection==Direction.LEFT?axisSpace:0) + (chartOffsetH/2) + (chartPaddingH/2);
@@ -291,9 +291,9 @@ public class SleepStageGraph extends View {
         entries.add(new SleepEntry(0,2));
 //        entries.add(new SleepEntry(3,1));
         entries.add(new SleepEntry(4,3));
-        entries.add(new SleepEntry(6,2));
-        entries.add(new SleepEntry(7,0));
-        entries.add(new SleepEntry(8,2,9));
+        entries.add(new SleepEntry(6,2,8));
+        entries.add(new SleepEntry(12,0));
+        entries.add(new SleepEntry(14,2,16));
         touchX = 300;
     }
 
@@ -352,7 +352,7 @@ public class SleepStageGraph extends View {
             float endX = entries.get(i).xValueClose!=-1?(entries.get(i).xValueClose * xDotValue)+chartGraphStartX:chartGraphEndX;
 //            endX = (8*xDotValue)+chartGraphStartX;
             xValues.put(entries.get(i).xValue,startX);
-            if(i!=entries.size()-1) endX = getXPos(XPos.VALUE_X_POS,entries.get(i+1).xValue*xDotValue);
+            if(entries.get(i).xValueClose==-1) endX = getXPos(XPos.VALUE_X_POS,entries.get(i+1).xValue*xDotValue);
             if(i!=entries.size()-1) xValues.put(entries.get(i).xValue,endX);
             mPaint.setColor(colorTemp);
             float yPos = (entries.get(i).yValue + 1) * yDotValue;
@@ -392,7 +392,10 @@ public class SleepStageGraph extends View {
                 canvas.drawLine(lineX,prevBarLineY,lineX,yPos,mLinePaint);
             }
 
-            prevBarLineY = yPos;
+            if(entries.get(i).xValueClose==-1)
+                prevBarLineY = yPos;
+            else
+                prevBarLineY = -1;
             prevBarLineX = endX;
             prevBarColor = barColor;
         }
