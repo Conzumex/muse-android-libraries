@@ -352,7 +352,7 @@ public class SleepStageGraph extends View {
             float endX = entries.get(i).xValueClose!=-1?(entries.get(i).xValueClose * xDotValue)+chartGraphStartX:chartGraphEndX;
 //            endX = (8*xDotValue)+chartGraphStartX;
             xValues.put(entries.get(i).xValue,startX);
-            if(entries.get(i).xValueClose==-1) endX = getXPos(XPos.VALUE_X_POS,entries.get(i+1).xValue*xDotValue);
+            if(entries.get(i).xValueClose==-1 && i!=entries.size()-1) endX = getXPos(XPos.VALUE_X_POS,entries.get(i+1).xValue*xDotValue);
             if(i!=entries.size()-1) xValues.put(entries.get(i).xValue,endX);
             mPaint.setColor(colorTemp);
             float yPos = (entries.get(i).yValue + 1) * yDotValue;
@@ -633,6 +633,8 @@ public class SleepStageGraph extends View {
                 if (entries.get(i).xValue <= xValue && entries.get(i).xValueClose >= xValue) {
                     selectedEntry = entries.get(i);
                     break;
+                }else if (entries.get(i).xValue <= xValue && entries.get(i).xValueClose < xValue) {
+                    return null;
                 }
             }
         }

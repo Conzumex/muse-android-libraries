@@ -233,9 +233,9 @@ public class MainActivity extends AppCompatActivity {
         sleepEntries.add(new SleepEntry(3,1));
         sleepEntries.add(new SleepEntry(4,3));
         sleepEntries.add(new SleepEntry(5,0));
-        sleepEntries.add(new SleepEntry(6,2));
-        sleepEntries.add(new SleepEntry(7,1));
-        sleepEntries.add(new SleepEntry(8,3));
+        sleepEntries.add(new SleepEntry(6,2,8));
+        sleepEntries.add(new SleepEntry(10,1));
+        sleepEntries.add(new SleepEntry(13,3,17));
         sleepGraph.loadData(sleepEntries);
         sleepGraph.setLabelXFormatter(value -> ((int)value)+" am");
         sleepGraph.setColorRanges(new int[]{getColor(R.color.instagram),getColor(R.color.facebook),getColor(R.color.chrome),getColor(R.color.whatsapp)});
@@ -254,8 +254,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public CharSequence[] getVal(SleepEntry entry, float x) {
                 CharSequence[] vals = new CharSequence[2];
-                vals[0] = Html.fromHtml("<font color='"+getAppUsageLabelColor((int) entry.yValue)+"'>"+getAppUsageLabel((int) entry.yValue)+"</font>");
-                vals[1] = Html.fromHtml((int)entry.xValue+" am");
+                if(entry!=null) {
+                    vals[0] = Html.fromHtml("<font color='" + getAppUsageLabelColor((int) entry.yValue) + "'>" + getAppUsageLabel((int) entry.yValue) + "</font>");
+                    vals[1] = Html.fromHtml((int) entry.xValue + " am");
+                }
                 return vals;
             }
         };
