@@ -62,11 +62,13 @@ import com.conzumex.progressbar.charts.ProgressBarGraphChart;
 import com.conzumex.progressbar.charts.ProgressRoundGraphChart;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -226,18 +228,26 @@ public class MainActivity extends AppCompatActivity {
 //        loadChart();
 
         List<SleepEntry> sleepEntries = new ArrayList<>();
-        sleepEntries.add(new SleepEntry(0,0));
+        sleepEntries.add(new SleepEntry(0,3.0f));
 //        sleepEntries.add(new SleepEntry(120,3,240));
-        sleepEntries.add(new SleepEntry(1,3));
-        sleepEntries.add(new SleepEntry(2,2));
-        sleepEntries.add(new SleepEntry(3,1));
-        sleepEntries.add(new SleepEntry(4,3));
-        sleepEntries.add(new SleepEntry(5,0));
-        sleepEntries.add(new SleepEntry(6,2,8));
-        sleepEntries.add(new SleepEntry(10,1));
-        sleepEntries.add(new SleepEntry(13,3,17));
+        sleepEntries.add(new SleepEntry(120,1));
+        sleepEntries.add(new SleepEntry(240,0));
+        sleepEntries.add(new SleepEntry(1440,1));
+        sleepEntries.add(new SleepEntry(1680,0));
+        sleepEntries.add(new SleepEntry(1920,1));
+        sleepEntries.add(new SleepEntry(2760,3));
+        sleepEntries.add(new SleepEntry(2880,1));
+        sleepEntries.add(new SleepEntry(3120,3));
+        sleepEntries.add(new SleepEntry(3240,1));
+        sleepEntries.add(new SleepEntry(3360,1));
+        sleepEntries.add(new SleepEntry(5881,0));
+        sleepEntries.add(new SleepEntry(6121,1));
+        sleepEntries.add(new SleepEntry(7801,0));
+        sleepEntries.add(new SleepEntry(8041,1));
+        sleepEntries.add(new SleepEntry(8281,0,8521));
         sleepGraph.loadData(sleepEntries);
-        sleepGraph.setLabelXFormatter(value -> ((int)value)+" am");
+        sleepGraph.setMaxXvalue(8521);
+//        sleepGraph.setLabelXFormatter(value -> ((int)value)+" am");
         sleepGraph.setColorRanges(new int[]{getColor(R.color.instagram),getColor(R.color.facebook),getColor(R.color.chrome),getColor(R.color.whatsapp)});
         sleepGraph.setOffsetTop(100);
         sleepGraph.setAxisSpace(150);
@@ -270,6 +280,18 @@ public class MainActivity extends AppCompatActivity {
         });
         sleepGraph.setFontFace(ResourcesCompat.getFont(this, R.font.rb_medium));
         sleepGraph.setEmptyText("Nothing entered");
+        sleepGraph.setMinXvalue(-100);
+        sleepGraph.enbleYGridLine(true);
+        Date startDate = new Date();
+//        sleepGraph.setLabelXFormatter(new SleepStageGraph.labelFormatX() {
+//            @Override
+//            public String getLabel(float value) {
+//                int seconds = (int) value;
+//                Date xAxisDate = addFieldToDate(startDate, Calendar.SECOND, seconds);
+//                SimpleDateFormat sdfYmdSlash = new SimpleDateFormat("hh:mm aa", Locale.ENGLISH);
+//                return sdfYmdSlash.format(xAxisDate);
+//            }
+//        });
 //        sleepGraph.setMaxXvalue(20);
 
 
@@ -1024,4 +1046,10 @@ public class MainActivity extends AppCompatActivity {
         return new Entry(x,resultY);
     }
 
+    public Date addFieldToDate(Date date, int field, int value) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(field, value);
+        return c.getTime();
+    }
 }

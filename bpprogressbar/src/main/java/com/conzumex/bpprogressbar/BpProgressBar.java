@@ -111,6 +111,15 @@ public class BpProgressBar extends View {
         textMeasurerBottom = new Rect();
         textRangeMeasurer = new Rect();
 
+//        if(isInEditMode()){
+//            topProgress=0;
+//            bottomProgress=0;
+//        }
+
+    }
+
+    void setPaintsPaths(){
+
         //path
         paintPath.setColor(colorPath);
         paintPath.setStrokeWidth(lineWidth);
@@ -136,12 +145,6 @@ public class BpProgressBar extends View {
         paintText.setTextSize(textSize);
         if(fontFace!=null)
             paintText.setTypeface(fontFace);
-
-//        if(isInEditMode()){
-//            topProgress=0;
-//            bottomProgress=0;
-//        }
-
     }
 
     int calculateHeight(){
@@ -174,6 +177,8 @@ public class BpProgressBar extends View {
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
+
+        setPaintsPaths();
 
         canvas.drawPaint(paintBg);
         paintText.getTextBounds(textTop,0,textTop.length(),textMeasurer);

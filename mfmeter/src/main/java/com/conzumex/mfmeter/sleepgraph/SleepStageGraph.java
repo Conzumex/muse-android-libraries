@@ -105,6 +105,8 @@ public class SleepStageGraph extends View {
     boolean drawViewEndBorder = true;
     boolean setMarkerTop = false;
     boolean showMarkerAlways = true;
+    //(beta)to get the edge label size when divide space for labels
+    boolean saveEdgeLabelWidth = false;
     int markerLayout = R.layout.marker_default;
     MarkerFormatter markerFormatter;
     ChartListener mClickListener;
@@ -465,7 +467,9 @@ public class SleepStageGraph extends View {
         Rect startTextBounds = new Rect();
         labelPaint.getTextBounds(labelXFormatter.getLabel(xValueStart), 0, labelXFormatter.getLabel(xValueStart).length(), startTextBounds);
 
-        float labelAvailableSpace = chartGraphWidth - (endTextBounds.width()*edgeLabelOffset) - (startTextBounds.width()*edgeLabelOffset);
+        float labelAvailableSpace = chartGraphWidth;
+        if(saveEdgeLabelWidth)
+            labelAvailableSpace = chartGraphWidth - (endTextBounds.width()*edgeLabelOffset) - (startTextBounds.width()*edgeLabelOffset);
 
         //lessing by 1 for count the labels for inside the last and first labels
         float xLabelCountsInside = (labelAvailableSpace/xDotValue)-1;
@@ -932,6 +936,13 @@ public class SleepStageGraph extends View {
      * default is : 50*/
     public void setChartPaddingH(int padding) {
         this.chartPaddingH = padding;
+    }
+
+    /** (beta)set chart Edge lable width saving when dividing for lablels
+     *
+     * default is : false*/
+    public void setSaveEdgeLabelWidth(boolean isSave) {
+        this.saveEdgeLabelWidth = isSave;
     }
 
     @Override
