@@ -1058,6 +1058,31 @@ public class SleepStageRangeGraph extends View {
         });
         animatorEnd.start();
     }
+    /** To animate the current showing range's end to new range
+     **/
+    public static void AnimateRangeEnd(SleepStageRangeGraph graph,float newRangeEnd, long duration){
+        float tempEndX = graph.rangeEndX;
+        tempEndX=tempEndX==-1?graph.maxXvalue:tempEndX;
+        ValueAnimator animatorEnd = ValueAnimator.ofFloat(tempEndX,newRangeEnd);
+        animatorEnd.setDuration(duration);
+        animatorEnd.addUpdateListener(animatorEnd1 -> {
+            float changes = (float) animatorEnd1.getAnimatedValue();
+            graph.setEndRangeX(changes);
+        });
+        animatorEnd.start();
+    }
+
+    /** To animate the current showing range's start to new range
+     **/
+    public static void AnimateRangeStart(SleepStageRangeGraph graph,float newRangeStart, long duration){
+        ValueAnimator animatorStart = ValueAnimator.ofFloat(graph.rangeStartX,newRangeStart);
+        animatorStart.setDuration(duration);
+        animatorStart.addUpdateListener(animatorStart1 -> {
+            float changes = (float) animatorStart1.getAnimatedValue();
+            graph.setStartRangeX(changes);
+        });
+        animatorStart.start();
+    }
 
     @Override
     public void invalidate() {
