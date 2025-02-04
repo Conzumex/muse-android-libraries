@@ -55,6 +55,7 @@ import com.conzumex.mfmeter.MFMeter;
 import com.conzumex.mfmeter.progressbar.RoundedProgress;
 import com.conzumex.mfmeter.sleepgraph.SleepEntry;
 import com.conzumex.mfmeter.sleepgraph.SleepStageGraph;
+import com.conzumex.mfmeter.sleepgraph.SleepStageRangeGraph;
 import com.conzumex.progressbar.ProgressTextFormatter;
 import com.conzumex.progressbar.RoundedProgressBar;
 import com.conzumex.progressbar.RoundedProgressBarVertical;
@@ -88,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
     RoundedCombinedChart roundCandle;
     SleepStageGraph sleepGraph;
+    SleepStageRangeGraph sleepGraphRange;
     LineChart lineChart;
     CircleSeekBar circleSeekBar;
     BpProgressBar bpBar;
@@ -121,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
         roundCandle = findViewById(R.id.barchart);
         sleepGraph = findViewById(R.id.sleep_graph);
+        sleepGraphRange = findViewById(R.id.sleep_graph_range);
         RoundedProgress rpBar = findViewById(R.id.pb_outer);
         rpBar.setValueFormatter(progress -> {
             if(progress>50)
@@ -282,6 +285,22 @@ public class MainActivity extends AppCompatActivity {
         sleepGraph.setEmptyText("Nothing entered");
         sleepGraph.setMinXvalue(-100);
         sleepGraph.enbleYGridLine(true);
+
+        List<SleepEntry> rangeEntries = new ArrayList<>();
+        rangeEntries.add(new SleepEntry(0,2));
+//        rangeEntries.add(new SleepEntry(3,1));
+        rangeEntries.add(new SleepEntry(4,3));
+        rangeEntries.add(new SleepEntry(6,2,8));
+        rangeEntries.add(new SleepEntry(12,0));
+        rangeEntries.add(new SleepEntry(14,2,16));
+
+        sleepGraphRange.loadData(rangeEntries);
+        sleepGraphRange.setRangeX(4,8);
+//        sleepGraphRange.setMaxXvalue(8521);
+        new Handler().postDelayed(()->{
+            SleepStageRangeGraph.AnimateRanges(sleepGraphRange,5,11,1000);
+        },2000);
+
         Date startDate = new Date();
 //        sleepGraph.setLabelXFormatter(new SleepStageGraph.labelFormatX() {
 //            @Override
