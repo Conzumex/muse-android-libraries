@@ -295,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
         rangeEntries.add(new SleepEntry(14,2,16));
 
         sleepGraphRange.loadData(rangeEntries);
-//        sleepGraphRange.setRangeX(4,8);
+        sleepGraphRange.setRangeX(0,16);
         sleepGraphRange.setTextSize(30);
 //        sleepGraphRange.setMaxXvalue(8521);
         new Handler().postDelayed(()->{

@@ -311,8 +311,8 @@ public class SleepStageRangeGraph extends View {
         entries.add(new SleepEntry(12,0));
         entries.add(new SleepEntry(14,2,16));
         touchX = 300;
-        rangeEndX = 7;
-        rangeStartX = 3;
+        rangeEndX = 16;
+        rangeStartX = 0;
     }
 
     void drawGraphEdges(Canvas canvas){
@@ -509,8 +509,8 @@ public class SleepStageRangeGraph extends View {
         if(rangeStartX==-1||rangeEndX==-1)
             return;
 
-        float rangeStartXDot = rangeStartX * xDotValue;
-        float rangeEndXDot = rangeEndX * xDotValue;
+        float rangeStartXDot = getXPos(XPos.VALUE_X_POS,rangeStartX * xDotValue);
+        float rangeEndXDot = getXPos(XPos.VALUE_X_POS,rangeEndX * xDotValue);
 
         int chartRangeTopMax = 0+chartOffsetTop - (rangeIconSize/2);
         canvas.drawLine(rangeStartXDot,chartHeight,rangeStartXDot,chartRangeTopMax,mRangePaint);
