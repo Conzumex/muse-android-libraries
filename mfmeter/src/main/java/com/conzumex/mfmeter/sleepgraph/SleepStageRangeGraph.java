@@ -37,6 +37,7 @@ public class SleepStageRangeGraph extends View {
     int chartWidth,chartHeight;
     float chartValueMinx, chartValueMaxX;
     int axisSpace = 10;
+    int axisSpaceX = 10;
     int chartOffsetV = 0,chartOffsetH = 20;
     int chartOffsetTop = 0;
     int rangeIconPadding = 10;
@@ -190,14 +191,14 @@ public class SleepStageRangeGraph extends View {
         parentViewWidth = getWidth();
         parentViewHeight = getHeight();
         chartWidth = parentViewWidth-axisSpace;
-        chartHeight = parentViewHeight-axisSpace;
+        chartHeight = (int) (parentViewHeight-axisSpaceX-textSize);
 
-        if(isInEditMode()) {
-            int tempHeight = 700;
-            chartHeight = tempHeight - 100;
-            colorBackground = Color.BLACK;
-            enableGridY = true;
-        }
+//        if(isInEditMode()) {
+//            int tempHeight = 700;
+//            chartHeight = tempHeight - 100;
+//            colorBackground = Color.BLACK;
+//            enableGridY = true;
+//        }
 
         chartGraphHeight = chartHeight - chartOffsetTop;
         chartGraphWidth = chartWidth - chartOffsetH - chartPaddingH;
@@ -439,28 +440,11 @@ public class SleepStageRangeGraph extends View {
     }
 
     void drawLabels(Canvas canvas){
-        labelPaint.setColor(colorTemp);
-        if(yAXisDirection == Direction.RIGHT)
-            labelPaint.setTextAlign(Paint.Align.LEFT);
-        else
-            labelPaint.setTextAlign(Paint.Align.RIGHT);
-        labelPaint.setTextSize(textSize);
-        Set<Float> yVals = SleepEntry.yValsUnique(minYvalue,maxYvalue,yGranularity);
-        labelPaint.setColor(colorYLabel);
-//        for(Float yVal : yVals){
-//            float yPos = (yVal + 1) * yDotValue;
-//            yPos = yPos +chartGraphStartY - chartOffsetTop;
-//            float labelVal = (yPos/yDotValue)-1;
-//            yPos = yPos - (yDotValue/2);
-//            yPos = chartHeight - yPos;
-//            if(changeLabelColors)
-//                labelPaint.setColor(getPosColor((int)labelVal));
-//            canvas.drawText(labelYFormatter.getLabel(labelVal),getXPos(XPos.YAXIS_LABEL),yPos+(textSize/2),labelPaint);
-//        }
-
         //for x labels
+        labelPaint.setTextSize(textSize);
         labelPaint.setColor(colorXLabel);
         gridPaint.setColor(gridYColor);
+        Log.d("SlRange","called");
         float xLabelInterval = (chartGraphWidth)/labelCount;
         //for the edge lines
         float startGridXpos = getXPos(XPos.GRID_X_START);
@@ -477,7 +461,7 @@ public class SleepStageRangeGraph extends View {
             labelPaint.setColor(colorEdgeHighlight);
         }
         float xValueStart = 0;
-        canvas.drawText(labelXFormatter.getLabel(xValueStart),getXPos(XPos.EDGE_LABEL_START),chartGraphEndY-chartOffsetTop + 50,labelPaint);
+        canvas.drawText(labelXFormatter.getLabel(xValueStart),getXPos(XPos.EDGE_LABEL_START),chartHeight+axisSpaceX+textSize,labelPaint);
 
         labelPaint.setTextAlign(setEdgeLabelAligned?Paint.Align.RIGHT:Paint.Align.CENTER);
         if(highlightEdgeValues) {
@@ -485,8 +469,9 @@ public class SleepStageRangeGraph extends View {
             labelPaint.setColor(colorEdgeHighlight);
         }
         float xValueEnd = chartGraphWidth/xDotValue;
-        canvas.drawText(labelXFormatter.getLabel(xValueEnd),getXPos(XPos.EDGE_LABEL_END),chartGraphEndY-chartOffsetTop + 50,labelPaint);
+        canvas.drawText(labelXFormatter.getLabel(xValueEnd),getXPos(XPos.EDGE_LABEL_END),chartHeight+axisSpaceX+textSize,labelPaint);
 
+        Log.d("SlRange","lable");
         Rect endTextBounds = new Rect();
         labelPaint.getTextBounds(labelXFormatter.getLabel(xValueEnd), 0, labelXFormatter.getLabel(xValueEnd).length(), endTextBounds);
         Rect startTextBounds = new Rect();
@@ -502,6 +487,7 @@ public class SleepStageRangeGraph extends View {
         labelPaint.setColor(colorXLabel);
         labelPaint.setTypeface(Typeface.create(fontFace, Typeface.NORMAL));
 
+        Log.d("SlRange","lable2");
         float pointValLabel = xLabelCountsInside/labelCount;
         for(int i=0;i<labelCount;i++){
             float indexAvg = pointValLabel * (i+1);
@@ -512,9 +498,10 @@ public class SleepStageRangeGraph extends View {
             gridXpos = gridXpos - getXAdjust(indexBal);
             if(enableGridY)
                 canvas.drawLine(gridXpos,chartHeight,gridXpos,0+chartOffsetTop,gridPaint);
-            canvas.drawText(labelXFormatter.getLabel(roundPos),gridXpos,chartGraphEndY -chartOffsetTop+ 50,labelPaint);
+            canvas.drawText(labelXFormatter.getLabel(roundPos),gridXpos,chartHeight+axisSpaceX+textSize ,labelPaint);
         }
 
+        Log.d("SlRange","lable3");
         gridPaint.setPathEffect(null);
     }
 
@@ -940,11 +927,18 @@ public class SleepStageRangeGraph extends View {
     public void setColorRanges(int[] colors){
         this.colorRanges = colors;
     }
-    /** set Xaxis label space.
+    /** set yaxis label space.
      *
      * default is 100*/
     public void setAxisSpace(int width){
         this.axisSpace = width;
+    }
+
+    /** set Xaxis label space.
+     *
+     * default is 10*/
+    public void setXAxisSpace(int width){
+        this.axisSpaceX = width;
     }
     /** set Xaxis label count.
      *
@@ -999,22 +993,52 @@ public class SleepStageRangeGraph extends View {
         this.saveEdgeLabelWidth = isSave;
     }
 
+    /** Set Range start and end to show highlighted in range graph
+     **/
     public void setRangeX(float start, float end){
         rangeStartX=start;
         rangeEndX=end;
         invalidate();
     }
 
+    /** Set Range start for showing highlighted in range graph
+     **/
     public void setStartRangeX(float range){
         rangeStartX=range;
         invalidate();
     }
 
+    /** Set Range end for showing highlighted in range graph
+     **/
     public void setEndRangeX(float range){
         rangeEndX=range;
         invalidate();
     }
 
+    /** Set Range Start icon drawable for showing top of range highlighted line
+     **/
+    public void setRangeStartIcon(int icon){
+        rangeStartIcon=icon;
+    }
+
+    /** Set Range End icon drawable for showing top of range highlighted line
+     **/
+    public void setRangeEndIcon(int icon){
+        rangeEndIcon=icon;
+    }
+
+    /** set the range line color */
+    public void setColorRangeLine(@ColorInt int value){
+        this.rangeLineColor = value;
+    }
+
+    /** set the range line width */
+    public void setRangeLineWidth(float value){
+        this.rangeLineWidth = value;
+    }
+
+    /** To animate the current showing range to new range
+     **/
     public static void AnimateRanges(SleepStageRangeGraph graph,float newRangeStart, float newRangeEnd, long duration){
         ValueAnimator animatorStart = ValueAnimator.ofFloat(graph.rangeStartX,newRangeStart);
         animatorStart.setDuration(duration);
@@ -1024,7 +1048,9 @@ public class SleepStageRangeGraph extends View {
         });
         animatorStart.start();
 
-        ValueAnimator animatorEnd = ValueAnimator.ofFloat(graph.rangeEndX,newRangeEnd);
+        float tempEndX = graph.rangeEndX;
+        tempEndX=tempEndX==-1?graph.maxXvalue:tempEndX;
+        ValueAnimator animatorEnd = ValueAnimator.ofFloat(tempEndX,newRangeEnd);
         animatorEnd.setDuration(duration);
         animatorEnd.addUpdateListener(animatorEnd1 -> {
             float changes = (float) animatorEnd1.getAnimatedValue();
