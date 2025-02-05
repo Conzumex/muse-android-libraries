@@ -250,7 +250,13 @@ public class MainActivity extends AppCompatActivity {
         sleepEntries.add(new SleepEntry(8281,0,8521));
         sleepGraph.loadData(sleepEntries);
         sleepGraph.setMaxXvalue(8521);
-//        sleepGraph.setLabelXFormatter(value -> ((int)value)+" am");
+        Date startDate2 = new Date();
+        sleepGraph.setLabelXFormatter(value -> {
+            int seconds = (int) value;
+            Date xAxisDate = addFieldToDate(startDate2, Calendar.SECOND, seconds);
+            SimpleDateFormat sdfYmdSlash = new SimpleDateFormat("hh:mm aa", Locale.ENGLISH);
+            return sdfYmdSlash.format(xAxisDate);
+        });
         sleepGraph.setColorRanges(new int[]{getColor(R.color.instagram),getColor(R.color.facebook),getColor(R.color.chrome),getColor(R.color.whatsapp)});
         sleepGraph.setOffsetTop(100);
         sleepGraph.setAxisSpace(150);
@@ -303,15 +309,15 @@ public class MainActivity extends AppCompatActivity {
         },2000);
 
         Date startDate = new Date();
-//        sleepGraph.setLabelXFormatter(new SleepStageGraph.labelFormatX() {
-//            @Override
-//            public String getLabel(float value) {
-//                int seconds = (int) value;
-//                Date xAxisDate = addFieldToDate(startDate, Calendar.SECOND, seconds);
-//                SimpleDateFormat sdfYmdSlash = new SimpleDateFormat("hh:mm aa", Locale.ENGLISH);
-//                return sdfYmdSlash.format(xAxisDate);
-//            }
-//        });
+        sleepGraphRange.setLabelXFormatter(new SleepStageRangeGraph.labelFormatX() {
+            @Override
+            public String getLabel(float value) {
+                int seconds = (int) value;
+                Date xAxisDate = addFieldToDate(startDate, Calendar.SECOND, seconds);
+                SimpleDateFormat sdfYmdSlash = new SimpleDateFormat("hh:mm aa", Locale.ENGLISH);
+                return sdfYmdSlash.format(xAxisDate);
+            }
+        });
 //        sleepGraph.setMaxXvalue(20);
 
 

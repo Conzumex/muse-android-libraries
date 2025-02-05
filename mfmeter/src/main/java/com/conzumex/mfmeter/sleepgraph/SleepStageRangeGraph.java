@@ -460,22 +460,29 @@ public class SleepStageRangeGraph extends View {
             labelPaint.setTypeface(Typeface.create(fontFace, Typeface.BOLD));
             labelPaint.setColor(colorEdgeHighlight);
         }
+
         float xValueStart = 0;
-        canvas.drawText(labelXFormatter.getLabel(xValueStart),getXPos(XPos.EDGE_LABEL_START),chartHeight+axisSpaceX+textSize,labelPaint);
+        float xValueEnd = chartGraphWidth/xDotValue;
+        Rect endTextBounds = new Rect();
+        labelPaint.getTextBounds(labelXFormatter.getLabel(xValueEnd), 0, labelXFormatter.getLabel(xValueEnd).length(), endTextBounds);
+        Rect startTextBounds = new Rect();
+        labelPaint.getTextBounds(labelXFormatter.getLabel(xValueStart), 0, labelXFormatter.getLabel(xValueStart).length(), startTextBounds);
+
+        float xPosStart = getXPos(XPos.EDGE_LABEL_START);
+        float labelCuttWidth = xPosStart-(startTextBounds.width()/2);
+        int offsetLabelCuttoff = setEdgeLabelAligned?0:labelCuttWidth<0?(int)-labelCuttWidth:0;
+        canvas.drawText(labelXFormatter.getLabel(xValueStart),xPosStart+offsetLabelCuttoff,chartHeight+axisSpaceX+textSize,labelPaint);
 
         labelPaint.setTextAlign(setEdgeLabelAligned?Paint.Align.RIGHT:Paint.Align.CENTER);
         if(highlightEdgeValues) {
             labelPaint.setTypeface(Typeface.create(fontFace, Typeface.BOLD));
             labelPaint.setColor(colorEdgeHighlight);
         }
-        float xValueEnd = chartGraphWidth/xDotValue;
-        canvas.drawText(labelXFormatter.getLabel(xValueEnd),getXPos(XPos.EDGE_LABEL_END),chartHeight+axisSpaceX+textSize,labelPaint);
 
-        Log.d("SlRange","lable");
-        Rect endTextBounds = new Rect();
-        labelPaint.getTextBounds(labelXFormatter.getLabel(xValueEnd), 0, labelXFormatter.getLabel(xValueEnd).length(), endTextBounds);
-        Rect startTextBounds = new Rect();
-        labelPaint.getTextBounds(labelXFormatter.getLabel(xValueStart), 0, labelXFormatter.getLabel(xValueStart).length(), startTextBounds);
+        float xPosEnd = getXPos(XPos.EDGE_LABEL_END);
+        float labelCuttWidthEnd = xPosEnd+(endTextBounds.width()/2);
+        int offsetLabelCuttoffEnd = setEdgeLabelAligned?0:labelCuttWidthEnd>chartWidth?(int)(labelCuttWidthEnd-chartWidth):0;
+        canvas.drawText(labelXFormatter.getLabel(xValueEnd),xPosEnd-offsetLabelCuttoffEnd,chartHeight+axisSpaceX+textSize,labelPaint);
 
         float labelAvailableSpace = chartGraphWidth;
         if(saveEdgeLabelWidth)
