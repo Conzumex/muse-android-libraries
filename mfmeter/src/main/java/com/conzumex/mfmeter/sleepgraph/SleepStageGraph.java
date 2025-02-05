@@ -485,7 +485,7 @@ public class SleepStageGraph extends View {
         labelPaint.setTypeface(Typeface.create(fontFace, Typeface.NORMAL));
 
         float pointValLabel = xLabelCountsInside/labelCount;
-        for(int i=0;i<labelCount;i++){
+        for(int i=0;i<labelCount-1;i++){
             float indexAvg = pointValLabel * (i+1);
             int roundPos = Math.round(indexAvg);
             float indexBal = indexAvg - roundPos;
