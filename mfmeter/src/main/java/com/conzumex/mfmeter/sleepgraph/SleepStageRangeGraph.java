@@ -25,10 +25,12 @@ import androidx.appcompat.content.res.AppCompatResources;
 import com.conzumex.mfmeter.R;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -96,7 +98,7 @@ public class SleepStageRangeGraph extends View {
 
     labelFormatX labelXFormatter;
     labelFormatY labelYFormatter;
-    DecimalFormat dc2Point = new DecimalFormat("0.##");
+    DecimalFormat dc2Point = new DecimalFormat("0.##",new DecimalFormatSymbols(Locale.US));
     float chartPaddingH = 50,chartPaddingV = 50;
     boolean drawXAxis = true,drawYAxis = true;
     float insideAxisWidth = 0;
@@ -555,7 +557,7 @@ public class SleepStageRangeGraph extends View {
         //valueTouchX for finding the entries with including linewidth
         float valueTouchX = touchX<(chartValueMinx+lineWidth/2)?touchX+(lineWidth/2):(touchX>(chartValueMaxX-lineWidth/2)?touchX-(lineWidth/2):touchX);
         float selectedX = (valueTouchX - chartGraphStartX) / xDotValue;
-        DecimalFormat df = new DecimalFormat("#.#");
+        DecimalFormat df = new DecimalFormat("#.#",new DecimalFormatSymbols(Locale.US));
         selectedX = Float.valueOf(df.format(selectedX));
         SleepEntry selectedEntry = getEntry(selectedX);
         if(mChangeListener!=null && selectedEntry!=selectedGraphEntry)
