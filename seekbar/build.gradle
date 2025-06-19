@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'maven-publish'
 android {
+    namespace 'com.conzumex.seekbar'
     compileSdkVersion 32
     defaultConfig {
         minSdkVersion 16
@@ -40,10 +41,6 @@ publishing {
             groupId = 'com.github.conzumex.muse-android-libraries'
             artifactId = 'seekbar'
             version = '1.0.1'
-
-            afterEvaluate {
-                from components.release
-            }
         }
     }
 }

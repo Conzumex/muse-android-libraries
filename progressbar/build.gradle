@@ -43,10 +43,6 @@ publishing {
             groupId = 'com.github.conzumex.muse-android-libraries'
             artifactId = 'progressbar'
             version = '1.0.1'
-
-            afterEvaluate {
-                from components.release
-            }
         }
     }
 }

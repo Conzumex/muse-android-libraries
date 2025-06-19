@@ -9,6 +9,8 @@ import androidx.core.content.res.ResourcesCompat;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -17,9 +19,11 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.conzumex.bpprogressbar.BpProgressBar;
 import com.conzumex.charts.charts.LineChart;
@@ -86,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
 //    RoundedProgressBarVertical rbVertical;
     ProgressBarGraphChart pbBarchart;
     ProgressRoundGraphChart pbRoundchart;
+    TextView btEN,btEs,btDe;
 
     RoundedCombinedChart roundCandle;
     SleepStageGraph sleepGraph;
@@ -114,6 +119,9 @@ public class MainActivity extends AppCompatActivity {
         lineChart = findViewById(R.id.line_chart);
         circleSeekBar = findViewById(R.id.circular);
         bpBar= findViewById(R.id.bp_bar);
+        btEN= findViewById(R.id.tv_en);
+        btEs= findViewById(R.id.tv_es);
+        btDe= findViewById(R.id.tv_de);
 //        rbVertical = findViewById(R.id.roundedProgressBarVertical);
 
         bpBar.setRanges(Arrays.asList(0,140,150,160,170,190,200),Arrays.asList(0,40,60,80,100,120,150));
@@ -155,6 +163,42 @@ public class MainActivity extends AppCompatActivity {
 
         btn.setOnClickListener(vew->{
             startActivity(new Intent(this, SecondActivity.class));
+        });
+
+        btEN.setOnClickListener(view->{
+            Locale myLocale = new Locale("en");
+            Resources res = getResources();
+            DisplayMetrics dm = res.getDisplayMetrics();
+            Configuration conf = res.getConfiguration();
+            conf.locale = myLocale;
+            res.updateConfiguration(conf, dm);
+            btEN.setTextColor(getColor(R.color.charging));
+            btEs.setTextColor(getColor(R.color.white));
+            btDe.setTextColor(getColor(R.color.white));
+        });
+
+        btEs.setOnClickListener(view->{
+            Locale myLocale = new Locale("es");
+            Resources res = getResources();
+            DisplayMetrics dm = res.getDisplayMetrics();
+            Configuration conf = res.getConfiguration();
+            conf.locale = myLocale;
+            res.updateConfiguration(conf, dm);
+            btEs.setTextColor(getColor(R.color.charging));
+            btEN.setTextColor(getColor(R.color.white));
+            btDe.setTextColor(getColor(R.color.white));
+        });
+
+        btDe.setOnClickListener(view->{
+            Locale myLocale = new Locale("de");
+            Resources res = getResources();
+            DisplayMetrics dm = res.getDisplayMetrics();
+            Configuration conf = res.getConfiguration();
+            conf.locale = myLocale;
+            res.updateConfiguration(conf, dm);
+            btDe.setTextColor(getColor(R.color.charging));
+            btEs.setTextColor(getColor(R.color.white));
+            btEN.setTextColor(getColor(R.color.white));
         });
 
         DropletSeekBar dropletSeekBar = findViewById(R.id.seekbar_drops);
@@ -248,8 +292,64 @@ public class MainActivity extends AppCompatActivity {
         sleepEntries.add(new SleepEntry(7801,0));
         sleepEntries.add(new SleepEntry(8041,1));
         sleepEntries.add(new SleepEntry(8281,0,8521));
-        sleepGraph.loadData(sleepEntries);
-        sleepGraph.setMaxXvalue(8521);
+
+        List<SleepEntry> entriesNew = new ArrayList<>();
+        entriesNew.add(new SleepEntry(0,1));
+        entriesNew.add(new SleepEntry(840,0));
+        entriesNew.add(new SleepEntry(1680,1));
+        entriesNew.add(new SleepEntry(3600,3));
+        entriesNew.add(new SleepEntry(3720,3));
+        entriesNew.add(new SleepEntry(4000,1));
+        entriesNew.add(new SleepEntry(4600,3));
+        entriesNew.add(new SleepEntry(4720,1));
+        entriesNew.add(new SleepEntry(4840,0));
+        entriesNew.add(new SleepEntry(5320,3));
+        entriesNew.add(new SleepEntry(5440,1));
+        entriesNew.add(new SleepEntry(5560,0));
+        entriesNew.add(new SleepEntry(5920,1));
+        entriesNew.add(new SleepEntry(6520,0));
+        entriesNew.add(new SleepEntry(7240,1));
+        entriesNew.add(new SleepEntry(7480,0));
+        entriesNew.add(new SleepEntry(13120,1));
+        entriesNew.add(new SleepEntry(13240,3));
+        entriesNew.add(new SleepEntry(13360,2));
+        entriesNew.add(new SleepEntry(13600,1));
+        entriesNew.add(new SleepEntry(13720,0));
+        entriesNew.add(new SleepEntry(14200,1));
+        entriesNew.add(new SleepEntry(14320,2));
+        entriesNew.add(new SleepEntry(14440,1));
+        entriesNew.add(new SleepEntry(14560,0));
+        entriesNew.add(new SleepEntry(14920,3));
+        entriesNew.add(new SleepEntry(15040,1));
+        entriesNew.add(new SleepEntry(15160,0));
+        entriesNew.add(new SleepEntry(16960,1));
+        entriesNew.add(new SleepEntry(17080,2));
+        entriesNew.add(new SleepEntry(17320,3));
+        entriesNew.add(new SleepEntry(17440,1));
+        entriesNew.add(new SleepEntry(17560,0));
+        entriesNew.add(new SleepEntry(18760,1));
+        entriesNew.add(new SleepEntry(18880,2));
+        entriesNew.add(new SleepEntry(19240,1));
+        entriesNew.add(new SleepEntry(19360,0));
+        entriesNew.add(new SleepEntry(19720,1));
+        entriesNew.add(new SleepEntry(19840,2));
+        entriesNew.add(new SleepEntry(19960,1));
+        entriesNew.add(new SleepEntry(20080,0));
+        entriesNew.add(new SleepEntry(20200,1));
+        entriesNew.add(new SleepEntry(20320,2));
+        entriesNew.add(new SleepEntry(20800,1));
+        entriesNew.add(new SleepEntry(20920,0));
+        entriesNew.add(new SleepEntry(21760,1));
+        entriesNew.add(new SleepEntry(21880,2));
+        entriesNew.add(new SleepEntry(22001,3));
+        entriesNew.add(new SleepEntry(22121,1));
+        entriesNew.add(new SleepEntry(22241,0));
+        entriesNew.add(new SleepEntry(22601,1));
+        entriesNew.add(new SleepEntry(22721,2));
+        entriesNew.add(new SleepEntry(23201,3,23321));
+
+        sleepGraph.loadData(entriesNew);
+        sleepGraph.setMaxXvalue(23321);
         Date startDate2 = new Date();
         sleepGraph.setLabelXFormatter(value -> {
             int seconds = (int) value;
