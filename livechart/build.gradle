@@ -41,6 +41,7 @@ publishing {
             groupId = 'com.github.conzumex.muse-android-libraries'
             artifactId = 'livechart'
             version = '8.0'
+            from components.findByName('release')
         }
     }
 }

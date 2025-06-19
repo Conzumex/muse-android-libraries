@@ -42,7 +42,7 @@ publishing {
             groupId = 'com.github.conzumex.muse-android-libraries'
             artifactId = 'charts'
             version = '1.0.1'
-
+            from components.findByName('release')
         }
     }
 }
