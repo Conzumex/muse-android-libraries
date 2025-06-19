@@ -24,6 +24,15 @@ android {
         }
     }
 
+    publishing {
+        multipleVariants {
+            singleVariant("release") {
+            }
+            singleVariant("debug") {
+            }
+        }
+    }
+
 }
 
 dependencies {
@@ -34,13 +43,16 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
 }
-publishing {
-    publications {
-        release(MavenPublication) {
-            groupId = 'com.github.conzumex.muse-android-libraries'
-            artifactId = 'cicleseekbar'
-            version = '1.0.1'
-            from components.findByName('release')
+
+afterEvaluate{
+    publishing {
+        publications {
+            release(MavenPublication) {
+                groupId = 'com.github.conzumex.muse-android-libraries'
+                artifactId = 'cicleseekbar'
+                version = '1.0.1'
+                from components.release
+            }
         }
     }
 }
