@@ -24,6 +24,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    publishing {
+        multipleVariants {
+            singleVariant("release") {
+            }
+            singleVariant("debug") {
+            }
+        }
+    }
 }
 
 dependencies {

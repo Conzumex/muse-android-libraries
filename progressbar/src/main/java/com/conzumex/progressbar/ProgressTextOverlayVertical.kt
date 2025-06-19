@@ -65,7 +65,7 @@ internal class ProgressTextOverlayVertical @JvmOverloads constructor(
         reCalculateTextHeight() // Sets the initial text size (MUST BE LAST STEP IN INIT)
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         if (showProgressText) {
             super.onDraw(canvas)
 

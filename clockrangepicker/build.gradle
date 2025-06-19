@@ -29,6 +29,14 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    publishing {
+        multipleVariants {
+            singleVariant("release") {
+            }
+            singleVariant("debug") {
+            }
+        }
+    }
 }
 
 dependencies {
