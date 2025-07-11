@@ -64,6 +64,7 @@ public class CircleSeekBar extends View {
     private int mRangeDistance = 50;
     private float mRangeEraseOffset = 4f;
     private float mRangeValueOffset = 10f;
+    private float mRangeValueInverseMax = 0f;
     private float mFlagOffset = 50f;
     private float mMarkerOffset = 20f;
 
@@ -300,6 +301,7 @@ public class CircleSeekBar extends View {
             mRangeCircleSize = typedArray.getDimensionPixelSize(R.styleable.CircleSeekBar_csb_rangeCircleSize, mRangeCircleSize);
             mRangeEraseOffset = typedArray.getDimension(R.styleable.CircleSeekBar_csb_rangeEraseOffset, mRangeEraseOffset);
             mRangeValueOffset = typedArray.getDimension(R.styleable.CircleSeekBar_csb_rangeValueOffset, mRangeValueOffset);
+            mRangeValueInverseMax = typedArray.getDimension(R.styleable.CircleSeekBar_csb_rangeValueInverseMax, mRangeValueInverseMax);
             mFlagOffset = typedArray.getDimension(R.styleable.CircleSeekBar_csb_flagOffset, mFlagOffset);
 
             mMin = typedArray.getInteger(R.styleable.CircleSeekBar_csb_min, mMin);
@@ -538,7 +540,11 @@ public class CircleSeekBar extends View {
                 float endRangeTextAngle = getSweepValue(mRangeMin) - getSweepValue(mRangeMax);
                 float startRangeTextAngle = ANGLE_OFFSET + getSweepValue(mRangeMax);
                 Path circleRangeTextPath = new Path();
-                circleRangeTextPath.addArc(mRangeArcTextEndRect, startAngle - mRangeValueOffset, endAngle + (mRangeValueOffset * 2));
+                float mRangeOffset = mRangeValueOffset;
+                if(mRangeValueInverseMax!=0){
+                    mRangeOffset = mRangeValueInverseMax - mRangeValueOffset;
+                }
+                circleRangeTextPath.addArc(mRangeArcTextEndRect, startAngle - mRangeOffset, endAngle + (mRangeOffset * 2));
 
                 mRangeTextPaint.setTextAlign(Paint.Align.LEFT);
                 canvas.drawTextOnPath(getRangeText(mRangeMin), circleRangeTextPath, 0, 0, mRangeTextPaint);
@@ -912,6 +918,15 @@ public class CircleSeekBar extends View {
         mRangeEndSweep = (float) mRangeMax / valuePerDegree();
         mRangeEndAngle = Math.PI / 2 - (mRangeEndSweep * Math.PI) / 180;
         invalidate();
+    }
+
+    public void setRangeValueOffset(float mRangeValueOffset) {
+        this.mRangeValueOffset = mRangeValueOffset;
+    }
+
+    public void setRangeValueOffset(float mRangeValueOffset, float mRangeValueInverseMax) {
+        this.mRangeValueOffset = mRangeValueOffset;
+        this.mRangeValueInverseMax = mRangeValueInverseMax;
     }
 
     public void clearMarkers(){

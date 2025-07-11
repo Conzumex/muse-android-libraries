@@ -168,6 +168,8 @@
                 app:csb_rangeStart="50"
                 app:csb_rangeTextSize="12sp"
                 app:csb_rangeWidth="2dp"
+                app:csb_rangeValueOffset="10dp"
+                app:csb_rangeValueInverseMax="15dp"
                 app:csb_textColor="@color/color_text"
                 app:csb_textSize="36sp"
                 app:csb_thumbDrawable="@drawable/ic_money" />

@@ -17,6 +17,7 @@
         <attr name="csb_rangeCircleSize" format="dimension" />
         <attr name="csb_rangeEraseOffset" format="dimension" />
         <attr name="csb_rangeValueOffset" format="dimension" />
+        <attr name="csb_rangeValueInverseMax" format="dimension" />
         <attr name="csb_flagOffset" format="dimension" />
 
         <attr name="csb_progressColor" format="color"/>
