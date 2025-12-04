@@ -439,13 +439,13 @@ public class NapStageGraph extends View {
 //                markerY = markerTopPadding + (markerHeight/2);
 //            }
 //            if(showMarkerAlways || selectedEntry!=null)
-                markerTest.draw(canvas, touchX, awakeGridY, valueStartPosX,valueEndPosX);
+                markerTest.draw(canvas, touchX, selectedY == 0 ? awakeGridY + (awakeGridY/2) : (awakeGridY/2), valueStartPosX,valueEndPosX);
         }
     }
 
     float getYValueForX(float x){
         for(NapEntry nap : napValues){
-            if(nap.xValue == x){
+            if(nap.xValue <= x && (nap.xValue + nap.duration) >= x){
                 return 1;
             }
         }
