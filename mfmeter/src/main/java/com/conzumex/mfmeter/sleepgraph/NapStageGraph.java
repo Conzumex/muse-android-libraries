@@ -84,6 +84,9 @@ public class NapStageGraph extends View {
     labelFormatX labelXFormatter;
     Typeface fontFace = Typeface.DEFAULT;
 
+    int MIN_TOUCH_MOVEMENT_TO_REDRAW = 5;
+    boolean isDebugMode = false;
+
 
     public NapStageGraph(Context context) {
         this(context, null, 0);
@@ -188,7 +191,8 @@ public class NapStageGraph extends View {
 
         if (touchX != -1)
             drawMarker(canvas);
-        Log.d("NAP_GRAPH","drawn");
+        if(isDebugMode)
+            Log.d("NAP_GRAPH","drawn");
 
     }
 
@@ -208,6 +212,8 @@ public class NapStageGraph extends View {
 
 
     void drawValues(Canvas canvas){
+
+        mPath.reset();
 
         //start of the sleep
         mPath.moveTo(valueStartPosX,valueStartPosY);
@@ -341,6 +347,11 @@ public class NapStageGraph extends View {
         this.textSize = textSize;
     }
 
+    /** set Debug mode on*/
+    public void setDebugMode(boolean isDebug){
+        this.isDebugMode = isDebug;
+    }
+
     /** set font family for the texts*/
     public void setFontFace(Typeface fontFace){
         this.fontFace = fontFace;
@@ -457,7 +468,6 @@ public class NapStageGraph extends View {
                     touchX = event.getX();
                     touchY = event.getY();
                     touchedArea = true;
-                    Log.d("NAP_GRAPH","asking on down");
                     invalidate();
                 }
                 break;
@@ -465,11 +475,10 @@ public class NapStageGraph extends View {
             case MotionEvent.ACTION_MOVE:
                 eventX = event.getX();
                 eventY = event.getY();
-                if(eventX>=valueStartPosX && eventX<=valueEndPosX && eventY >= valueEndPosY && eventY <= valueStartPosY) {
+                if( Math.abs(eventX - touchX) >= MIN_TOUCH_MOVEMENT_TO_REDRAW && eventX>=valueStartPosX && eventX<=valueEndPosX && eventY >= valueEndPosY && eventY <= valueStartPosY) {
                     touchX = event.getX();
                     touchY = event.getY();
                     touchedArea = true;
-                    Log.d("NAP_GRAPH","asking on move");
                     invalidate();
                 }
                 break;
