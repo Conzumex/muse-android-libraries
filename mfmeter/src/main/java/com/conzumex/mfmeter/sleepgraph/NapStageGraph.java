@@ -168,15 +168,14 @@ public class NapStageGraph extends View {
 
     void loadDummyData(){
         napValues = new ArrayList<>();
-        napValues.add(new NapEntry(45));
         napValues.add(new NapEntry(20));
+        napValues.add(new NapEntry(45));
         napValues.add(new NapEntry(134,20));
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.save();
 
         drawBgAxis(canvas);
 
@@ -189,7 +188,7 @@ public class NapStageGraph extends View {
 
         if (touchX != -1)
             drawMarker(canvas);
-//        Log.d("NAP_GRAPH","drawn");
+        Log.d("NAP_GRAPH","drawn");
 
     }
 
@@ -226,7 +225,7 @@ public class NapStageGraph extends View {
         //ending sleep
         mPath.lineTo(valueEndPosX,awakeGridY + gridValuePaddingV);
         mPath.lineTo(valueEndPosX,valueStartPosY);
-        mPath.close();
+//        mPath.close();
         canvas.drawPath(mPath,valuePaint);
     }
 
@@ -452,13 +451,14 @@ public class NapStageGraph extends View {
         boolean touchedArea = false;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-//            case MotionEvent.ACTION_UP:
                 float eventX = event.getX();
                 float eventY = event.getY();
                 if(eventX>=valueStartPosX && eventX<=valueEndPosX && eventY >= valueEndPosY && eventY <= valueStartPosY) {
                     touchX = event.getX();
                     touchY = event.getY();
                     touchedArea = true;
+                    Log.d("NAP_GRAPH","asking on down");
+                    invalidate();
                 }
                 break;
 
@@ -469,12 +469,13 @@ public class NapStageGraph extends View {
                     touchX = event.getX();
                     touchY = event.getY();
                     touchedArea = true;
+                    Log.d("NAP_GRAPH","asking on move");
+                    invalidate();
                 }
                 break;
             default:
                 return false;
         }
-        invalidate();
         return touchedArea;
     }
 
