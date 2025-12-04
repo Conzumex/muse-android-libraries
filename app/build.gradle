@@ -48,4 +48,6 @@ dependencies {
     implementation project(':livechart')
 
     implementation 'com.github.amarjain07:StickyScrollView:1.0.3'
+    implementation 'com.intuit.ssp:ssp-android:1.1.1'
+    implementation 'com.intuit.sdp:sdp-android:1.1.1'
 }

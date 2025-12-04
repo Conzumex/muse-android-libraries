@@ -38,7 +38,7 @@ public class CircleSeekBar extends View {
      * Current point value.
      */
     private int mProgressDisplay = MIN;
-    int defProgress = 50;
+    int defProgress = 600;
     private int mSecondaryProgressDisplay = MIN;
     private int mRangeMin = 50;
     private int mRangeMax = 70;
@@ -61,7 +61,7 @@ public class CircleSeekBar extends View {
     private int mRangeArcWidth = 2;
     private int mProgressWidth = 12;
     private int mFlagLineWidth = 2;
-    private int mRangeDistance = 50;
+    private float mRangeDistance = 50;
     private float mRangeEraseOffset = 4f;
     private float mRangeValueOffset = 10f;
     private float mRangeValueInverseMax = 0f;
@@ -121,7 +121,7 @@ public class CircleSeekBar extends View {
     private boolean mIsShowRange = true;
     private boolean mIsShowRangeTexts = true;
     private boolean mDrawMarker = true;
-    private boolean showMarker = false;
+    private boolean showMarker = true;
 
     private int mCenterX;
     private int mCenterY;
@@ -307,7 +307,7 @@ public class CircleSeekBar extends View {
             mMin = typedArray.getInteger(R.styleable.CircleSeekBar_csb_min, mMin);
             mMax = typedArray.getInteger(R.styleable.CircleSeekBar_csb_max, mMax);
             mStep = typedArray.getInteger(R.styleable.CircleSeekBar_csb_step, mStep);
-            mRangeDistance = typedArray.getInteger(R.styleable.CircleSeekBar_csb_range_distance, mRangeDistance);
+            mRangeDistance = typedArray.getDimension(R.styleable.CircleSeekBar_csb_range_distance, mRangeDistance);
             capAdjustment = typedArray.getInteger(R.styleable.CircleSeekBar_csb_cap_adjustment, capAdjustment);
             mRangeMin = typedArray.getInteger(R.styleable.CircleSeekBar_csb_rangeStart, mRangeMin);
             mRangeMax = typedArray.getInteger(R.styleable.CircleSeekBar_csb_rangeEnd, mRangeMax);
@@ -475,11 +475,10 @@ public class CircleSeekBar extends View {
             canvas.drawText(String.valueOf(mProgressDisplay), xPos, yPos, mTextPaint);
         }
 
-//        if(isInEditMode()) {
-//            canvas.drawPaint(new Paint());
-//            mThumbSize = 50;
-//            mMax = 1000;
-//        }
+        if(isInEditMode()) {
+            canvas.drawPaint(new Paint());
+            mThumbSize = 50;
+        }
 
         // draw the arc and progress
         canvas.drawCircle(mCenterX, mCenterY, mCircleRadius, mArcPaint);
@@ -544,6 +543,7 @@ public class CircleSeekBar extends View {
                 if(mRangeValueInverseMax!=0){
                     mRangeOffset = mRangeValueInverseMax - mRangeValueOffset;
                 }
+//                circleRangeTextPath.addArc(mRangeArcTextEndRect, startRangeTextAngle, endRangeTextAngle);
                 circleRangeTextPath.addArc(mRangeArcTextEndRect, startAngle - mRangeOffset, endAngle + (mRangeOffset * 2));
 
                 mRangeTextPaint.setTextAlign(Paint.Align.LEFT);

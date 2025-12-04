@@ -1,9 +1,7 @@
 package com.conzumex.muselibraries;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.res.ResourcesCompat;
 
 import android.animation.Animator;
@@ -13,7 +11,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -22,15 +19,12 @@ import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.conzumex.bpprogressbar.BpProgressBar;
 import com.conzumex.charts.charts.LineChart;
 import com.conzumex.charts.charts.RoundedBarChart;
-import com.conzumex.charts.charts.RoundedCandleChart;
 import com.conzumex.charts.charts.RoundedCombinedChart;
-import com.conzumex.charts.components.AxisBase;
 import com.conzumex.charts.components.LimitLine;
 import com.conzumex.charts.components.XAxis;
 import com.conzumex.charts.components.YAxis;
@@ -44,12 +38,10 @@ import com.conzumex.charts.data.CombinedData;
 import com.conzumex.charts.data.Entry;
 import com.conzumex.charts.data.LineData;
 import com.conzumex.charts.data.LineDataSet;
-import com.conzumex.charts.formatter.IAxisValueFormatter;
 import com.conzumex.charts.highlight.Highlight;
 import com.conzumex.charts.listener.OnChartValueSelectedListener;
 import com.conzumex.circleseekbar.CircleSeekBar;
 import com.conzumex.circleseekbar.DropletSeekBar;
-import com.conzumex.circleseekbar.marker.Marker;
 import com.conzumex.livechart.LineType;
 import com.conzumex.livechart.LiveChart;
 import com.conzumex.mfmeter.FuelIcon;
@@ -57,16 +49,16 @@ import com.conzumex.mfmeter.FuelLog;
 import com.conzumex.mfmeter.FuelSession;
 import com.conzumex.mfmeter.MFMeter;
 import com.conzumex.mfmeter.progressbar.RoundedProgress;
+import com.conzumex.mfmeter.sleepgraph.NapEntry;
+import com.conzumex.mfmeter.sleepgraph.NapStageGraph;
 import com.conzumex.mfmeter.sleepgraph.SleepEntry;
 import com.conzumex.mfmeter.sleepgraph.SleepStageGraph;
 import com.conzumex.mfmeter.sleepgraph.SleepStageRangeGraph;
 import com.conzumex.progressbar.ProgressTextFormatter;
 import com.conzumex.progressbar.RoundedProgressBar;
-import com.conzumex.progressbar.RoundedProgressBarVertical;
 import com.conzumex.progressbar.charts.ProgressBarGraphChart;
 import com.conzumex.progressbar.charts.ProgressRoundGraphChart;
 
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -95,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
     RoundedCombinedChart roundCandle;
     SleepStageGraph sleepGraph;
     SleepStageRangeGraph sleepGraphRange;
+    NapStageGraph napStageGraph;
     LineChart lineChart;
     CircleSeekBar circleSeekBar;
     BpProgressBar bpBar;
@@ -123,6 +116,34 @@ public class MainActivity extends AppCompatActivity {
         btEs= findViewById(R.id.tv_es);
         btDe= findViewById(R.id.tv_de);
 //        rbVertical = findViewById(R.id.roundedProgressBarVertical);
+        napStageGraph = findViewById(R.id.nap_graph);
+
+        List<NapEntry> napEntries = new ArrayList<>();
+        napEntries.add(new NapEntry(30));
+        napEntries.add(new NapEntry(90,30));
+        napStageGraph.setMaxMinutes(200);
+        napStageGraph.setNapValues(napEntries);
+
+        CustomMarker napMarker = new CustomMarker(getApplicationContext(), R.layout.custom_marker);
+        napStageGraph.setMarkerView(napMarker);
+        napMarker.mSupply = new CustomMarker.supplier() {
+            @Override
+            public CharSequence[] getVal(SleepEntry entry, float x) {
+                CharSequence[] vals = new CharSequence[2];
+                if(entry!=null) {
+                    vals[0] = Html.fromHtml("<font color='" + getAppUsageLabelColor((int) entry.yValue) + "'>" + getAppUsageLabel((int) entry.yValue) + "</font>");
+                    vals[1] = Html.fromHtml((int) entry.xValue + " am");
+                }
+                return vals;
+            }
+        };
+        napStageGraph.setLabelXFormatter(new NapStageGraph.labelFormatX() {
+            @Override
+            public String getLabel(float value) {
+                return (int)value+" min";
+            }
+        });
+        napStageGraph.invalidate();
 
         bpBar.setRanges(Arrays.asList(0,140,150,160,170,190,200),Arrays.asList(0,40,60,80,100,120,150));
         bpBar.setTopText("Height");

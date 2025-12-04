@@ -19,6 +19,15 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
+            <com.conzumex.mfmeter.sleepgraph.NapStageGraph
+                android:id="@+id/nap_graph"
+                android:layout_width="match_parent"
+                android:layout_height="280dp"
+                android:layout_marginHorizontal="40dp"
+                android:layout_marginTop="10dp"
+                app:graphBackgroundColor="@color/black"
+                android:visibility="visible"
+                app:radius="10dp" />
 
 
             <com.conzumex.mfmeter.sleepgraph.SleepStageRangeGraph
@@ -29,11 +38,13 @@
                 android:layout_marginTop="10dp"
                 app:graphBackgroundColor="@color/black"
                 android:visibility="visible"
+                tools:visibility="gone"
                 app:radius="10dp" />
             <com.conzumex.livechart.LiveChart
                 android:id="@+id/live_chart"
                 android:layout_marginTop="50dp"
                 android:background="#0C0C0C"
+                tools:visibility="gone"
                 app:centerClipWidth="50dp"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"/>
@@ -45,6 +56,7 @@
                 android:layout_marginTop="50dp"
                 android:layout_marginHorizontal="30dp"
                 android:layout_weight="1"
+                tools:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -65,6 +77,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginHorizontal="30dp"
                 android:paddingStart="0dp"
+                tools:visibility="gone"
                 app:rpbRelativeMax="140"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -86,6 +99,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:textSize="8sp"
+                tools:visibility="gone"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -97,6 +111,7 @@
                 android:layout_height="300dp"
                 android:layout_marginTop="50dp"
                 android:layout_marginHorizontal="20dp"
+                tools:visibility="gone"
                 android:layout_weight="1"
                 android:textSize="10sp"
                 android:visibility="visible"
@@ -106,6 +121,7 @@
                 android:id="@+id/line_chart"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
+                tools:visibility="gone"
                 android:layout_marginTop="50dp"
                 android:layout_weight="1" />
 
@@ -115,6 +131,7 @@
                 android:textColor="@color/white"
                 android:fontFamily="@font/nunito_bold"
                 android:textSize="16sp"
+                tools:visibility="gone"
                 android:gravity="center"
                 android:layout_marginTop="50dp"
                 android:text="Temperature Change"/>
@@ -125,6 +142,7 @@
                 android:layout_height="wrap_content"
                 android:elevation="4dp"
                 android:padding="64dp"
+                tools:visibility="gone"
                 android:layout_marginTop="10dp"
                 android:layout_marginHorizontal="30dp"
                 android:visibility="visible"
@@ -161,15 +179,15 @@
                 app:csb_progressColor="@color/money_color_completed"
                 app:csb_secondaryprogressColor="@color/money_color"
                 app:csb_progressWidth="8dp"
-                app:csb_rangeCircleSize="2.5dp"
+                app:csb_rangeCircleSize="@dimen/_3sdp"
                 app:csb_rangeColor="@color/white"
                 app:csb_rangeEnd="70"
-                app:csb_rangeEraseOffset="1.8dp"
+                app:csb_rangeEraseOffset="@dimen/_2sdp"
                 app:csb_rangeStart="50"
-                app:csb_rangeTextSize="12sp"
-                app:csb_rangeWidth="2dp"
-                app:csb_rangeValueOffset="10dp"
-                app:csb_rangeValueInverseMax="15dp"
+                app:csb_rangeTextSize="@dimen/_8ssp"
+                app:csb_rangeWidth="1dp"
+                app:csb_range_distance="@dimen/_12sdp"
+                app:csb_rangeValueOffset="@dimen/_3sdp"
                 app:csb_textColor="@color/color_text"
                 app:csb_textSize="36sp"
                 app:csb_thumbDrawable="@drawable/ic_money" />
