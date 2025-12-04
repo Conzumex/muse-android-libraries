@@ -76,7 +76,7 @@ public class NapStageGraph extends View {
     int markerLayout = R.layout.marker_default;
 
     String[] stageLabels = new String[]{"Awake","REM","Core","Deep"};
-    int[] stageLabelColors = new int[]{Color.WHITE,Color.YELLOW,Color.GREEN,Color.BLUE};
+    int[] stageLabelColors = null;
     int[] gradientColors = new int[]{Color.parseColor("#bbb14a37"),Color.parseColor("#bb1b647f"),Color.parseColor("#bb00477e"),Color.parseColor("#bb1a1951")};
     int xAxisLabelCount = 4;
     List<NapEntry> napValues = new ArrayList<>();
@@ -125,8 +125,9 @@ public class NapStageGraph extends View {
     }
 
     @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+
         parentViewWidth = getWidth();
         parentViewHeight = getHeight();
 
@@ -188,6 +189,7 @@ public class NapStageGraph extends View {
 
         if (touchX != -1)
             drawMarker(canvas);
+//        Log.d("NAP_GRAPH","drawn");
 
     }
 
@@ -386,9 +388,11 @@ public class NapStageGraph extends View {
 
         //valueTouchX for finding the entries with including linewidth
         float selectedX = getIndexFromX(touchX);
+//        float selectedX = 3;
         DecimalFormat df = new DecimalFormat("#.#",new DecimalFormatSymbols(Locale.US));
         selectedX = Float.valueOf(df.format(selectedX));
         float selectedY = getYValueForX(selectedX);
+//        float selectedY = 2;
 //        SleepEntry selectedEntry = getEntry(selectedX);
 //        if(mChangeListener!=null && selectedEntry!=selectedGraphEntry)
 //            mChangeListener.onChange(selectedGraphEntry,selectedEntry);
