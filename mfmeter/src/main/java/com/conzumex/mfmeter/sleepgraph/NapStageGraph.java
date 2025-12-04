@@ -115,6 +115,13 @@ public class NapStageGraph extends View {
 
         mPath = new Path();
         labelXFormatter = value -> dc2Point.format(value)+"";
+
+        if (attrs == null) return;
+        TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.NapStageGraph);
+
+        // Set background color via xml (If exists and isn't the default value)
+        @ColorInt int newTextColor = attributes.getColor(R.styleable.NapStageGraph_napGraphBackgroundColor, bgColor);
+        if (newTextColor != bgColor) bgColor = newTextColor;
     }
 
     @Override

@@ -27,4 +27,8 @@
     <declare-styleable name="SleepStageGraph">
         <attr name="graphBackgroundColor" format="reference|color" />
     </declare-styleable>
+
+    <declare-styleable name="NapStageGraph">
+        <attr name="napGraphBackgroundColor" format="reference|color" />
+    </declare-styleable>
 </resources>
