@@ -184,12 +184,13 @@ public class NapStageGraph extends View {
 
         drawBgAxis(canvas);
 
-        Collections.sort(napValues);
         minuteXValue = valuePointCount/maxMinutes;
-        float maxDurationX = napValues.get(napValues.size()-1).xValue + napValues.get(napValues.size()-1).duration;
-        if(maxDurationX>maxMinutes)
-            minuteXValue = valuePointCount/maxDurationX;
-
+        if(napValues!=null && !napValues.isEmpty()) {
+            Collections.sort(napValues);
+            float maxDurationX = napValues.get(napValues.size() - 1).xValue + napValues.get(napValues.size() - 1).duration;
+            if (maxDurationX > maxMinutes)
+                minuteXValue = valuePointCount / maxDurationX;
+        }
 
         drawGridsLabels(canvas);
 
