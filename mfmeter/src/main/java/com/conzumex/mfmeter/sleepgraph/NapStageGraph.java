@@ -315,6 +315,12 @@ public class NapStageGraph extends View {
     /** set stageLabels Colors*/
     public void setGradientColors(int[] gradientColors){
         this.gradientColors = gradientColors;
+        linearGradient = new LinearGradient(
+                valueStartPosX, valueEndPosY, valueStartPosX, valueStartPosY, // Coordinates for the gradient line
+                gradientColors, // Array of colors for the gradient
+                null, // Optional: array of floats for color positions (0.0 to 1.0)
+                Shader.TileMode.CLAMP // How to handle areas outside the gradient bounds
+        );
     }
 
     /** set stageLabels Colors*/
