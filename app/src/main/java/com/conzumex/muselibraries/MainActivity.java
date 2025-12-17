@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         napEntries.add(new NapEntry(90,30));
         napStageGraph.setMaxMinutes(200);
         napStageGraph.setNapValues(napEntries);
-        napStageGraph.setStageLabels(new String[]{"Add","Remove","Wait","Addll"});
+        napStageGraph.setStageLabels(new String[]{"Add","Remove","Wait","AddlllllongText"});
         napStageGraph.setGradientColors(new int[]{Color.CYAN,Color.RED,Color.YELLOW,Color.GREEN});
 
         CustomMarker napMarker = new CustomMarker(getApplicationContext(), R.layout.custom_marker);

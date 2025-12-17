@@ -37,7 +37,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class NapStageGraph extends View {
-    boolean drawEditMode = false;
+    boolean drawEditMode = true;
     int parentViewWidth,parentViewHeight;
     float chartWidth,chartHeight;
     float chartValueXArea,chartValueYArea;
@@ -171,9 +171,11 @@ public class NapStageGraph extends View {
 
     void loadDummyData(){
         napValues = new ArrayList<>();
+        napValues.add(new NapEntry(1));
         napValues.add(new NapEntry(20));
         napValues.add(new NapEntry(45));
         napValues.add(new NapEntry(134,20));
+        napValues.add(new NapEntry(310,30));
     }
 
     @Override
@@ -182,7 +184,12 @@ public class NapStageGraph extends View {
 
         drawBgAxis(canvas);
 
+        Collections.sort(napValues);
         minuteXValue = valuePointCount/maxMinutes;
+        float maxDurationX = napValues.get(napValues.size()-1).xValue + napValues.get(napValues.size()-1).duration;
+        if(maxDurationX>maxMinutes)
+            minuteXValue = valuePointCount/maxDurationX;
+
 
         drawGridsLabels(canvas);
 
@@ -217,9 +224,12 @@ public class NapStageGraph extends View {
 
         //start of the sleep
         mPath.moveTo(valueStartPosX,valueStartPosY);
-        mPath.lineTo(valueStartPosX,awakeGridY + gridValuePaddingV);
+        float initialValueYPos = awakeGridY + gridValuePaddingV;
+        if(!napValues.isEmpty() && napValues.get(0).xValue==1){
+            initialValueYPos = initialValueYPos + awakeGridY + gridValuePaddingV;
+        }
+        mPath.lineTo(valueStartPosX,initialValueYPos);
 
-        Collections.sort(napValues);
 
         for(NapEntry nap : napValues){
             mPath.lineTo((nap.xValue*minuteXValue)+valueStartPosX,awakeGridY + gridValuePaddingV);
@@ -231,6 +241,8 @@ public class NapStageGraph extends View {
         //ending sleep
         mPath.lineTo(valueEndPosX,awakeGridY + gridValuePaddingV);
         mPath.lineTo(valueEndPosX,valueStartPosY);
+        mPath.lineTo(valueStartPosX,valueStartPosY);
+        mPath.lineTo(valueStartPosX,awakeGridY + gridValuePaddingV);
 //        mPath.close();
         canvas.drawPath(mPath,valuePaint);
     }
@@ -252,7 +264,7 @@ public class NapStageGraph extends View {
             gridPos = awakeGridY * (i+1);
             canvas.drawLine(axisHSpace,gridPos,parentViewWidth,gridPos,gridLinePaint);
             labelCenterY = gridPos - (awakeGridY/2);
-            canvas.drawText(stageLabels[i],axisHSpace - axisLabelPaddingH,labelCenterY,labelPaint);
+            canvas.drawText(stageLabels[i],axisHSpace - (axisLabelPaddingH/2),labelCenterY,labelPaint);
         }
 
         //grid lines YAxis
