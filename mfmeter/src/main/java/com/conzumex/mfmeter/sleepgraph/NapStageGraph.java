@@ -140,11 +140,20 @@ public class NapStageGraph extends View {
             loadDummyData();
         }
 
-        if(axisHSpace==-1)
-            axisHSpace = maxLabelLength() + axisLabelPaddingH;
+    }
 
-        if(axisVSpace==-1)
-            axisVSpace = textSize + axisLabelPaddingV;
+    void loadDummyData(){
+        napValues = new ArrayList<>();
+        napValues.add(new NapEntry(1));
+        napValues.add(new NapEntry(20));
+        napValues.add(new NapEntry(45));
+        napValues.add(new NapEntry(134,20));
+        napValues.add(new NapEntry(310,30));
+    }
+
+    void initChart(){
+        axisHSpace = maxLabelLength() + axisLabelPaddingH;
+        axisVSpace = textSize + axisLabelPaddingV;
 
         chartWidth = parentViewWidth-axisHSpace;
         chartHeight = parentViewHeight-axisVSpace;
@@ -169,18 +178,11 @@ public class NapStageGraph extends View {
             );
     }
 
-    void loadDummyData(){
-        napValues = new ArrayList<>();
-        napValues.add(new NapEntry(1));
-        napValues.add(new NapEntry(20));
-        napValues.add(new NapEntry(45));
-        napValues.add(new NapEntry(134,20));
-        napValues.add(new NapEntry(310,30));
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
+        initChart();
 
         drawBgAxis(canvas);
 

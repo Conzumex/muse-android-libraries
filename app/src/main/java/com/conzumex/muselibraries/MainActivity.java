@@ -147,6 +147,13 @@ public class MainActivity extends AppCompatActivity {
         });
         napStageGraph.invalidate();
 
+        new Handler().postDelayed(()->{
+            napStageGraph.setTextSize(36f);
+            napStageGraph.setGradientColors(new int[]{Color.RED,Color.BLUE,Color.WHITE,Color.CYAN});
+            napStageGraph.invalidate();
+        },3000);
+
+
         bpBar.setRanges(Arrays.asList(0,140,150,160,170,190,200),Arrays.asList(0,40,60,80,100,120,150));
         bpBar.setTopText("Height");
         bpBar.setBottomText("Weight");
