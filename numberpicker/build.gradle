@@ -47,7 +47,7 @@ publishing {
         release(MavenPublication) {
             groupId = 'com.github.conzumex.muse-android-libraries'
             artifactId = 'numberpicker'
-            version = '10.0'
+            version = '12.1'
             from components.findByName('release')
         }
     }
