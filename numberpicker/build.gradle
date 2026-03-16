@@ -10,7 +10,6 @@ android {
 
     defaultConfig {
         minSdk 23
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
@@ -21,18 +20,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    // ← fixed: singleVariant directly, no multipleVariants wrapper
     publishing {
-        multipleVariants {
-            singleVariant("release") {
-            }
-            singleVariant("debug") {
-            }
+        singleVariant("release") {
+            withSourcesJar()
         }
     }
 }
 
 dependencies {
-
     implementation 'androidx.core:core-ktx:1.7.1'
     implementation platform('org.jetbrains.kotlin:kotlin-bom:1.8.0')
     implementation 'androidx.appcompat:appcompat:1.7.1'
@@ -42,13 +39,16 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
 }
 
-publishing {
-    publications {
-        release(MavenPublication) {
-            groupId = 'com.github.conzumex.muse-android-libraries'
-            artifactId = 'numberpicker'
-            version = '12.1'
-            from components.findByName('release')
+// ← fixed: wrapped in afterEvaluate so components.release exists
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release   // ← use .release directly, not findByName
+                groupId    = 'com.github.conzumex'
+                artifactId = 'numberpicker'
+                version    = '12.3'
+            }
         }
     }
 }
