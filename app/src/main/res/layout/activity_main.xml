@@ -19,6 +19,20 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
+            <com.conzumex.numberpicker.DrumRollPicker
+                android:id="@+id/dayPicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:drp_minValue="1"
+                app:drp_maxValue="30"
+                app:drp_backgroundColor="@color/black"
+                app:drp_fontFamily="@font/nunito_bold"
+                app:drp_selectedTextSize="50"
+                android:background="@color/black"
+                app:drp_initialValue="5"
+                app:drp_label="Days" />
+
             <com.conzumex.mfmeter.sleepgraph.NapStageGraph
                 android:id="@+id/nap_graph"
                 android:layout_width="match_parent"

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DrumRollPicker">
+
+        <!-- ── Value range ─────────────────────────────────────── -->
+        <!-- Minimum selectable value (default: 1) -->
+        <attr name="drp_minValue" format="integer" />
+        <!-- Maximum selectable value (default: 30) -->
+        <attr name="drp_maxValue" format="integer" />
+        <!-- Initially selected value (default: 5) -->
+        <attr name="drp_initialValue" format="integer" />
+        <!-- Label drawn to the right of the selected item, e.g. "Days" -->
+        <attr name="drp_label" format="string" />
+
+        <!-- ── Colors ──────────────────────────────────────────── -->
+        <!-- Background fill color (default: #FF1A1A2E) -->
+        <attr name="drp_backgroundColor" format="color" />
+        <!-- Text color of the selected (centre) item (default: #FFF5F5F5) -->
+        <attr name="drp_selectedTextColor" format="color" />
+        <!-- Text color of the adjacent prev/next items (default: #66FFFFFF) -->
+        <attr name="drp_adjacentTextColor" format="color" />
+
+        <!-- ── Text sizes (SP) ─────────────────────────────────── -->
+        <!-- Text size of the selected item in SP (default: 44) -->
+        <attr name="drp_selectedTextSize" format="float" />
+        <!-- Text size of adjacent items in SP (default: 26) -->
+        <attr name="drp_adjacentTextSize" format="float" />
+        <!-- Text size of the label in SP (default: 13) -->
+        <attr name="drp_labelTextSize" format="float" />
+
+        <!-- ── Typeface ────────────────────────────────────────── -->
+        <!--
+            Font family string passed to Typeface.create().
+            Examples: "sans-serif", "sans-serif-light", "sans-serif-medium",
+                      "sans-serif-condensed", "serif", "monospace"
+            Applied to adjacent items and the label.
+            (default: system default)
+        -->
+        <attr name="drp_typeface" format="string" />
+        <!--
+            Style for the selected item.
+            0 = normal  |  1 = bold  |  2 = italic  |  3 = bold_italic
+            (default: 1 / bold)
+        -->
+        <attr name="drp_selectedTypefaceStyle" format="integer">
+            <enum name="normal"      value="0" />
+            <enum name="bold"        value="1" />
+            <enum name="italic"      value="2" />
+            <enum name="bold_italic" value="3" />
+        </attr>
+
+        <!-- ── Shape ──────────────────────────────────────────── -->
+        <!-- Corner radius of the background rounded rect in DP (default: 20) -->
+        <attr name="drp_cornerRadius" format="float" />
+        <!-- Extra spacing in DP between the selected item and prev/next items (default: 0) -->
+        <attr name="drp_itemSpacing" format="float" />
+
+        <attr name="drp_fontFamily" format="reference" />
+
+    </declare-styleable>
+</resources>
