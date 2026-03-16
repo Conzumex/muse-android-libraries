@@ -19,6 +19,8 @@
         <attr name="drp_selectedTextColor" format="color" />
         <!-- Text color of the adjacent prev/next items (default: #66FFFFFF) -->
         <attr name="drp_adjacentTextColor" format="color" />
+        <!-- Text color of the label e.g. "Days" (default: same as adjacentTextColor) -->
+        <attr name="drp_labelTextColor" format="color" />
 
         <!-- ── Text sizes (SP) ─────────────────────────────────── -->
         <!-- Text size of the selected item in SP (default: 44) -->
@@ -30,13 +32,16 @@
 
         <!-- ── Typeface ────────────────────────────────────────── -->
         <!--
-            Font family string passed to Typeface.create().
-            Examples: "sans-serif", "sans-serif-light", "sans-serif-medium",
-                      "sans-serif-condensed", "serif", "monospace"
-            Applied to adjacent items and the label.
-            (default: system default)
+            Font family for number items (adjacent + selected).
+            Accepts either a font resource (@font/my_font) or a system string
+            ("sans-serif-light", "serif", "monospace", etc.)
         -->
-        <attr name="drp_typeface" format="string" />
+        <attr name="drp_typeface" format="string|reference" />
+        <!--
+            Font family for the label text only (e.g. "Days").
+            Accepts either a font resource (@font/my_font) or a system string.
+        -->
+        <attr name="drp_labelTypeface" format="string|reference" />
         <!--
             Style for the selected item.
             0 = normal  |  1 = bold  |  2 = italic  |  3 = bold_italic
@@ -54,8 +59,17 @@
         <attr name="drp_cornerRadius" format="float" />
         <!-- Extra spacing in DP between the selected item and prev/next items (default: 0) -->
         <attr name="drp_itemSpacing" format="float" />
-
-        <attr name="drp_fontFamily" format="reference" />
+        <!--
+            Vertical position of the label within the selected item slot.
+            top    = aligned to the top of the slot
+            center = vertically centred in the slot (default)
+            bottom = aligned to the bottom of the slot
+        -->
+        <attr name="drp_labelPosition" format="enum">
+            <enum name="top"    value="0" />
+            <enum name="center" value="1" />
+            <enum name="bottom" value="2" />
+        </attr>
 
     </declare-styleable>
 </resources>

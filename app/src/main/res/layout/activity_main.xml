@@ -27,7 +27,7 @@
                 app:drp_minValue="1"
                 app:drp_maxValue="30"
                 app:drp_backgroundColor="@color/black"
-                app:drp_fontFamily="@font/nunito_bold"
+                app:drp_typeface="@font/nunito_bold"
                 app:drp_selectedTextSize="50"
                 android:background="@color/black"
                 app:drp_initialValue="5"

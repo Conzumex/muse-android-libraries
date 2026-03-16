@@ -11,7 +11,6 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
-import androidx.core.content.res.ResourcesCompat
 import kotlin.math.roundToInt
 
 /**
@@ -69,6 +68,9 @@ import kotlin.math.roundToInt
  *   This maps any integer (positive or negative) onto [0, size-1], so the
  *   list appears to repeat infinitely in both directions.
  */
+/** Controls where the label ("Days") is vertically aligned within the selected item slot. */
+enum class LabelPosition { TOP, CENTER, BOTTOM }
+
 class DrumRollPicker @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -113,7 +115,11 @@ class DrumRollPicker @JvmOverloads constructor(
 
     /** Text color of the adjacent (prev / next) items. */
     var adjacentTextColor: Int = 0x66FFFFFF
-        set(v) { field = v; nearPaint.color = v; labelPaint.color = v; invalidate() }
+        set(v) { field = v; nearPaint.color = v; invalidate() }
+
+    /** Text color of the label (e.g. "Days"). Defaults to adjacentTextColor. */
+    var labelTextColor: Int = 0x66FFFFFF
+        set(v) { field = v; labelPaint.color = v; invalidate() }
 
     /** Text size of the selected item in SP. */
     var selectedTextSizeSp: Float = 44f
@@ -127,13 +133,28 @@ class DrumRollPicker @JvmOverloads constructor(
     var labelTextSizeSp: Float = 13f
         set(v) { field = v; labelPaint.textSize = spToPx(v); invalidate() }
 
-    /** Typeface used for adjacent items and the label. */
+    /** Typeface used for adjacent (prev/next) number items. */
     var typeface: Typeface = Typeface.DEFAULT
-        set(v) { field = v; nearPaint.typeface = v; labelPaint.typeface = v; invalidate() }
+        set(v) { field = v; nearPaint.typeface = v; invalidate() }
 
-    /** Typeface used for the selected item. */
+    /** Typeface used for the selected (centre) number item. */
     var selectedTypeface: Typeface = Typeface.DEFAULT_BOLD
         set(v) { field = v; selectedPaint.typeface = v; invalidate() }
+
+    /** Typeface used for the label (e.g. "Days"). Defaults to system default. */
+    var labelTypeface: Typeface = Typeface.DEFAULT
+        set(v) { field = v; labelPaint.typeface = v; invalidate() }
+
+    /**
+     * Vertical alignment of the label relative to the selected item slot.
+     *   LabelPosition.TOP    — label baseline sits at the top edge of the selected slot
+     *   LabelPosition.CENTER — label is vertically centred in the selected slot (default)
+     *   LabelPosition.BOTTOM — label baseline sits at the bottom edge of the selected slot
+     * The label X position always stays fixed to the right of the widest possible number
+     * (selectedTextSize) so it never shifts during the size animation.
+     */
+    var labelPosition: LabelPosition = LabelPosition.CENTER
+        set(v) { field = v; invalidate() }
 
     /** Corner radius of the background rounded rect in DP. */
     var cornerRadiusDp: Float = 20f
@@ -168,6 +189,8 @@ class DrumRollPicker @JvmOverloads constructor(
     private val selectedPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val nearPaint     = Paint(Paint.ANTI_ALIAS_FLAG)
     private val labelPaint    = Paint(Paint.ANTI_ALIAS_FLAG)
+    /** Scratch paint reused every draw frame — avoids allocation inside onDraw. */
+    private val drawPaint     = Paint(Paint.ANTI_ALIAS_FLAG)
 
     // ── Scroll state ──────────────────────────────────────────────────────────
 
@@ -261,6 +284,9 @@ class DrumRollPicker @JvmOverloads constructor(
             if (ta.hasValue(R.styleable.DrumRollPicker_drp_adjacentTextColor))
                 adjacentTextColor = ta.getColor(R.styleable.DrumRollPicker_drp_adjacentTextColor, adjacentTextColor)
 
+            if (ta.hasValue(R.styleable.DrumRollPicker_drp_labelTextColor))
+                labelTextColor = ta.getColor(R.styleable.DrumRollPicker_drp_labelTextColor, labelTextColor)
+
             if (ta.hasValue(R.styleable.DrumRollPicker_drp_selectedTextSize))
                 selectedTextSizeSp = ta.getFloat(R.styleable.DrumRollPicker_drp_selectedTextSize, selectedTextSizeSp)
 
@@ -276,26 +302,39 @@ class DrumRollPicker @JvmOverloads constructor(
             if (ta.hasValue(R.styleable.DrumRollPicker_drp_itemSpacing))
                 itemSpacingDp = ta.getFloat(R.styleable.DrumRollPicker_drp_itemSpacing, itemSpacingDp)
 
-            val fontFamily = ta.getString(R.styleable.DrumRollPicker_drp_typeface)
-            if (!fontFamily.isNullOrEmpty()) {
-                typeface = Typeface.create(fontFamily, Typeface.NORMAL)
-            }
-
-            val selStyle = ta.getInt(R.styleable.DrumRollPicker_drp_selectedTypefaceStyle, -1)
-            if (selStyle >= 0) {
-                val family = fontFamily ?: "sans-serif"
-                selectedTypeface = Typeface.create(family, selStyle)
-            }
-
-            val fontResId = ta.getResourceId(R.styleable.DrumRollPicker_drp_fontFamily, 0)
+            // Number font — try @font/ resource first, fall back to family name string
+            val fontResId = ta.getResourceId(R.styleable.DrumRollPicker_drp_typeface, 0)
             if (fontResId != 0) {
-                val tf = ResourcesCompat.getFont(context, fontResId)
-                if (tf != null) {
-                    typeface         = tf
-                    selectedTypeface = tf
+                val tf = androidx.core.content.res.ResourcesCompat.getFont(context, fontResId)
+                if (tf != null) typeface = tf
+            } else {
+                val fontFamily = ta.getString(R.styleable.DrumRollPicker_drp_typeface)
+                if (!fontFamily.isNullOrEmpty()) {
+                    typeface = Typeface.create(fontFamily, Typeface.NORMAL)
                 }
             }
 
+            // Selected number style (bold/italic etc.) applied on top of the number font
+            val selStyle = ta.getInt(R.styleable.DrumRollPicker_drp_selectedTypefaceStyle, -1)
+            if (selStyle >= 0) {
+                selectedTypeface = Typeface.create(typeface, selStyle)
+            }
+
+            // Label font — try @font/ resource first, fall back to family name string
+            val labelFontResId = ta.getResourceId(R.styleable.DrumRollPicker_drp_labelTypeface, 0)
+            if (labelFontResId != 0) {
+                val tf = androidx.core.content.res.ResourcesCompat.getFont(context, labelFontResId)
+                if (tf != null) labelTypeface = tf
+            } else {
+                val labelFontFamily = ta.getString(R.styleable.DrumRollPicker_drp_labelTypeface)
+                if (!labelFontFamily.isNullOrEmpty()) {
+                    labelTypeface = Typeface.create(labelFontFamily, Typeface.NORMAL)
+                }
+            }
+
+            // Label position
+            val posOrdinal = ta.getInt(R.styleable.DrumRollPicker_drp_labelPosition, 1)
+            labelPosition = enumValues<LabelPosition>().getOrElse(posOrdinal) { LabelPosition.CENTER }
         } finally {
             ta.recycle()
         }
@@ -408,6 +447,41 @@ class DrumRollPicker @JvmOverloads constructor(
 
     // ── Draw ──────────────────────────────────────────────────────────────────
 
+    /**
+     * Returns a 0..1 progress value for how "selected" a slot is.
+     *   1.0 = perfectly centred (fully selected)
+     *   0.0 = one full itemHeight away (fully adjacent)
+     * Computed from the fractional part of the raw scroll offset so it updates
+     * continuously every pixel the user drags — no discrete jumps.
+     */
+    private fun selectionProgress(slotOffset: Int): Float {
+        // How far (in itemHeight units) this slot is from the exact snap centre
+        val exactVirtual = -currentOffset / itemHeight          // fractional virtual index
+        val dist = kotlin.math.abs(exactVirtual - (currentVirtualIndex + slotOffset))
+        // dist == 0  → item is dead-centre → progress 1.0
+        // dist == 1  → item is one slot away → progress 0.0
+        return (1f - dist.coerceIn(0f, 1f))
+    }
+
+    /** Linear interpolation between two floats. */
+    private fun lerp(a: Float, b: Float, t: Float) = a + (b - a) * t
+
+    /** Linear interpolation between two ARGB colours (component-wise). */
+    private fun lerpColor(from: Int, to: Int, t: Float): Int {
+        val aA = (from ushr 24) and 0xFF
+        val rA = (from ushr 16) and 0xFF
+        val gA = (from ushr 8)  and 0xFF
+        val bA =  from          and 0xFF
+        val aB = (to   ushr 24) and 0xFF
+        val rB = (to   ushr 16) and 0xFF
+        val gB = (to   ushr 8)  and 0xFF
+        val bB =  to            and 0xFF
+        return ((lerp(aA.toFloat(), aB.toFloat(), t).toInt() shl 24) or
+                (lerp(rA.toFloat(), rB.toFloat(), t).toInt() shl 16) or
+                (lerp(gA.toFloat(), gB.toFloat(), t).toInt() shl 8)  or
+                lerp(bA.toFloat(), bB.toFloat(), t).toInt())
+    }
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
@@ -422,26 +496,53 @@ class DrumRollPicker @JvmOverloads constructor(
 
         if (items.isEmpty()) return
 
-        // Draw prev, selected, next using modulo-wrapped real indices
-        for (offset in -1..1) {
-            val virtualIdx = currentVirtualIndex + offset
+        val selectedSizePx = selectedPaint.textSize   // max text size (fully selected)
+        val adjacentSizePx = nearPaint.textSize       // min text size (fully adjacent)
+
+        // Draw prev (-1), selected (0), next (+1)
+        for (slotOffset in -1..1) {
+            val virtualIdx = currentVirtualIndex + slotOffset
             val realIdx    = realIndex(virtualIdx)
             val text       = items[realIdx]
 
-            // Y position: centre of the slot for this virtual index.
-            // _spacingPx shifts adjacent items (offset ±1) away from centre —
-            // positive spacing pushes prev up and next down.
-            val spacing     = if (offset == 0) 0f else offset * _spacingPx
-            val slotCentreY = cy + (virtualIdx * itemHeight) + currentOffset + spacing
-            val paint       = if (offset == 0) selectedPaint else nearPaint
+            // 0.0 → adjacent size/alpha,  1.0 → selected size/alpha
+            val progress = selectionProgress(slotOffset)
 
-            canvas.drawText(text, cx, slotCentreY + paint.textSize * 0.35f, paint)
+            // Interpolate text size continuously
+            val textSize = lerp(adjacentSizePx, selectedSizePx, progress)
+
+            // Interpolate colour (handles both colour and alpha together)
+            val color = lerpColor(nearPaint.color, selectedPaint.color, progress)
+
+            // Choose typeface: use selectedTypeface once past 50% into selection
+            val tf = if (progress >= 0.5f) selectedPaint.typeface else nearPaint.typeface
+
+            // Build a draw paint from the interpolated values
+            drawPaint.set(if (progress >= 0.5f) selectedPaint else nearPaint)
+            drawPaint.textSize = textSize
+            drawPaint.color    = color
+            drawPaint.typeface = tf
+
+            // Y position with optional extra spacing for adjacent items
+            val spacing     = if (slotOffset == 0) 0f else slotOffset * _spacingPx
+            val slotCentreY = cy + (virtualIdx * itemHeight) + currentOffset + spacing
+
+            canvas.drawText(text, cx, slotCentreY + drawPaint.textSize * 0.35f, drawPaint)
         }
 
-        // Label to the right of the selected item
+        // ── Label — fully static position, never moves during animation ──────────
+        // X: fixed to the right of the max possible selected text width so it
+        //    never shifts as the number size animates.
+        // Y: anchored to the selected slot's top/centre/bottom edge using
+        //    itemHeight — completely independent of the animating text size.
         if (label.isNotEmpty()) {
-            val labelX = cx + selectedPaint.textSize * 0.72f
-            val labelY = cy + labelPaint.textSize * 0.35f
+            val labelX = cx + selectedPaint.textSize * 0.72f  // right of widest number
+            val halfSlot = itemHeight / 2f
+            val labelY = when (labelPosition) {
+                LabelPosition.TOP    -> cy - halfSlot + labelPaint.textSize * 0.35f
+                LabelPosition.CENTER -> cy              + labelPaint.textSize * 0.35f
+                LabelPosition.BOTTOM -> cy + halfSlot  - labelPaint.textSize * 0.35f
+            }
             canvas.drawText(label, labelX, labelY, labelPaint)
         }
     }
