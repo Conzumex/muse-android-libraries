@@ -26,6 +26,7 @@
                 android:layout_gravity="center"
                 app:drp_minValue="1"
                 app:drp_maxValue="30"
+                app:drp_gradientEndColor="#000000"
                 app:drp_backgroundColor="@color/black"
                 app:drp_typeface="@font/nunito_bold"
                 app:drp_selectedTextSize="50"

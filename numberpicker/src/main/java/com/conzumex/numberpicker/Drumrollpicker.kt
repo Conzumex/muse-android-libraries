@@ -3,8 +3,10 @@ package com.conzumex.numberpicker
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.LinearGradient
 import android.graphics.Paint
 import android.graphics.RectF
+import android.graphics.Shader
 import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.GestureDetector
@@ -107,7 +109,16 @@ class DrumRollPicker @JvmOverloads constructor(
 
     /** Background fill color of the picker drum. */
     var pickerBackgroundColor: Int = 0xFF1A1A2E.toInt()
-        set(v) { field = v; bgPaint.color = v; invalidate() }
+        set(v) { field = v; bgPaint.color = v; buildFadeGradients(width.toFloat(), height.toFloat()); invalidate() }
+
+    /**
+     * The color the gradient fades TO at the outer edges of the prev/next items.
+     * Defaults to the picker background color so it blends naturally.
+     * The gradient runs from selectedTextColor (transparent, inner edge near selected slot)
+     * to this color (outer edge at top/bottom of the view).
+     */
+    var gradientEndColor: Int = 0xFF1A1A2E.toInt()
+        set(v) { field = v; buildFadeGradients(width.toFloat(), height.toFloat()); invalidate() }
 
     /** Text color of the selected (centre) item. */
     var selectedTextColor: Int = 0xFFF5F5F5.toInt()
@@ -191,6 +202,10 @@ class DrumRollPicker @JvmOverloads constructor(
     private val labelPaint    = Paint(Paint.ANTI_ALIAS_FLAG)
     /** Scratch paint reused every draw frame — avoids allocation inside onDraw. */
     private val drawPaint     = Paint(Paint.ANTI_ALIAS_FLAG)
+    /** Gradient overlay for the top adjacent slot (fades downward toward selected). */
+    private val fadeTopPaint    = Paint(Paint.ANTI_ALIAS_FLAG)
+    /** Gradient overlay for the bottom adjacent slot (fades upward toward selected). */
+    private val fadeBottomPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     // ── Scroll state ──────────────────────────────────────────────────────────
 
@@ -286,6 +301,9 @@ class DrumRollPicker @JvmOverloads constructor(
 
             if (ta.hasValue(R.styleable.DrumRollPicker_drp_labelTextColor))
                 labelTextColor = ta.getColor(R.styleable.DrumRollPicker_drp_labelTextColor, labelTextColor)
+
+            if (ta.hasValue(R.styleable.DrumRollPicker_drp_gradientEndColor))
+                gradientEndColor = ta.getColor(R.styleable.DrumRollPicker_drp_gradientEndColor, gradientEndColor)
 
             if (ta.hasValue(R.styleable.DrumRollPicker_drp_selectedTextSize))
                 selectedTextSizeSp = ta.getFloat(R.styleable.DrumRollPicker_drp_selectedTextSize, selectedTextSizeSp)
@@ -445,6 +463,50 @@ class DrumRollPicker @JvmOverloads constructor(
         return gestureDetector.onTouchEvent(event)
     }
 
+    // ── Fade gradient ─────────────────────────────────────────────────────────
+
+    /**
+     * Builds two LinearGradient shaders — one for the top slot, one for the bottom.
+     * Each covers exactly one itemHeight (the prev/next slot area).
+     *
+     * Direction:
+     *   Top gradient    — gradientEndColor (outer/top edge) → transparent (inner/bottom edge)
+     *   Bottom gradient — transparent (inner/top edge)      → gradientEndColor (outer/bottom edge)
+     *
+     * The "inner" transparent stop uses selectedTextColor with alpha=0 so the gradient
+     * fades from the number text color family rather than an arbitrary transparent black.
+     */
+    private fun buildFadeGradients(w: Float, h: Float) {
+        if (w <= 0f || h <= 0f) return
+
+        val endColor   = gradientEndColor
+        // Transparent version of gradientEndColor (preserves RGB, zeroes alpha)
+        val endClear   = endColor and 0x00FFFFFF
+
+        val slotH = itemHeight   // one slot = top edge to where selected slot starts
+
+        // Top: outer (y=0) is solid endColor, inner (y=slotH) is transparent
+        fadeTopPaint.shader = LinearGradient(
+            0f, 0f, 0f, slotH,
+            intArrayOf(endColor, endClear),
+            null,
+            Shader.TileMode.CLAMP
+        )
+
+        // Bottom: inner (y = h-slotH) is transparent, outer (y = h) is solid endColor
+        fadeBottomPaint.shader = LinearGradient(
+            0f, h - slotH, 0f, h,
+            intArrayOf(endClear, endColor),
+            null,
+            Shader.TileMode.CLAMP
+        )
+    }
+
+    override fun onSizeChanged(w: Int, h: Int, oldW: Int, oldH: Int) {
+        super.onSizeChanged(w, h, oldW, oldH)
+        buildFadeGradients(w.toFloat(), h.toFloat())
+    }
+
     // ── Draw ──────────────────────────────────────────────────────────────────
 
     /**
@@ -545,6 +607,12 @@ class DrumRollPicker @JvmOverloads constructor(
             }
             canvas.drawText(label, labelX, labelY, labelPaint)
         }
+
+        // ── Fade overlay — drawn last, covers only the prev/next slots ───────────
+        // Top slot: y=0 to y=itemHeight
+        canvas.drawRect(0f, 0f, w, itemHeight, fadeTopPaint)
+        // Bottom slot: y=(h-itemHeight) to y=h
+        canvas.drawRect(0f, h - itemHeight, w, h, fadeBottomPaint)
     }
 
     // ── Measure ───────────────────────────────────────────────────────────────
