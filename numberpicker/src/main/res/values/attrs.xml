@@ -21,13 +21,6 @@
         <attr name="drp_adjacentTextColor" format="color" />
         <!-- Text color of the label e.g. "Days" (default: same as adjacentTextColor) -->
         <attr name="drp_labelTextColor" format="color" />
-        <!--
-            Color the gradient fades TO at the outer edges of the prev/next slots.
-            Defaults to the picker background color.
-            The gradient runs from this color (outer edge) fading to transparent
-            (inner edge, where the selected slot begins).
-        -->
-        <attr name="drp_gradientEndColor" format="color" />
 
         <!-- ── Text sizes (SP) ─────────────────────────────────── -->
         <!-- Text size of the selected item in SP (default: 44) -->

@@ -5,6 +5,8 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.LinearGradient
 import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
 import android.graphics.RectF
 import android.graphics.Shader
 import android.graphics.Typeface
@@ -109,16 +111,7 @@ class DrumRollPicker @JvmOverloads constructor(
 
     /** Background fill color of the picker drum. */
     var pickerBackgroundColor: Int = 0xFF1A1A2E.toInt()
-        set(v) { field = v; bgPaint.color = v; buildFadeGradients(width.toFloat(), height.toFloat()); invalidate() }
-
-    /**
-     * The color the gradient fades TO at the outer edges of the prev/next items.
-     * Defaults to the picker background color so it blends naturally.
-     * The gradient runs from selectedTextColor (transparent, inner edge near selected slot)
-     * to this color (outer edge at top/bottom of the view).
-     */
-    var gradientEndColor: Int = 0xFF1A1A2E.toInt()
-        set(v) { field = v; buildFadeGradients(width.toFloat(), height.toFloat()); invalidate() }
+        set(v) { field = v; bgPaint.color = v; invalidate() }
 
     /** Text color of the selected (centre) item. */
     var selectedTextColor: Int = 0xFFF5F5F5.toInt()
@@ -302,9 +295,6 @@ class DrumRollPicker @JvmOverloads constructor(
             if (ta.hasValue(R.styleable.DrumRollPicker_drp_labelTextColor))
                 labelTextColor = ta.getColor(R.styleable.DrumRollPicker_drp_labelTextColor, labelTextColor)
 
-            if (ta.hasValue(R.styleable.DrumRollPicker_drp_gradientEndColor))
-                gradientEndColor = ta.getColor(R.styleable.DrumRollPicker_drp_gradientEndColor, gradientEndColor)
-
             if (ta.hasValue(R.styleable.DrumRollPicker_drp_selectedTextSize))
                 selectedTextSizeSp = ta.getFloat(R.styleable.DrumRollPicker_drp_selectedTextSize, selectedTextSizeSp)
 
@@ -466,40 +456,40 @@ class DrumRollPicker @JvmOverloads constructor(
     // ── Fade gradient ─────────────────────────────────────────────────────────
 
     /**
-     * Builds two LinearGradient shaders — one for the top slot, one for the bottom.
-     * Each covers exactly one itemHeight (the prev/next slot area).
+     * Builds two alpha-only LinearGradient shaders using PorterDuff.Mode.DST_OUT.
      *
-     * Direction:
-     *   Top gradient    — gradientEndColor (outer/top edge) → transparent (inner/bottom edge)
-     *   Bottom gradient — transparent (inner/top edge)      → gradientEndColor (outer/bottom edge)
+     * DST_OUT erases the destination (the drawn content) proportionally to the
+     * source alpha. A fully opaque black pixel in the source → fully transparent
+     * result. A fully transparent pixel → no change. No color is introduced —
+     * it is a pure alpha mask that works correctly over any background, including
+     * gradients and transparent surfaces.
      *
-     * The "inner" transparent stop uses selectedTextColor with alpha=0 so the gradient
-     * fades from the number text color family rather than an arbitrary transparent black.
+     * Top gradient:    fully opaque (outer/top edge) → transparent (inner edge)
+     * Bottom gradient: transparent (inner edge)      → fully opaque (outer/bottom edge)
      */
     private fun buildFadeGradients(w: Float, h: Float) {
         if (w <= 0f || h <= 0f) return
 
-        val endColor   = gradientEndColor
-        // Transparent version of gradientEndColor (preserves RGB, zeroes alpha)
-        val endClear   = endColor and 0x00FFFFFF
+        val opaque      = 0xFF000000.toInt()   // black, fully opaque  → full erase
+        val transparent = 0x00000000           // black, zero alpha    → no erase
 
-        val slotH = itemHeight   // one slot = top edge to where selected slot starts
+        val slotH = itemHeight
 
-        // Top: outer (y=0) is solid endColor, inner (y=slotH) is transparent
         fadeTopPaint.shader = LinearGradient(
             0f, 0f, 0f, slotH,
-            intArrayOf(endColor, endClear),
+            intArrayOf(opaque, transparent),
             null,
             Shader.TileMode.CLAMP
         )
+        fadeTopPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
 
-        // Bottom: inner (y = h-slotH) is transparent, outer (y = h) is solid endColor
         fadeBottomPaint.shader = LinearGradient(
             0f, h - slotH, 0f, h,
-            intArrayOf(endClear, endColor),
+            intArrayOf(transparent, opaque),
             null,
             Shader.TileMode.CLAMP
         )
+        fadeBottomPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldW: Int, oldH: Int) {
@@ -551,6 +541,11 @@ class DrumRollPicker @JvmOverloads constructor(
         val h  = height.toFloat()
         val cx = w / 2f
         val cy = h / 2f
+
+        // saveLayer isolates this view's drawing into an offscreen buffer.
+        // This is required for DST_OUT to erase pixels within this view's own
+        // content rather than punching holes in whatever is drawn below it.
+        val saveCount = canvas.saveLayer(0f, 0f, w, h, null)
 
         // Background
         canvas.drawRoundRect(RectF(0f, 0f, w, h), _cornerPx, _cornerPx, bgPaint)
@@ -608,11 +603,14 @@ class DrumRollPicker @JvmOverloads constructor(
             canvas.drawText(label, labelX, labelY, labelPaint)
         }
 
-        // ── Fade overlay — drawn last, covers only the prev/next slots ───────────
-        // Top slot: y=0 to y=itemHeight
+        // ── Fade overlay — DST_OUT erases alpha in the prev/next slots only ────────
+        // No color is introduced — pixels are made transparent proportionally to the
+        // gradient opacity. Works correctly over any background including gradients.
         canvas.drawRect(0f, 0f, w, itemHeight, fadeTopPaint)
-        // Bottom slot: y=(h-itemHeight) to y=h
         canvas.drawRect(0f, h - itemHeight, w, h, fadeBottomPaint)
+
+        // Restore the layer — composites the offscreen buffer back onto the canvas.
+        canvas.restoreToCount(saveCount)
     }
 
     // ── Measure ───────────────────────────────────────────────────────────────
