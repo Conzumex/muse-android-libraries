@@ -96,12 +96,7 @@ class DrumRollPicker @JvmOverloads constructor(
     var value: Int = 5
         set(v) {
             field = v.coerceIn(minValue, maxValue)
-            // Place the chosen item at virtual-index 0 so the offset is small
-            // and can grow unboundedly in either direction from here.
-            currentVirtualIndex = 0
-            currentOffset       = 0f
-            // Shift the items list so `value` sits at position 0
-            rebuildItemsFromValue(field)
+            resetToValue()
             invalidate()
         }
 
@@ -356,23 +351,17 @@ class DrumRollPicker @JvmOverloads constructor(
     }
 
     /**
-     * Rebuild the items list so `value` appears at real-index 0, then reset
-     * the scroll offset to 0.  This keeps currentOffset small regardless of
-     * how far the user has scrolled before a programmatic value change.
+     * Reset scroll position so the current value appears centred.
+     * Items list is never rotated — virtual index 0 always maps to minValue,
+     * virtual index N maps to minValue+N. This keeps realIndex→value math simple
+     * and correct: value = minValue + realIndex(virtualIdx).
      */
-    private fun rebuildItemsFromValue(v: Int) {
-        if (items.isEmpty()) return
-        val startIdx = (v - minValue).coerceIn(0, items.size - 1)
-        val rotated  = items.subList(startIdx, items.size) + items.subList(0, startIdx)
-        items.clear()
-        items.addAll(rotated)
-        currentOffset       = 0f
-        currentVirtualIndex = 0
-    }
-
     private fun resetToValue() {
         if (items.isEmpty()) return
-        rebuildItemsFromValue(value.coerceIn(minValue, maxValue))
+        val targetVirtual   = (value.coerceIn(minValue, maxValue) - minValue)
+        currentVirtualIndex = targetVirtual
+        currentOffset       = virtualToOffset(targetVirtual)
+        _currentValue       = value.coerceIn(minValue, maxValue)
     }
 
     /**
@@ -405,6 +394,9 @@ class DrumRollPicker @JvmOverloads constructor(
         val newVirtual = offsetToVirtual(currentOffset)
         if (newVirtual == currentVirtualIndex) return
         currentVirtualIndex = newVirtual
+        // realIndex wraps the virtual index into [0, items.size-1].
+        // items[0] is always minValue, items[1] is minValue+1, etc. — no rotation.
+        // So the selected value is simply minValue + realIndex.
         val newValue = minValue + realIndex(newVirtual)
         if (newValue != _currentValue) {
             _currentValue = newValue

@@ -3,6 +3,7 @@ package com.conzumex.muselibraries;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.databinding.DataBindingUtil;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
@@ -54,6 +55,7 @@ import com.conzumex.mfmeter.sleepgraph.NapStageGraph;
 import com.conzumex.mfmeter.sleepgraph.SleepEntry;
 import com.conzumex.mfmeter.sleepgraph.SleepStageGraph;
 import com.conzumex.mfmeter.sleepgraph.SleepStageRangeGraph;
+import com.conzumex.muselibraries.databinding.ActivityMainBinding;
 import com.conzumex.progressbar.ProgressTextFormatter;
 import com.conzumex.progressbar.RoundedProgressBar;
 import com.conzumex.progressbar.charts.ProgressBarGraphChart;
@@ -69,7 +71,7 @@ import java.util.Locale;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-
+    ActivityMainBinding binding;
 //    List<Entry> listEntries;
 //    LineData data;
 //    EditText edtText;
@@ -97,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
 
 //        LineChart lineChart = findViewById(R.id.line_chart);
 //        edtText = findViewById(R.id.edt_text);
@@ -117,6 +119,12 @@ public class MainActivity extends AppCompatActivity {
         btDe= findViewById(R.id.tv_de);
 //        rbVertical = findViewById(R.id.roundedProgressBarVertical);
         napStageGraph = findViewById(R.id.nap_graph);
+
+        binding.dayPicker.setOnValueChanged((iv)->{
+            Log.d("NUmber","changed to "+iv);
+            return null;
+        });
+
 
         List<NapEntry> napEntries = new ArrayList<>();
         napEntries.add(new NapEntry(30));
