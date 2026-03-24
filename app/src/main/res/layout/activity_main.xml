@@ -7,9 +7,12 @@
         android:layout_height="match_parent"
         android:background="@color/black">
 
-        <ScrollView
+        <com.conzumex.sticky.StickyBouncyScrollView
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:clipToPadding="false"
+            android:fillViewport="true"
+            app:stickyHeader="@id/tv_head_stickey"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -166,6 +169,7 @@
                     app:gradientColors="@array/gradients"
                     app:thumbDrawable="@drawable/ic_temperature" />
                 <TextView
+                    android:id="@+id/tv_head_stickey"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
@@ -409,7 +413,7 @@
                     android:layout_height="wrap_content"
                     android:text="Button" />
             </LinearLayout>
-        </ScrollView>
+        </com.conzumex.sticky.StickyBouncyScrollView>
 
 
         <!--    <com.conzumex.seekbar.DoubleValueSeekBarView-->
