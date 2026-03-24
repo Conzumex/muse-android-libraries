@@ -28,11 +28,8 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     publishing {
-        multipleVariants {
-            singleVariant("release") {
-            }
-            singleVariant("debug") {
-            }
+        singleVariant("release") {
+            withSourcesJar()
         }
     }
 }
@@ -48,13 +45,15 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
 
-publishing {
-    publications {
-        release(MavenPublication) {
-            groupId = 'com.github.conzumex.muse-android-libraries'
-            artifactId = 'stickeyscrollview'
-            version = '1.0.1'
-            from components.findByName('release')
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release   // ← use .release directly, not findByName
+                groupId    = 'com.github.conzumex'
+                artifactId = 'stickeyscrollview'
+                version    = '12.7'
+            }
         }
     }
 }
